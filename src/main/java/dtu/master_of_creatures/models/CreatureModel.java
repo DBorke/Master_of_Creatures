@@ -1,29 +1,49 @@
 package dtu.master_of_creatures.models;
 
+import dtu.master_of_creatures.utilities.enums.CreatureTypes;
+import eu.hansolo.tilesfx.addons.Switch;
+
 /**
  * @author Romel (s215212) Maria (s195685)
  */
 
 public class CreatureModel
 {
-    private final String name;
+    // Fields
+    private final CreatureTypes creature_type;
     private int health;
     private int attack;
     private int cost;
 
-    public CreatureModel(String name, int health, int attack, int cost) {
-        if (health < 0 || attack < 0 || cost < 0) {
-            throw new IllegalArgumentException("Values cannot be negative.");
+    // Constructor
+    public CreatureModel(CreatureTypes creature_type) { // Set up the specific creature
+        this.creature_type = creature_type;
+
+        switch(creature_type) { // Set the health of the creature
+            case RABBIT, WOLF-> this.health = 2;
+            case DRAGON -> this.health = 10;
+            default -> throw new IllegalArgumentException("Invalid creature type");
         }
-        this.name = name;
-        this.health = health;
-        this.attack = attack;
-        this.cost = cost;
+
+        switch (creature_type) { // Set the attack of the creature
+            case RABBIT -> this.attack = 0;
+            case WOLF -> this.attack = 5;
+            case DRAGON -> this.attack = 10;
+            default -> throw new IllegalArgumentException("Invalid creature type");
+        }
+
+        switch (creature_type) { // Set the cost of the creature
+            case RABBIT -> this.cost = 0;
+            case WOLF -> this.cost = 2;
+            case DRAGON -> this.cost = 4;
+            default-> throw new IllegalArgumentException("Invalid creature type");
+        }
+
     }
 
     // Getters and Setters
-    public String getName() {
-        return name;
+    public CreatureTypes getCreatureType() {
+        return creature_type;
     }
 
     public int getHealth() {
@@ -52,7 +72,7 @@ public class CreatureModel
 
     @Override
     public String toString() {
-        return String.format("CreatureModel{name='%s', health=%d, attack=%d, cost=%d}", name, health, attack, cost);
+        return String.format("CreatureModel{creature_type='%s', health=%d, attack=%d, cost=%d}", creature_type, health, attack, cost);
     }
 }
 
