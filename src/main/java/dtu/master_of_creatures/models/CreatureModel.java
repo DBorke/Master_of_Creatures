@@ -6,7 +6,7 @@ package dtu.master_of_creatures.models;
 
 public class CreatureModel
 {
-    private String name;
+    private final String name;
     private int health;
     private int attack;
     private int cost;
@@ -24,10 +24,6 @@ public class CreatureModel
     // Getters and Setters
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public int getHealth() {
