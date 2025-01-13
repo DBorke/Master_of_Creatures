@@ -19,16 +19,25 @@ public class GameModel
     // setters and getters //
     /////////////////////////
 
+    /**
+     * @author Danny (s224774)
+     */
     public void setGameState(GameStates game_state)
     {
         GameModel.game_state = game_state;
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public void setGameController(GameController game_controller)
     {
         this.game_controller = game_controller;
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public GameStates getGameState()
     {
         return game_state;

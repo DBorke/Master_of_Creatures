@@ -10,16 +10,25 @@ public abstract class Constants
     //////// getters ////////
     /////////////////////////
 
+    /**
+     * @author Danny (s224774)
+     */
     public static String getGameVersion()
     {
         return GAME_VERSION;
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public static int getDefaultResolutionX()
     {
         return DEFAULT_RESOLUTION_X;
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public static int getDefaultResolutionY()
     {
         return DEFAULT_RESOLUTION_Y;

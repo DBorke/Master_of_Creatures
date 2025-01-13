@@ -23,18 +23,27 @@ public class GameController extends SceneController implements Initializable
     // Game data
     private final GameModel game_model;
 
+    /**
+     * @author Danny (s224774)
+     */
     public GameController()
     {
         game_model = getGameModel();
         game_model.setGameController(this);
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public void initialize(URL url, ResourceBundle resource_bundle)
     {
         game_model.initializeGame();
         game_model.setGameState(GameStates.GAME_ACTIVE);
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public void quitGame() throws IOException
     {
         game_model.setGameState(GameStates.GAME_QUIT);
@@ -42,6 +51,9 @@ public class GameController extends SceneController implements Initializable
         goToMenuScene();
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public void muteSound()
     {
         super.muteSound();
