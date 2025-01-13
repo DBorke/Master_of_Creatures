@@ -68,13 +68,12 @@ public class BoardModel
     }
 
 
-
     @Override
     public String toString() 
     {
         return String.format(
-                "BoardModel{player1Lanes=%s, player2Lanes=%s, player1Health=%d, player2Health=%d, currentTurn=%d, currentPhase=%s}",
-                player1Lanes, player2Lanes, player1Health, player2Health, currentTurn, currentPhase
+                "BoardModel{player1Lanes=%s, player2Lanes=%s}",
+                player1Lanes, player2Lanes, player1Health
         );
     }
 }
