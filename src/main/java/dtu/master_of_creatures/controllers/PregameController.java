@@ -23,26 +23,40 @@ public class PregameController extends SceneController implements Initializable
     // Game data
     private final GameModel game_model;
 
+    /**
+     * @author Danny (s224774)
+     */
     public PregameController()
     {
         game_model = getGameModel();
     }
-
+    /**
+     * @author Danny (s224774)
+     */
     public void initialize(URL url, ResourceBundle resource_bundle)
     {
         game_model.setGameState(GameStates.GAME_SETUP);
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public void startGame() throws IOException
     {
         goToGameScene();
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public void quitSetup() throws IOException
     {
         goToMenuScene();
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public void muteSound()
     {
         super.muteSound();

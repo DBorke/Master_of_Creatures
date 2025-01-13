@@ -23,21 +23,33 @@ public class MenuController extends SceneController implements Initializable
     // Game data
     private final GameModel game_model;
 
+    /**
+     * @author Danny (s224774)
+     */
     public MenuController()
     {
         game_model = getGameModel();
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public void initialize(URL url, ResourceBundle resource_bundle)
     {
         game_model.setGameState(GameStates.GAME_PENDING);
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public void newGame() throws IOException
     {
         goToPregameScene();
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public void muteSound()
     {
         super.muteSound();

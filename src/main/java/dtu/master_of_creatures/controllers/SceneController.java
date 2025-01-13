@@ -39,6 +39,9 @@ public abstract class SceneController
     private static boolean sound_unmuted = true;
     private static HashMap<SoundLabels, MediaPlayer> sound_players;
 
+    /**
+     * @author Danny (s224774)
+     */
     public SceneController()
     {
         if(game_model == null || game_model.getGameState() == GameStates.GAME_QUIT) // for initializing and resetting
@@ -47,21 +50,33 @@ public abstract class SceneController
         }
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public void goToMenuScene() throws IOException
     {
         setAppScene("MenuScene");
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public void goToPregameScene() throws IOException
     {
         setAppScene("PregameScene");
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public void goToGameScene() throws IOException
     {
         setAppScene("GameScene");
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public void gatherScreenInformation(GraphicsDevice screen)
     {
         int default_resolution_x = Constants.getDefaultResolutionX();
@@ -82,6 +97,9 @@ public abstract class SceneController
         }
     }
 
+    /**
+     * @author Danny (s224774), Mathias (s224273)
+     */
     private void scaleScene()
     {
         app_scene.getRoot().setTranslateX(scale_factor_x);
@@ -90,6 +108,9 @@ public abstract class SceneController
         app_scene.getRoot().setStyle("-fx-background-color: transparent;"); // make scene background invisible
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public void playSoundEffect(SoundLabels sound_label, double volume)
     {
         if(sound_players == null)
@@ -108,6 +129,9 @@ public abstract class SceneController
         }
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     private void createSoundPlayers()
     {
         SoundLabels[] sounds = SoundLabels.values();
@@ -118,6 +142,9 @@ public abstract class SceneController
         }
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public void stopSoundEffect(SoundLabels sound_label)
     {
         MediaPlayer sound_player = sound_players.get(sound_label);
@@ -128,6 +155,9 @@ public abstract class SceneController
         }
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public void muteSound()
     {
         sound_unmuted = !sound_unmuted;
@@ -149,11 +179,17 @@ public abstract class SceneController
     // setters and getters //
     /////////////////////////
 
+    /**
+     * @author Danny (s224774)
+     */
     public void setAppStage(Stage stage)
     {
         app_stage = stage;
     }
 
+    /**
+     * @author Danny (s224774), Mathias (s224273)
+     */
     private void setAppScene(String scene_name) throws IOException
     {
         Parent root = FXMLLoader.load(Objects.requireNonNull(MasterOfCreaturesApp.class.getResource("scenes/" + scene_name + ".fxml")));
@@ -176,11 +212,17 @@ public abstract class SceneController
         }
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public GameModel getGameModel()
     {
         return game_model;
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public boolean getSoundUnmuted()
     {
         return sound_unmuted;

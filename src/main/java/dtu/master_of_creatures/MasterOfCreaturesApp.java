@@ -16,11 +16,17 @@ import javafx.stage.Stage;
 
 public class MasterOfCreaturesApp extends Application
 {
+    /**
+     * @author Danny (s224774)
+     */
     public static void main(String[] args)
     {
         launch();
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     @Override
     public void start(Stage app_stage) throws IOException
     {
