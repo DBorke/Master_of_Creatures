@@ -9,7 +9,8 @@ package dtu.master_of_creatures.models;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
-import dtu.master_of_creatures.models.GameModel; // we're assuming the game model is instantiated here, until proven otherwise :) 
+import dtu.master_of_creatures.models.GameModel; // we're assuming the game model is instantiated here, until proven otherwise :)
+import dtu.master_of_creatures.utilities.enums.Phases;
 
 /*
  * Board Model Logistics / Groundwork
@@ -47,7 +48,7 @@ public class BoardModel
     public void summonCreature(CreatureModel creature, int lane) 
     {
         // assuming the name of game model object is game
-        if (game.getCurrentPhase != SUMMON) // will change depending on the phase names. "SUMMON" is the planning/sacrifice/playing phase.
+        if (GameModel.game.getCurrentPhase != Phases.SUMMON) // will change depending on the phase names. "SUMMON" is the planning/sacrifice/playing phase.
         {
             throw new IllegalStateException("You can only summon creatures during the summon phase.");
         }
@@ -57,7 +58,7 @@ public class BoardModel
             throw new IllegalArgumentException("Lane must be 0, 1, or 2.");
         }
 
-        List<CreatureModel> currentPlayerLanes = game.getCurrentTurn == 1 ? player1Lanes : player2Lanes; // assuming the name of the game model object is game
+        List<CreatureModel> currentPlayerLanes = GameModel.game.getCurrentTurn == 1 ? player1Lanes : player2Lanes; // assuming the name of the game model object is game
 
         if (currentPlayerLanes.get(lane) != null) 
         {
@@ -73,7 +74,7 @@ public class BoardModel
     {
         return String.format(
                 "BoardModel{player1Lanes=%s, player2Lanes=%s}",
-                player1Lanes, player2Lanes, player1Health
+                player1Lanes, player2Lanes
         );
     }
 }
