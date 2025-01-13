@@ -11,5 +11,10 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
+      <Button fx:id="sound_button" focusTraversable="false" layoutX="1800.0" layoutY="40.0" mnemonicParsing="false" onAction="#muteSound" text="Sound On">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

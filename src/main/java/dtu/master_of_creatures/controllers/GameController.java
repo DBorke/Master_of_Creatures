@@ -11,9 +11,15 @@ import java.io.IOException;
 
 // JavaFX libraries
 import javafx.fxml.Initializable;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 
 public class GameController extends SceneController implements Initializable
 {
+    // JavaFX
+    @FXML
+    private Button sound_button;
+
     // Game data
     private final GameModel game_model;
 
@@ -34,5 +40,12 @@ public class GameController extends SceneController implements Initializable
         game_model.setGameState(GameStates.GAME_QUIT);
 
         goToMenuScene();
+    }
+
+    public void muteSound()
+    {
+        super.muteSound();
+
+        sound_button.setText(getSoundUnmuted() ? "Sound On" : "Sound Off");
     }
 }

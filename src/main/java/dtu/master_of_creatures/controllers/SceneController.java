@@ -4,9 +4,11 @@ package dtu.master_of_creatures.controllers;
 import dtu.master_of_creatures.MasterOfCreaturesApp;
 import dtu.master_of_creatures.models.GameModel;
 import dtu.master_of_creatures.utilities.enums.GameStates;
+import dtu.master_of_creatures.utilities.enums.SoundLabels;
 import dtu.master_of_creatures.utilities.Constants;
 
 // Java libraries
+import java.util.HashMap;
 import java.util.Objects;
 import java.awt.GraphicsDevice;
 import java.io.IOException;
@@ -17,6 +19,8 @@ import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.transform.Scale;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 public abstract class SceneController
 {
@@ -30,6 +34,10 @@ public abstract class SceneController
 
     // Game data
     public static GameModel game_model;
+
+    // Sound data
+    private static boolean sound_unmuted = true;
+    private static HashMap<SoundLabels, MediaPlayer> sound_players;
 
     public SceneController()
     {
@@ -82,6 +90,61 @@ public abstract class SceneController
         app_scene.getRoot().setStyle("-fx-background-color: transparent;"); // make scene background invisible
     }
 
+    public void playSoundEffect(SoundLabels sound_label, double volume)
+    {
+        if(sound_players == null)
+        {
+            sound_players = new HashMap<>();
+
+            createSoundPlayers();
+        }
+
+        if(sound_unmuted)
+        {
+            MediaPlayer sound_player = sound_players.get(sound_label);
+
+            sound_player.setVolume(volume);
+            sound_player.play();
+        }
+    }
+
+    private void createSoundPlayers()
+    {
+        SoundLabels[] sounds = SoundLabels.values();
+
+        for(SoundLabels sound_label : sounds)
+        {
+            sound_players.put(sound_label, new MediaPlayer(new Media(String.valueOf(MasterOfCreaturesApp.class.getResource("media/sounds/" + sound_label.name().toLowerCase() + ".mp3")))));
+        }
+    }
+
+    public void stopSoundEffect(SoundLabels sound_label)
+    {
+        MediaPlayer sound_player = sound_players.get(sound_label);
+
+        if(!sound_player.isMute())
+        {
+            sound_player.stop();
+        }
+    }
+
+    public void muteSound()
+    {
+        sound_unmuted = !sound_unmuted;
+
+        if(sound_players != null) // make sure sounds are available
+        {
+            // Stop all active sound effects
+            for(MediaPlayer sound_player : sound_players.values())
+            {
+                if(!sound_player.isMute())
+                {
+                    sound_player.setMute(true);
+                }
+            }
+        }
+    }
+
     /////////////////////////
     // setters and getters //
     /////////////////////////
@@ -116,5 +179,10 @@ public abstract class SceneController
     public GameModel getGameModel()
     {
         return game_model;
+    }
+
+    public boolean getSoundUnmuted()
+    {
+        return sound_unmuted;
     }
 }
