@@ -20,5 +20,11 @@ module dtu.master_of_creatures
 
     // Class allowances
     opens dtu.master_of_creatures to javafx.fxml;
+    opens dtu.master_of_creatures.controllers to javafx.fxml;
+    opens dtu.master_of_creatures.scenes to javafx.fxml;
     exports dtu.master_of_creatures;
+    exports dtu.master_of_creatures.controllers;
+    exports dtu.master_of_creatures.models;
+    exports dtu.master_of_creatures.utilities;
+    exports dtu.master_of_creatures.utilities.enums;
 }
