@@ -1,7 +1,7 @@
 package dtu.master_of_creatures.models;
 
 // Project libraries
-import dtu.master_of_creatures.utilities.enums.CreatureTypes;
+import dtu.master_of_creatures.utilities.enums.CardTypes;
 import dtu.master_of_creatures.utilities.Constants;
 
 // Java libraries
@@ -11,40 +11,74 @@ import java.util.Random;
 
 public class PlayerModel
 {
+    private final boolean is_host_player;
     private final String player_name;
     private int health_points;
     private int blood_points;
-    private final List<CreatureModel> starting_deck;
-    private final List<CreatureModel> current_deck;
-    private final List<CreatureModel> creatures_in_hand;
-    private final CreatureModel[] creatures_in_fields;
+    private final List<CardModel> starting_deck;
+    private List<CardModel> current_deck;
+    private final List<CardModel> cards_in_hand;
+    private CardModel[] cards_in_fields;
+    private int cards_remaining;
+    private int turn_damage_done;
+    private int round_damage_done;
+    private int match_damage_done;
 
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public PlayerModel(String player_name, List<CreatureTypes> creatures_chosen)
+    public PlayerModel(boolean is_host_player, String player_name, List<CardTypes> cards_chosen)
     {
+        // Set up player stats
+        this.is_host_player = is_host_player;
         this.player_name = player_name;
-        this.health_points = Constants.getStartingPlayerHp();
+        this.health_points = Constants.getStartingHealthPoints();
         this.blood_points = Constants.getStartingBloodPoints();
+        turn_damage_done = 0;
+        round_damage_done = 0;
+        match_damage_done = 0;
+
+        // Set up card related variables
         starting_deck = new ArrayList<>();
         current_deck = new ArrayList<>();
-        creatures_in_hand = new ArrayList<>();
-        creatures_in_fields = new CreatureModel[3];
+        cards_in_hand = new ArrayList<>();
+        cards_in_fields = new CardModel[3];
 
-        createDecks(creatures_chosen);
+        createDecks(cards_chosen);
         createHand();
+
+        cards_remaining = Constants.getStartingCardsTotal();
     }
 
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    private void createDecks(List<CreatureTypes> creatures_chosen)
+    public void resetPlayerForNextRound()
     {
-        for(CreatureTypes creature_chosen : creatures_chosen)
+        // Reset player stats
+        health_points = Constants.getStartingHealthPoints();
+        blood_points = Constants.getStartingBloodPoints();
+        round_damage_done = 0;
+
+        // Reset card related variables
+        current_deck = new ArrayList<>(starting_deck);
+        cards_in_hand.clear();
+        cards_in_fields = new CardModel[3];
+
+        createHand();
+
+        cards_remaining = Constants.getStartingCardsTotal();
+    }
+
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
+     */
+    private void createDecks(List<CardTypes> cards_chosen)
+    {
+        for(CardTypes card_chosen : cards_chosen)
         {
-            starting_deck.add(new CreatureModel(creature_chosen));
-            current_deck.add(new CreatureModel(creature_chosen));
+            starting_deck.add(new CardModel(card_chosen));
+            current_deck.add(new CardModel(card_chosen));
         }
     }
 
@@ -54,14 +88,14 @@ public class PlayerModel
     private void createHand()
     {
         Random randomizer = new Random();
-        int creature_index;
+        int card_index;
 
-        while(creatures_in_hand.size() != Constants.getStartingHandSize())
+        while(cards_in_hand.size() != Constants.getStartingHandSize())
         {
-            creature_index = randomizer.nextInt(0, Constants.getStartingDeckSize());
+            card_index = randomizer.nextInt(0, Constants.getStartingDeckSize());
 
-            creatures_in_hand.add(current_deck.get(creature_index));
-            current_deck.remove(creature_index);
+            cards_in_hand.add(current_deck.get(card_index));
+            current_deck.remove(card_index);
         }
     }
 
@@ -72,10 +106,10 @@ public class PlayerModel
     {
         Random randomizer = new Random();
 
-        int creature_index = randomizer.nextInt(0, Constants.getStartingDeckSize());
+        int card_index = randomizer.nextInt(0, Constants.getStartingDeckSize());
 
-        creatures_in_hand.add(current_deck.get(creature_index));
-        current_deck.remove(creature_index);
+        cards_in_hand.add(current_deck.get(card_index));
+        current_deck.remove(card_index);
     }
 
     /**
@@ -97,52 +131,96 @@ public class PlayerModel
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public void addToDeck(CreatureTypes creature_to_add, boolean start_deck)
+    public void addToDeck(CardTypes card_to_add, boolean to_starting_deck)
     {
-        if(start_deck)
+        if(to_starting_deck)
         {
-            starting_deck.add(new CreatureModel(creature_to_add));
+            starting_deck.add(new CardModel(card_to_add));
         }
         else
         {
-           current_deck.add(new CreatureModel(creature_to_add));
+           current_deck.add(new CardModel(card_to_add));
         }
     }
 
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public void removeFromDeck(CreatureModel creature_to_remove, boolean start_deck)
+    public void removeFromDeck(CardModel card_to_remove, boolean from_starting_deck)
     {
-        if(start_deck)
+        if(from_starting_deck)
         {
-            starting_deck.remove(creature_to_remove);
+            starting_deck.remove(card_to_remove);
         }
         else
         {
-            current_deck.remove(creature_to_remove);
+            current_deck.remove(card_to_remove);
         }
+
+        cards_remaining--;
     }
 
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public void addToHand(CreatureTypes creature_to_add)
+    public void addToHand(CardTypes card_to_add)
     {
-        creatures_in_hand.add(new CreatureModel(creature_to_add));
+        cards_in_hand.add(new CardModel(card_to_add));
     }
 
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public void removeFromHand(CreatureModel creature_to_remove)
+    public void removeFromHand(CardModel card_to_remove)
     {
-        creatures_in_hand.remove(creature_to_remove);
+        cards_in_hand.remove(card_to_remove);
+    }
+
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
+     */
+    public void placeCardInField(CardModel card_to_place, int field_position)
+    {
+        cards_in_fields[field_position] = card_to_place;
+    }
+
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
+     */
+    public void removeCardFromField(int field_position)
+    {
+        cards_in_fields[field_position] = null;
+    }
+
+    /**
+     * @author Danny (s224774)
+     */
+    public void increaseDamageDone(int damage_done)
+    {
+        turn_damage_done += damage_done;
+        round_damage_done += damage_done;
+        match_damage_done += damage_done;
+    }
+
+    /**
+     * @author Danny (s224774)
+     */
+    public void resetTurnDamageDone()
+    {
+        turn_damage_done = 0;
     }
 
     /////////////////////////
     // setters and getters //
     /////////////////////////
+
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
+    public boolean getIsHostPlayer()
+    {
+        return is_host_player;
+    }
 
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
@@ -171,7 +249,7 @@ public class PlayerModel
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public List<CreatureModel> getStartingDeck()
+    public List<CardModel> getStartingDeck()
     {
         return starting_deck;
     }
@@ -179,7 +257,7 @@ public class PlayerModel
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public List<CreatureModel> getCurrentDeck()
+    public List<CardModel> getCurrentDeck()
     {
         return current_deck;
     }
@@ -187,16 +265,48 @@ public class PlayerModel
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public List<CreatureModel> getCreaturesInHand()
+    public List<CardModel> getCardsInHand()
     {
-        return creatures_in_hand;
+        return cards_in_hand;
     }
 
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public CreatureModel[] getCreaturesInFields()
+    public CardModel[] getCardsInFields()
     {
-        return creatures_in_fields;
+        return cards_in_fields;
+    }
+
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
+     */
+    public int getCardsRemaining()
+    {
+        return cards_remaining;
+    }
+
+    /**
+     * @author Danny (s224774)
+     */
+    public int getTurnDamageDone()
+    {
+        return turn_damage_done;
+    }
+
+    /**
+     * @author Danny (s224774)
+     */
+    public int getRoundDamageDone()
+    {
+        return round_damage_done;
+    }
+
+    /**
+     * @author Danny (s224774)
+     */
+    public int getMatchDamageDone()
+    {
+        return match_damage_done;
     }
 }
