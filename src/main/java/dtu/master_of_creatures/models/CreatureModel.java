@@ -11,35 +11,18 @@ public class CreatureModel
 {
     // Fields
     private final CreatureTypes creature_type;
-    private int health;
-    private int attack;
-    private int cost;
+    private final int health;
+    private final int attack;
+    private final int cost;
 
     // Constructor
-    public CreatureModel(CreatureTypes creature_type) { // Set up the specific creature
-        this.creature_type = creature_type;
-
-        switch(creature_type) { // Set the health of the creature
-            case RABBIT, WOLF-> this.health = 2;
-            case DRAGON -> this.health = 10;
-            default -> throw new IllegalArgumentException("Invalid creature type");
-        }
-
-        switch (creature_type) { // Set the attack of the creature
-            case RABBIT -> this.attack = 0;
-            case WOLF -> this.attack = 5;
-            case DRAGON -> this.attack = 10;
-            default -> throw new IllegalArgumentException("Invalid creature type");
-        }
-
-        switch (creature_type) { // Set the cost of the creature
-            case RABBIT -> this.cost = 0;
-            case WOLF -> this.cost = 2;
-            case DRAGON -> this.cost = 4;
-            default-> throw new IllegalArgumentException("Invalid creature type");
-        }
-
+    public CreatureModel(CreatureTypes creatureType) {
+        this.creature_type = creatureType;
+        this.health = creatureType.getHealth();
+        this.attack = creatureType.getAttack();
+        this.cost = creatureType.getCost();
     }
+
 
     // Getters and Setters
     public CreatureTypes getCreatureType() {
@@ -50,25 +33,18 @@ public class CreatureModel
         return health;
     }
 
-    public void setHealth(int health) {
-        this.health = health;
-    }
 
     public int getAttack() {
         return attack;
     }
 
-    public void setAttack(int attack) {
-        this.attack = attack;
-    }
+
 
     public int getCost() {
         return cost;
     }
 
-    public void setCost(int cost) {
-        this.cost = cost;
-    }
+
 
     @Override
     public String toString() {
