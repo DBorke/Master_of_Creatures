@@ -49,7 +49,7 @@ public class PlayerModel
         createDecks(cards_chosen);
         createHand(deck_size, hand_size);
 
-        cards_remaining = Constants.getStartingCardsTotal();
+        cards_remaining = deck_size;
     }
 
     /**
@@ -58,8 +58,8 @@ public class PlayerModel
     public void resetPlayerForNextRound()
     {
         // Reset player stats
-        health_points = Constants.getStartingHealthPoints();
-        blood_points = Constants.getStartingBloodPoints();
+        health_points = Constants.getDefaultHealthPoints();
+        blood_points = Constants.getDefaultBloodPoints();
         round_damage_done = 0;
 
         // Reset card related variables
@@ -69,7 +69,7 @@ public class PlayerModel
 
         createHand(starting_deck.size(), starting_hand_size);
 
-        cards_remaining = Constants.getStartingCardsTotal();
+        cards_remaining = starting_deck.size() + starting_hand_size;
     }
 
     /**
@@ -108,7 +108,7 @@ public class PlayerModel
     {
         Random randomizer = new Random();
 
-        int card_index = randomizer.nextInt(0, Constants.getStartingDeckSize());
+        int card_index = randomizer.nextInt(0, Constants.getDefaultDeckSize());
 
         cards_in_hand.add(current_deck.get(card_index));
         current_deck.remove(card_index);
@@ -158,14 +158,12 @@ public class PlayerModel
         {
             current_deck.remove(card_to_remove);
         }
-
-        cards_remaining--;
     }
 
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public void addToHand(CardTypes card_to_add)
+    public void addToHand(CardTypes card_to_add, boolean from_deck)
     {
         cards_in_hand.add(new CardModel(card_to_add));
     }
@@ -192,6 +190,22 @@ public class PlayerModel
     public void removeCardFromField(int field_position)
     {
         cards_in_fields[field_position] = null;
+    }
+
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
+    public void updateCardsRemaining()
+    {
+        cards_remaining = current_deck.size() + cards_in_hand.size();
+
+        for(int card_index = 0; card_index < cards_in_fields.length; card_index++)
+        {
+            if(cards_in_fields[0] != null)
+            {
+                cards_remaining++;
+            }
+        }
     }
 
     /**

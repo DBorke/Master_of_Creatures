@@ -56,12 +56,18 @@ public class GameModel implements ActionListener
         players[1].resetPlayerForNextRound();
     }
 
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
     public void initializeGame(int round_wins_needed, int turn_time_limit)
     {
         this.round_wins_needed = round_wins_needed;
         this.turn_time_limit = turn_time_limit;
     }
 
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
     public void initializePlayer(String player_name, int health_points, int blood_points, int deck_size, int hand_size, List<CardTypes> cards_chosen, boolean is_host)
     {
         players[is_host ? 0 : 1] = new PlayerModel(player_name, health_points, blood_points, deck_size, hand_size, cards_chosen);
@@ -85,7 +91,8 @@ public class GameModel implements ActionListener
     {
         turn_time = 0;
 
-        nextPlayer();
+        current_player = players[0];
+        // nextPlayer(); // needs player 2
         current_player.resetTurnDamageDone();
 
         phase_type = PhaseTypes.PLAYING_PHASE;
@@ -134,7 +141,10 @@ public class GameModel implements ActionListener
 
         performPostTurnAttacks();
 
-        checkRoundMatchOver();
+        players[0].updateCardsRemaining();
+        //players[1].updateCardsRemaining();
+
+        //checkRoundMatchOver();
 
         if(game_state != GameStates.GAME_HALFTIME && game_state != GameStates.GAME_OVER)
         {
@@ -222,6 +232,11 @@ public class GameModel implements ActionListener
         turn_time++;
         round_time++;
         match_time++;
+
+        if(turn_time == turn_time_limit)
+        {
+            endTurn();
+        }
     }
 
     /////////////////////////
@@ -277,12 +292,25 @@ public class GameModel implements ActionListener
         return players;
     }
 
-    public PlayerModel getCurrentPlayer() {return current_player;}
+    /**
+     * @author Maria (s195685)
+     */
+    public PlayerModel getCurrentPlayer()
+    {
+        return current_player;
+    }
+
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
+    public int getRoundWinsNeeded()
+    {
+        return round_wins_needed;
+    }
 
     /**
      * @author Danny (s224774)
      */
-
     public PlayerModel getRoundWinningPlayer()
     {
         return round_winning_player;

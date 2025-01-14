@@ -84,7 +84,7 @@ public class HostPregameController extends SceneController implements Initializa
     }
 
     /**
-     * @author Danny (s224774)
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
     public void startGame() throws IOException
     {

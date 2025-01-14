@@ -60,6 +60,9 @@ public class JoinPregameController extends SceneController implements Initializa
         player_2_name.setText("Player 2");
     }
 
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
     public void ready()
     {
         List<CardTypes> temp_list = new ArrayList<>();
@@ -71,6 +74,9 @@ public class JoinPregameController extends SceneController implements Initializa
         ready_up.setDisable(true);
     }
 
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
     public void unready()
     {
         ready_up.setDisable(false);
