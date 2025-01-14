@@ -7,6 +7,7 @@ import dtu.master_of_creatures.utilities.Constants;
 // Java libraries
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 public class PlayerModel
@@ -17,15 +18,15 @@ public class PlayerModel
     private final List<CardModel> starting_deck;
     private List<CardModel> current_deck;
     private final List<CardModel> cards_in_hand;
-    private final int starting_hand_size;
     private CardModel[] cards_in_fields;
     private int cards_remaining;
     private int turn_damage_done;
     private int round_damage_done;
     private int match_damage_done;
+    private final HashMap<String, Integer> backup_values;
 
     /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
     public PlayerModel(String player_name, int health_points, int blood_points, int deck_size, int hand_size, List<CardTypes> cards_chosen)
     {
@@ -40,26 +41,30 @@ public class PlayerModel
         // Set up card related variables
         starting_deck = new ArrayList<>();
         current_deck = new ArrayList<>();
-
         cards_in_hand = new ArrayList<>();
-        starting_hand_size = hand_size;
-
         cards_in_fields = new CardModel[3];
 
         createDecks(cards_chosen);
-        createHand(deck_size, hand_size);
+        createHand();
 
         cards_remaining = deck_size;
+
+        // Make backup of starting values (match settings)
+        backup_values = new HashMap<>();
+
+        backup_values.put("health points", health_points);
+        backup_values.put("blood point", blood_points);
+        backup_values.put("hand size", hand_size);
     }
 
     /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
     public void resetPlayerForNextRound()
     {
         // Reset player stats
-        health_points = Constants.getDefaultHealthPoints();
-        blood_points = Constants.getDefaultBloodPoints();
+        health_points = backup_values.get("health points");
+        blood_points = backup_values.get("blood points");
         round_damage_done = 0;
 
         // Reset card related variables
@@ -67,9 +72,9 @@ public class PlayerModel
         cards_in_hand.clear();
         cards_in_fields = new CardModel[3];
 
-        createHand(starting_deck.size(), starting_hand_size);
+        createHand();
 
-        cards_remaining = starting_deck.size() + starting_hand_size;
+        cards_remaining = starting_deck.size() + backup_values.get("hand size");
     }
 
     /**
@@ -85,16 +90,16 @@ public class PlayerModel
     }
 
     /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
-    private void createHand(int deck_size, int hand_size)
+    private void createHand()
     {
         Random randomizer = new Random();
         int card_index;
 
         while(cards_in_hand.size() != 1) // should be hand_size
         {
-            card_index = randomizer.nextInt(0, 1); // should be deck_size
+            card_index = randomizer.nextInt(0, 1); // should be current deck size
 
             cards_in_hand.add(current_deck.get(card_index));
             current_deck.remove(card_index);
