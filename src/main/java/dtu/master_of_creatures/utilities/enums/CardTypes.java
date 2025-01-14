@@ -1,6 +1,6 @@
 package dtu.master_of_creatures.utilities.enums;
 
-public enum CreatureTypes
+public enum CardTypes
 {   RABBIT(2, 0, 0),
     WOLF(1, 1, 1), // Health, Attack, Cost
     DRAGON(10, 10, 4);
@@ -20,7 +20,7 @@ public enum CreatureTypes
     private final int cost;
 
     // Enum constructor
-    CreatureTypes(int health, int attack, int cost) {
+    CardTypes(int health, int attack, int cost) {
         this.health = health;
         this.attack = attack;
         this.cost = cost;
