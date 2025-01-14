@@ -6,6 +6,7 @@ public enum GameStates
     GAME_SETUP,
     GAME_ACTIVE,
     GAME_PAUSED,
+    GAME_HALFTIME,
     GAME_OVER,
     GAME_QUIT
 }
