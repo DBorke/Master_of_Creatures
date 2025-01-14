@@ -258,14 +258,18 @@ public class GameModel implements ActionListener
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
+
     public PlayerModel[] getPlayers()
     {
         return players;
     }
 
+    public PlayerModel getCurrentPlayer() {return current_player;}
+
     /**
      * @author Danny (s224774)
      */
+
     public PlayerModel getRoundWinningPlayer()
     {
         return round_winning_player;
