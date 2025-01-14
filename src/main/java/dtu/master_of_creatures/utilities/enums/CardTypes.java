@@ -1,6 +1,6 @@
 package dtu.master_of_creatures.utilities.enums;
 
-public enum CreatureTypes
+public enum CardTypes
 {
     WOLF
 }

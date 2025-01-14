@@ -2,7 +2,7 @@ package dtu.master_of_creatures.models;
 
 // Project libraries
 import dtu.master_of_creatures.controllers.GameController;
-import dtu.master_of_creatures.utilities.enums.CreatureTypes;
+import dtu.master_of_creatures.utilities.enums.CardTypes;
 import dtu.master_of_creatures.utilities.enums.GameStates;
 
 // Java libraries
@@ -104,7 +104,7 @@ public class GameModel implements ActionListener
         // code for sacrificing cards (called through GameController)
     }
 
-    public void gambleWithChosenCards(List<CreatureTypes> cards_gambled_with)
+    public void gambleWithChosenCards(List<CardTypes> cards_gambled_with)
     {
         // code for gambling with cards (called through GameController)
     }
@@ -132,9 +132,9 @@ public class GameModel implements ActionListener
     /**
      * @author Danny (s224774)
      */
-    public void addRewardCards(PlayerModel player, List<CreatureTypes> cards_chosen)
+    public void addRewardCards(PlayerModel player, List<CardTypes> cards_chosen)
     {
-        for(CreatureTypes card_chosen : cards_chosen)
+        for(CardTypes card_chosen : cards_chosen)
         {
             player.addToDeck(card_chosen, false); // to starting deck?
         }
