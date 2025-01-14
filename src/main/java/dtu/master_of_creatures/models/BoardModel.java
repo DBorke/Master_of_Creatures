@@ -6,11 +6,12 @@ package dtu.master_of_creatures.models;
 /*
  * Imports for javascript
  */
+import dtu.master_of_creatures.utilities.enums.PhaseTypes;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
-import dtu.master_of_creatures.models.GameModel; // we're assuming the game model is instantiated here, until proven otherwise :)
-import dtu.master_of_creatures.utilities.enums.Phases;
+
 
 /*
  * Board Model Logistics / Groundwork
@@ -22,33 +23,36 @@ public class BoardModel
      */
     
     // Fields
-    private List<CreatureModel> player1Lanes;
-    private List<CreatureModel> player2Lanes;
+    private final List<CardModel> player1Lanes;
+    private final List<CardModel> player2Lanes;
+    // Game data
+    private final GameModel game_model;
 
     // Constructor
-    public BoardModel(int initialHealth) 
+    public BoardModel(GameModel game_model)
     {
         this.player1Lanes = new ArrayList<>(Arrays.asList(null, null, null));
         this.player2Lanes = new ArrayList<>(Arrays.asList(null, null, null));
+        this.game_model = game_model;
     }
 
     // Getters
-    public List<CreatureModel> getPlayer1Lanes() 
+    public List<CardModel> getPlayer1Lanes()
     {
         return player1Lanes;
     }
 
-    public List<CreatureModel> getPlayer2Lanes() 
+    public List<CardModel> getPlayer2Lanes()
     {
         return player2Lanes;
     }
 
 
     // Summon a creature in a specific lane
-    public void summonCreature(CreatureModel creature, int lane) 
+    public void summonCreature(CardModel creature, int lane)
     {
         // assuming the name of game model object is game
-        if (GameModel.game.getCurrentPhase != Phases.SUMMON) // will change depending on the phase names. "SUMMON" is the planning/sacrifice/playing phase.
+        if (game_model.getPhaseType() != PhaseTypes.PLAYING_PHASE) // will change depending on the phase names. "SUMMON" is the planning/sacrifice/playing phase.
         {
             throw new IllegalStateException("You can only summon creatures during the summon phase.");
         }
@@ -58,7 +62,7 @@ public class BoardModel
             throw new IllegalArgumentException("Lane must be 0, 1, or 2.");
         }
 
-        List<CreatureModel> currentPlayerLanes = GameModel.game.getCurrentTurn == 1 ? player1Lanes : player2Lanes; // assuming the name of the game model object is game
+        List<CardModel> currentPlayerLanes = game_model.getCurrentPlayer().getIsHostPlayer() ? player1Lanes : player2Lanes;
 
         if (currentPlayerLanes.get(lane) != null) 
         {
