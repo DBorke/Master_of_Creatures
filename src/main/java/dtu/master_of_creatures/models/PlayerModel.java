@@ -17,6 +17,7 @@ public class PlayerModel
     private final List<CardModel> starting_deck;
     private List<CardModel> current_deck;
     private final List<CardModel> cards_in_hand;
+    private final int starting_hand_size;
     private CardModel[] cards_in_fields;
     private int cards_remaining;
     private int turn_damage_done;
@@ -26,12 +27,12 @@ public class PlayerModel
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public PlayerModel(String player_name, List<CardTypes> cards_chosen)
+    public PlayerModel(String player_name, int health_points, int blood_points, int deck_size, int hand_size, List<CardTypes> cards_chosen)
     {
         // Set up player stats
         this.player_name = player_name;
-        this.health_points = Constants.getStartingHealthPoints();
-        this.blood_points = Constants.getStartingBloodPoints();
+        this.health_points = health_points;
+        this.blood_points = blood_points;
         turn_damage_done = 0;
         round_damage_done = 0;
         match_damage_done = 0;
@@ -39,11 +40,14 @@ public class PlayerModel
         // Set up card related variables
         starting_deck = new ArrayList<>();
         current_deck = new ArrayList<>();
+
         cards_in_hand = new ArrayList<>();
+        starting_hand_size = hand_size;
+
         cards_in_fields = new CardModel[3];
 
         createDecks(cards_chosen);
-        createHand();
+        createHand(deck_size, hand_size);
 
         cards_remaining = Constants.getStartingCardsTotal();
     }
@@ -63,7 +67,7 @@ public class PlayerModel
         cards_in_hand.clear();
         cards_in_fields = new CardModel[3];
 
-        createHand();
+        createHand(starting_deck.size(), starting_hand_size);
 
         cards_remaining = Constants.getStartingCardsTotal();
     }
@@ -83,14 +87,14 @@ public class PlayerModel
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    private void createHand()
+    private void createHand(int deck_size, int hand_size)
     {
         Random randomizer = new Random();
         int card_index;
 
-        while(cards_in_hand.size() != Constants.getStartingHandSize())
+        while(cards_in_hand.size() != 1) // should be hand_size
         {
-            card_index = randomizer.nextInt(0, Constants.getStartingDeckSize());
+            card_index = randomizer.nextInt(0, 1); // should be deck_size
 
             cards_in_hand.add(current_deck.get(card_index));
             current_deck.remove(card_index);

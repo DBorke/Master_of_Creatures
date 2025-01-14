@@ -20,10 +20,12 @@ public class GameModel implements ActionListener
     private BoardModel board_model;
     private final PlayerModel[] players;
     private PlayerModel current_player;
+    private int round_wins_needed;
     private final int[] round_wins;
     private PlayerModel round_winning_player;
     private PlayerModel match_winning_player;
     private final Timer game_timer;
+    private int turn_time_limit;
     private int turn_time; // reset each turn
     private int round_time; // reset each round
     private int match_time; // reset each match
@@ -43,20 +45,6 @@ public class GameModel implements ActionListener
         game_timer = new Timer(1000, this); // delay is in milliseconds
     }
 
-    public void createPlayer(String player_name, List<CardTypes> cards_chosen, boolean is_host)
-    {
-        /*
-        if(is_host)
-        {
-            players[0] = new PlayerModel(player_name, cards_chosen);
-        }
-        else
-        {
-            players[1] = new PlayerModel(player_name, cards_chosen);
-        }
-        */
-    }
-
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
@@ -68,6 +56,17 @@ public class GameModel implements ActionListener
         players[1].resetPlayerForNextRound();
     }
 
+    public void initializeGame(int round_wins_needed, int turn_time_limit)
+    {
+        this.round_wins_needed = round_wins_needed;
+        this.turn_time_limit = turn_time_limit;
+    }
+
+    public void initializePlayer(String player_name, int health_points, int blood_points, int deck_size, int hand_size, List<CardTypes> cards_chosen, boolean is_host)
+    {
+        players[is_host ? 0 : 1] = new PlayerModel(player_name, health_points, blood_points, deck_size, hand_size, cards_chosen);
+    }
+
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
@@ -75,7 +74,7 @@ public class GameModel implements ActionListener
     {
         round_time = 0;
 
-        // startTurn(); needs to be commented until controller logic is implemented
+        startTurn();
         game_timer.start();
     }
 
@@ -101,7 +100,7 @@ public class GameModel implements ActionListener
 
         if(current_player == null)
         {
-            current_player = players[randomizer.nextInt(0,2)];
+            current_player = players[randomizer.nextInt(0,1)]; // bound should be 2
         }
         else
         {

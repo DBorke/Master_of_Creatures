@@ -1,11 +1,15 @@
 package dtu.master_of_creatures.controllers;
 
 // Project libraries
+import dtu.master_of_creatures.models.CardModel;
 import dtu.master_of_creatures.models.GameModel;
+import dtu.master_of_creatures.utilities.enums.CardTypes;
 import dtu.master_of_creatures.utilities.enums.GameStates;
 
 // Java libraries
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.io.IOException;
 
@@ -84,7 +88,12 @@ public class HostPregameController extends SceneController implements Initializa
      */
     public void startGame() throws IOException
     {
-        game_model.createPlayer(player_1_name.getText(), null, true);
+        game_model.initializeGame(round_wins.getSelectionModel().getSelectedItem(), Integer.parseInt(turn_time.getSelectionModel().getSelectedItem().substring(0,2)));
+
+        List<CardTypes> temp_list = new ArrayList<>();
+        temp_list.add(CardTypes.WOLF);
+
+        game_model.initializePlayer(player_1_name.getText(), health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), temp_list, true);
 
         goToGameScene();
     }
