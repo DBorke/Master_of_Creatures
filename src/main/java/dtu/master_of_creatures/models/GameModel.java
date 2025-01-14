@@ -2,8 +2,9 @@ package dtu.master_of_creatures.models;
 
 // Project libraries
 import dtu.master_of_creatures.controllers.GameController;
-import dtu.master_of_creatures.utilities.enums.CreatureTypes;
 import dtu.master_of_creatures.utilities.enums.GameStates;
+import dtu.master_of_creatures.utilities.enums.PhaseTypes;
+import dtu.master_of_creatures.utilities.enums.CardTypes;
 
 // Java libraries
 import java.awt.event.ActionListener;
@@ -15,6 +16,7 @@ import java.util.Random;
 public class GameModel implements ActionListener
 {
     private static GameStates game_state;
+    private static PhaseTypes phase_type;
     private BoardModel board_model;
     private final PlayerModel[] players;
     private PlayerModel current_player;
@@ -34,7 +36,7 @@ public class GameModel implements ActionListener
      */
     public GameModel()
     {
-        board_model = new BoardModel();
+        board_model = new BoardModel(this);
         players = new PlayerModel[2];
         round_wins = new int[2];
 
@@ -46,7 +48,7 @@ public class GameModel implements ActionListener
      */
     public void resetGameForNextRound()
     {
-        board_model = new BoardModel();
+        board_model = new BoardModel(this);
 
         players[0].resetPlayerForNextRound();
         players[1].resetPlayerForNextRound();
@@ -71,8 +73,9 @@ public class GameModel implements ActionListener
         turn_time = 0;
 
         nextPlayer();
-
         current_player.resetTurnDamageDone();
+
+        phase_type = PhaseTypes.PLAYING_PHASE;
     }
 
     /**
@@ -104,7 +107,7 @@ public class GameModel implements ActionListener
         // code for sacrificing cards (called through GameController)
     }
 
-    public void gambleWithChosenCards(List<CreatureTypes> cards_gambled_with)
+    public void gambleWithChosenCards(List<CardTypes> cards_gambled_with)
     {
         // code for gambling with cards (called through GameController)
     }
@@ -114,6 +117,8 @@ public class GameModel implements ActionListener
      */
     public void endTurn()
     {
+        phase_type = PhaseTypes.ATTACK_PHASE;
+
         performPostTurnAttacks();
 
         checkRoundMatchOver();
@@ -132,9 +137,9 @@ public class GameModel implements ActionListener
     /**
      * @author Danny (s224774)
      */
-    public void addRewardCards(PlayerModel player, List<CreatureTypes> cards_chosen)
+    public void addRewardCards(PlayerModel player, List<CardTypes> cards_chosen)
     {
-        for(CreatureTypes card_chosen : cards_chosen)
+        for(CardTypes card_chosen : cards_chosen)
         {
             player.addToDeck(card_chosen, false); // to starting deck?
         }
@@ -232,6 +237,14 @@ public class GameModel implements ActionListener
     public GameStates getGameState()
     {
         return game_state;
+    }
+
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
+    public PhaseTypes getPhaseType()
+    {
+        return phase_type;
     }
 
     /**

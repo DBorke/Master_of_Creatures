@@ -1,7 +1,7 @@
 package dtu.master_of_creatures.models;
 
 // Project libraries
-import dtu.master_of_creatures.utilities.enums.CreatureTypes;
+import dtu.master_of_creatures.utilities.enums.CardTypes;
 import dtu.master_of_creatures.utilities.Constants;
 
 // Java libraries
@@ -11,13 +11,14 @@ import java.util.Random;
 
 public class PlayerModel
 {
+    private final boolean is_host_player;
     private final String player_name;
     private int health_points;
     private int blood_points;
-    private final List<CreatureModel> starting_deck;
-    private List<CreatureModel> current_deck;
-    private final List<CreatureModel> cards_in_hand;
-    private CreatureModel[] cards_in_fields;
+    private final List<CardModel> starting_deck;
+    private List<CardModel> current_deck;
+    private final List<CardModel> cards_in_hand;
+    private CardModel[] cards_in_fields;
     private int cards_remaining;
     private int turn_damage_done;
     private int round_damage_done;
@@ -26,9 +27,10 @@ public class PlayerModel
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public PlayerModel(String player_name, List<CreatureTypes> cards_chosen)
+    public PlayerModel(boolean is_host_player, String player_name, List<CardTypes> cards_chosen)
     {
         // Set up player stats
+        this.is_host_player = is_host_player;
         this.player_name = player_name;
         this.health_points = Constants.getStartingHealthPoints();
         this.blood_points = Constants.getStartingBloodPoints();
@@ -40,7 +42,7 @@ public class PlayerModel
         starting_deck = new ArrayList<>();
         current_deck = new ArrayList<>();
         cards_in_hand = new ArrayList<>();
-        cards_in_fields = new CreatureModel[3];
+        cards_in_fields = new CardModel[3];
 
         createDecks(cards_chosen);
         createHand();
@@ -61,7 +63,7 @@ public class PlayerModel
         // Reset card related variables
         current_deck = new ArrayList<>(starting_deck);
         cards_in_hand.clear();
-        cards_in_fields = new CreatureModel[3];
+        cards_in_fields = new CardModel[3];
 
         createHand();
 
@@ -71,12 +73,12 @@ public class PlayerModel
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    private void createDecks(List<CreatureTypes> cards_chosen)
+    private void createDecks(List<CardTypes> cards_chosen)
     {
-        for(CreatureTypes card_chosen : cards_chosen)
+        for(CardTypes card_chosen : cards_chosen)
         {
-            starting_deck.add(new CreatureModel(card_chosen));
-            current_deck.add(new CreatureModel(card_chosen));
+            starting_deck.add(new CardModel(card_chosen));
+            current_deck.add(new CardModel(card_chosen));
         }
     }
 
@@ -129,22 +131,22 @@ public class PlayerModel
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public void addToDeck(CreatureTypes card_to_add, boolean to_starting_deck)
+    public void addToDeck(CardTypes card_to_add, boolean to_starting_deck)
     {
         if(to_starting_deck)
         {
-            starting_deck.add(new CreatureModel(card_to_add));
+            starting_deck.add(new CardModel(card_to_add));
         }
         else
         {
-           current_deck.add(new CreatureModel(card_to_add));
+           current_deck.add(new CardModel(card_to_add));
         }
     }
 
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public void removeFromDeck(CreatureModel card_to_remove, boolean from_starting_deck)
+    public void removeFromDeck(CardModel card_to_remove, boolean from_starting_deck)
     {
         if(from_starting_deck)
         {
@@ -161,15 +163,15 @@ public class PlayerModel
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public void addToHand(CreatureTypes card_to_add)
+    public void addToHand(CardTypes card_to_add)
     {
-        cards_in_hand.add(new CreatureModel(card_to_add));
+        cards_in_hand.add(new CardModel(card_to_add));
     }
 
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public void removeFromHand(CreatureModel card_to_remove)
+    public void removeFromHand(CardModel card_to_remove)
     {
         cards_in_hand.remove(card_to_remove);
     }
@@ -177,7 +179,7 @@ public class PlayerModel
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public void placeCardInField(CreatureModel card_to_place, int field_position)
+    public void placeCardInField(CardModel card_to_place, int field_position)
     {
         cards_in_fields[field_position] = card_to_place;
     }
@@ -213,6 +215,14 @@ public class PlayerModel
     /////////////////////////
 
     /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
+    public boolean getIsHostPlayer()
+    {
+        return is_host_player;
+    }
+
+    /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
     public String getPlayerName()
@@ -239,7 +249,7 @@ public class PlayerModel
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public List<CreatureModel> getStartingDeck()
+    public List<CardModel> getStartingDeck()
     {
         return starting_deck;
     }
@@ -247,7 +257,7 @@ public class PlayerModel
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public List<CreatureModel> getCurrentDeck()
+    public List<CardModel> getCurrentDeck()
     {
         return current_deck;
     }
@@ -255,7 +265,7 @@ public class PlayerModel
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public List<CreatureModel> getCardsInHand()
+    public List<CardModel> getCardsInHand()
     {
         return cards_in_hand;
     }
@@ -263,7 +273,7 @@ public class PlayerModel
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public CreatureModel[] getCardsInFields()
+    public CardModel[] getCardsInFields()
     {
         return cards_in_fields;
     }
