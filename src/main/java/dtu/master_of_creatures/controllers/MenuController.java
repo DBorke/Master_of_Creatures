@@ -44,7 +44,12 @@ public class MenuController extends SceneController implements Initializable
      */
     public void newGame() throws IOException
     {
-        goToPregameScene();
+        goToHostPregameScene();
+    }
+
+    public void joinGame() throws IOException
+    {
+        goToJoinPregameScene();
     }
 
     /**

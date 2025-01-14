@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dtu.master_of_creatures.controllers.JoinPregameController">
+   <children>
+      <Label layoutX="705.0" layoutY="100.0" text="Match Settings">
+         <font>
+            <Font name="System Bold" size="72.0" />
+         </font>
+      </Label>
+      <Button focusTraversable="false" layoutX="50.0" layoutY="40.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#quitSetup" prefHeight="40.0" prefWidth="60.0" text="Back">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="sound_button" focusTraversable="false" layoutX="1800.0" layoutY="40.0" mnemonicParsing="false" onAction="#muteSound" text="Sound On">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
+      <Button layoutX="900.0" layoutY="800.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Ready">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Button>
+      <TextField fx:id="player_2_name" alignment="CENTER" layoutX="880.0" layoutY="302.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="160.0" promptText="player name">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </TextField>
+      <Label layoutX="705.0" layoutY="367.0" text="Round wins">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="860.0" layoutY="367.0" text="Turn time">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="996.0" layoutY="367.0" text="Health points">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="1144.0" layoutY="367.0" text="Blood points">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="861.0" layoutY="455.0" text="Deck size">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="1007.0" layoutY="455.0" text="Hand size">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="round_wins_info" layoutX="734.0" layoutY="397.0" text="3">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+      <Label fx:id="turn_time_info" layoutX="876.0" layoutY="397.0" text="60">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+      <Label fx:id="health_points_info" layoutX="1031.0" layoutY="397.0" text="5">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+      <Label fx:id="blood_points_info" layoutX="1177.0" layoutY="397.0" text="0">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+      <Label fx:id="deck_size_info" layoutX="876.0" layoutY="487.0" text="15">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+      <Label fx:id="hand_size_info" layoutX="1033.0" layoutY="487.0" text="4">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

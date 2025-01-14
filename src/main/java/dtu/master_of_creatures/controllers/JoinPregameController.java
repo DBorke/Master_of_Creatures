@@ -13,10 +13,13 @@ import java.io.IOException;
 import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 
-public class PregameController extends SceneController implements Initializable
+public class JoinPregameController extends SceneController implements Initializable
 {
     // JavaFX
+    @FXML
+    private TextField player_2_name;
     @FXML
     private Button sound_button;
 
@@ -26,7 +29,7 @@ public class PregameController extends SceneController implements Initializable
     /**
      * @author Danny (s224774)
      */
-    public PregameController()
+    public JoinPregameController()
     {
         game_model = getGameModel();
     }
@@ -36,14 +39,22 @@ public class PregameController extends SceneController implements Initializable
     public void initialize(URL url, ResourceBundle resource_bundle)
     {
         game_model.setGameState(GameStates.GAME_SETUP);
+
+        // Add GUI option elements
+        defaultMatchSettings();
     }
 
     /**
-     * @author Danny (s224774)
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
-    public void startGame() throws IOException
+    public void defaultMatchSettings()
     {
-        goToGameScene();
+        player_2_name.setText("Player 2");
+    }
+
+    public void ready() throws IOException
+    {
+
     }
 
     /**

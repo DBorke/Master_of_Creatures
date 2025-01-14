@@ -58,12 +58,14 @@ public abstract class SceneController
         setAppScene("MenuScene");
     }
 
-    /**
-     * @author Danny (s224774)
-     */
-    public void goToPregameScene() throws IOException
+    public void goToHostPregameScene() throws IOException
     {
-        setAppScene("PregameScene");
+        setAppScene("HostPregameScene");
+    }
+
+    public void goToJoinPregameScene() throws IOException
+    {
+        setAppScene("JoinPregameScene");
     }
 
     /**
