@@ -2,6 +2,7 @@ package dtu.master_of_creatures.controllers;
 
 // Project libraries
 import dtu.master_of_creatures.models.GameModel;
+import dtu.master_of_creatures.models.PlayerModel;
 import dtu.master_of_creatures.utilities.enums.GameStates;
 
 // Java libraries
@@ -22,6 +23,7 @@ public class GameController extends SceneController implements Initializable
 
     // Game data
     private final GameModel game_model;
+    private PlayerModel current_player;
 
     /**
      * @author Danny (s224774)
@@ -37,8 +39,20 @@ public class GameController extends SceneController implements Initializable
      */
     public void initialize(URL url, ResourceBundle resource_bundle)
     {
-        game_model.initializeGame();
+        game_model.startNewRound();
         game_model.setGameState(GameStates.GAME_ACTIVE);
+    }
+
+    public void playerSkippedTurn()
+    {
+        game_model.endTurn();
+    }
+
+    public void playerConceded()
+    {
+        game_model.setGameState(GameStates.GAME_HALFTIME);
+
+        game_model.endTurn();
     }
 
     /**
@@ -59,5 +73,14 @@ public class GameController extends SceneController implements Initializable
         super.muteSound();
 
         sound_button.setText(getSoundUnmuted() ? "Sound On" : "Sound Off");
+    }
+
+    /////////////////////////
+    // setters and getters //
+    /////////////////////////
+
+    public void setCurrentPlayer(PlayerModel current_player)
+    {
+        this.current_player = current_player;
     }
 }
