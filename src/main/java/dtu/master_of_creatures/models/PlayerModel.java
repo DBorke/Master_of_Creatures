@@ -11,6 +11,7 @@ import java.util.Random;
 
 public class PlayerModel
 {
+    private final boolean is_host_player;
     private final String player_name;
     private int health_points;
     private int blood_points;
@@ -26,9 +27,10 @@ public class PlayerModel
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public PlayerModel(String player_name, List<CardTypes> cards_chosen)
+    public PlayerModel(boolean is_host_player, String player_name, List<CardTypes> cards_chosen)
     {
         // Set up player stats
+        this.is_host_player = is_host_player;
         this.player_name = player_name;
         this.health_points = Constants.getStartingHealthPoints();
         this.blood_points = Constants.getStartingBloodPoints();
@@ -211,6 +213,14 @@ public class PlayerModel
     /////////////////////////
     // setters and getters //
     /////////////////////////
+
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
+    public boolean getIsHostPlayer()
+    {
+        return is_host_player;
+    }
 
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
