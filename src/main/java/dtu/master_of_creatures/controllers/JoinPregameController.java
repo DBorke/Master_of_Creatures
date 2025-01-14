@@ -12,6 +12,7 @@ import java.io.IOException;
 // JavaFX libraries
 import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
@@ -20,6 +21,10 @@ public class JoinPregameController extends SceneController implements Initializa
     // JavaFX
     @FXML
     private TextField player_2_name;
+    @FXML
+    private AnchorPane join_pregame_pane;
+    @FXML
+    private Button ready_up;
     @FXML
     private Button sound_button;
 
@@ -52,9 +57,17 @@ public class JoinPregameController extends SceneController implements Initializa
         player_2_name.setText("Player 2");
     }
 
-    public void ready() throws IOException
+    public void ready()
     {
+        game_model.createPlayer(player_2_name.getText(), null, false);
 
+        join_pregame_pane.requestFocus();
+        ready_up.setDisable(true);
+    }
+
+    public void unready()
+    {
+        ready_up.setDisable(false);
     }
 
     /**

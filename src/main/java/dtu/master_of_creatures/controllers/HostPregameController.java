@@ -84,6 +84,8 @@ public class HostPregameController extends SceneController implements Initializa
      */
     public void startGame() throws IOException
     {
+        game_model.createPlayer(player_1_name.getText(), null, true);
+
         goToGameScene();
     }
 

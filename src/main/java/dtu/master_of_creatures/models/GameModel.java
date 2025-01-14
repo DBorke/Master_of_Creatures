@@ -43,6 +43,20 @@ public class GameModel implements ActionListener
         game_timer = new Timer(1000, this); // delay is in milliseconds
     }
 
+    public void createPlayer(String player_name, List<CardTypes> cards_chosen, boolean is_host)
+    {
+        /*
+        if(is_host)
+        {
+            players[0] = new PlayerModel(player_name, cards_chosen);
+        }
+        else
+        {
+            players[1] = new PlayerModel(player_name, cards_chosen);
+        }
+        */
+    }
+
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */

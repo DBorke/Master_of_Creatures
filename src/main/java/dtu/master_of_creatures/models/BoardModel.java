@@ -62,7 +62,7 @@ public class BoardModel
             throw new IllegalArgumentException("Lane must be 0, 1, or 2.");
         }
 
-        List<CardModel> currentPlayerLanes = game_model.getCurrentPlayer().getIsHostPlayer() ? player1Lanes : player2Lanes;
+        List<CardModel> currentPlayerLanes = game_model.getCurrentPlayer() == game_model.getPlayers()[0] ? player1Lanes : player2Lanes;
 
         if (currentPlayerLanes.get(lane) != null) 
         {
