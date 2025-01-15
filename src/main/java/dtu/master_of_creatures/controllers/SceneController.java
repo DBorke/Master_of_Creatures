@@ -81,8 +81,8 @@ public abstract class SceneController
      */
     public void gatherScreenInformation(GraphicsDevice screen)
     {
-        int default_resolution_x = Constants.getDefaultResolutionX();
-        int default_resolution_y = Constants.getDefaultResolutionY();
+        int default_resolution_x = Constants.getAppResolutionX();
+        int default_resolution_y = Constants.getAppResolutionY();
         int current_resolution_x = screen.getDisplayMode().getWidth();
         int current_resolution_y = screen.getDisplayMode().getHeight();
 

@@ -15,13 +15,22 @@ import java.io.IOException;
 // JavaFX libraries
 import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
+import javafx.scene.layout.GridPane;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-
 public class HostPregameController extends SceneController implements Initializable
 {
     // JavaFX
+    @FXML
+    private GridPane deck_grid;
+    private int deck_grid_rows;
+    private int deck_grid_columns;
+    private int deck_grid_cells;
+    private double grid_cell_size;
+    private Button[] deck_grid_nodes;
+    private final List<CardTypes> player_1_cards;
+    private final List<CardTypes> player_2_cards; // temp
     @FXML
     private TextField player_1_name;
     @FXML
@@ -43,13 +52,18 @@ public class HostPregameController extends SceneController implements Initializa
 
     // Game data
     private final GameModel game_model;
+    private final CardTypes[] cards_available;
 
     /**
-     * @author Danny (s224774)
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
     public HostPregameController()
     {
+        player_1_cards = new ArrayList<>();
+        player_2_cards = new ArrayList<>();
+
         game_model = getGameModel();
+        cards_available = CardTypes.values();
     }
 
     /**
@@ -59,6 +73,13 @@ public class HostPregameController extends SceneController implements Initializa
     {
         game_model.setGameState(GameStates.GAME_SETUP);
 
+        // Gather information about the deck grid
+        deck_grid_rows = deck_grid.getRowCount();
+        deck_grid_columns = deck_grid.getColumnCount();
+        deck_grid_cells = deck_grid_rows * deck_grid_columns;
+        grid_cell_size =  deck_grid.getPrefWidth(); // assuming symmetry
+        deck_grid_nodes = new Button[deck_grid_cells];
+
         // Add and set up GUI option elements
         round_wins.getItems().addAll(1, 2, 3, 4, 5); // match setting options
         turn_time.getItems().addAll("30 seconds", "60 seconds", "90 seconds", "120 seconds", "Unlimited");
@@ -66,8 +87,11 @@ public class HostPregameController extends SceneController implements Initializa
         blood_points.getItems().addAll(0, 1, 2, 3);
         deck_size.getItems().addAll(5, 10, 15, 20, 25);
         hand_size.getItems().addAll(3, 4, 5, 6, 7, 8, 9, 10);
-
         defaultMatchSettings();
+
+        // Initialize deck grid contents
+        initializeDeckGrid();
+        initializeCardsInDeckGrid();
     }
 
     /**
@@ -76,7 +100,7 @@ public class HostPregameController extends SceneController implements Initializa
     public void defaultMatchSettings()
     {
         player_1_name.setText("Player 1");
-        player_2_name.setText("Player 2");
+        player_2_name.setText("Player 2"); // temp
 
         round_wins.getSelectionModel().select(2); // indices of the combo-boxes
         turn_time.getSelectionModel().select(1);
@@ -84,6 +108,66 @@ public class HostPregameController extends SceneController implements Initializa
         blood_points.getSelectionModel().select(0);
         deck_size.getSelectionModel().select(2);
         hand_size.getSelectionModel().select(1);
+    }
+
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
+    public void initializeDeckGrid()
+    {
+        for(int row = 0; row < deck_grid_rows; row++)
+        {
+            for (int column = 0; column < deck_grid_columns; column++)
+            {
+                // Node setup
+                Button grid_node = new Button();
+                grid_node.setPrefSize(grid_cell_size, grid_cell_size);
+                grid_node.setFocusTraversable(false);
+
+                grid_node.setOnMouseClicked(event -> playerClickedOnDeckGrid(grid_node)); // needed to detect player deck choices
+
+                // Grid setup
+                deck_grid.add(grid_node, column, row);
+                deck_grid_nodes[convertRowColumnToGridIndex(row, column)] = grid_node;
+            }
+        }
+    }
+
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
+    public void initializeCardsInDeckGrid()
+    {
+        for(int deck_grid_index = 0; deck_grid_index < deck_grid_cells; deck_grid_index++)
+        {
+            if(deck_grid_index > (cards_available.length - 1))
+            {
+                break;
+            }
+
+            deck_grid_nodes[deck_grid_index].setText(cards_available[deck_grid_index].name());
+        }
+    }
+
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
+    public void playerClickedOnDeckGrid(Button grid_node)
+    {
+        int grid_node_row = GridPane.getRowIndex(grid_node);
+        int grid_node_column = GridPane.getColumnIndex(grid_node);
+        int index = convertRowColumnToGridIndex(grid_node_row, grid_node_column);
+
+        player_1_cards.add(cards_available[index]);
+        player_2_cards.add(cards_available[index]); // temp
+    }
+
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
+    public int convertRowColumnToGridIndex(int row_to_convert, int column_to_convert)
+    {
+        return (row_to_convert * 4) + column_to_convert;
     }
 
     /**
@@ -114,12 +198,8 @@ public class HostPregameController extends SceneController implements Initializa
 
         game_model.initializeGame(round_wins.getSelectionModel().getSelectedItem(), turn_time);
 
-        // Set up player models
-        List<CardTypes> temp_list = new ArrayList<>();
-        temp_list.add(CardTypes.WOLF);
-
-        game_model.initializePlayer(player_1_name.getText(), health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), temp_list, true);
-        game_model.initializePlayer(player_2_name.getText(), health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), temp_list, false);
+        game_model.initializePlayer(player_1_name.getText(), health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), player_1_cards, true);
+        game_model.initializePlayer(player_2_name.getText(), health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), player_2_cards, false); // temp
 
         // Models ready, go to playing scene
         goToGameScene();

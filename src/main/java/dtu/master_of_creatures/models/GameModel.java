@@ -145,8 +145,6 @@ public class GameModel implements ActionListener
 
         checkRoundMatchOver();
 
-        System.out.println();
-
         if(game_state != GameStates.GAME_HALFTIME && game_state != GameStates.GAME_OVER)
         {
             startTurn();

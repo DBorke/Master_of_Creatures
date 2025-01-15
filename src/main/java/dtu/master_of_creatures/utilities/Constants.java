@@ -7,8 +7,9 @@ Constants related to match settings are chosen in the HostPregameController, to 
 public abstract class Constants
 {
     private static final String GAME_VERSION = "v. 0.12";
-    private static final int DEFAULT_RESOLUTION_X = 1920;
-    private static final int DEFAULT_RESOLUTION_Y = 1080;
+    private static final int APP_RESOLUTION_X = 1920;
+    private static final int APP_RESOLUTION_Y = 1080;
+
 
     /////////////////////////
     //////// getters ////////
@@ -25,16 +26,16 @@ public abstract class Constants
     /**
      * @author Danny (s224774)
      */
-    public static int getDefaultResolutionX()
+    public static int getAppResolutionX()
     {
-        return DEFAULT_RESOLUTION_X;
+        return APP_RESOLUTION_X;
     }
 
     /**
      * @author Danny (s224774)
      */
-    public static int getDefaultResolutionY()
+    public static int getAppResolutionY()
     {
-        return DEFAULT_RESOLUTION_Y;
+        return APP_RESOLUTION_Y;
     }
 }

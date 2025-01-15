@@ -22,7 +22,7 @@ public class PlayerModel
     private int turn_damage_done;
     private int round_damage_done;
     private int match_damage_done;
-    private final HashMap<String, Integer> backup_values;
+    private final HashMap<String, Integer> backup_values; // to store match settings
 
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
@@ -37,6 +37,13 @@ public class PlayerModel
         round_damage_done = 0;
         match_damage_done = 0;
 
+        // Make backup of match settings
+        backup_values = new HashMap<>();
+
+        backup_values.put("health points", health_points);
+        backup_values.put("blood point", blood_points);
+        backup_values.put("hand size", hand_size);
+
         // Set up card related variables
         starting_deck = new ArrayList<>();
         current_deck = new ArrayList<>();
@@ -47,13 +54,6 @@ public class PlayerModel
         createHand();
 
         cards_remaining = deck_size;
-
-        // Make backup of starting values (match settings)
-        backup_values = new HashMap<>();
-
-        backup_values.put("health points", health_points);
-        backup_values.put("blood point", blood_points);
-        backup_values.put("hand size", hand_size);
     }
 
     /**
@@ -96,9 +96,9 @@ public class PlayerModel
         Random randomizer = new Random();
         int card_index;
 
-        while(cards_in_hand.size() != 1) // should be hand_size
+        while(cards_in_hand.size() != backup_values.get("hand size") && !current_deck.isEmpty())
         {
-            card_index = randomizer.nextInt(0, 1); // should be current deck size
+            card_index = randomizer.nextInt(0, current_deck.size());
 
             cards_in_hand.add(current_deck.get(card_index));
             current_deck.remove(card_index);
