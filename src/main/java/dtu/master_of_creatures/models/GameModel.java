@@ -20,13 +20,15 @@ public class GameModel implements ActionListener
     private BoardModel board_model;
     private final PlayerModel[] players;
     private PlayerModel current_player;
+    private int round_wins_needed;
     private final int[] round_wins;
     private PlayerModel round_winning_player;
     private PlayerModel match_winning_player;
     private final Timer game_timer;
+    private int turn_time_limit;
     private int turn_time; // reset each turn
     private int round_time; // reset each round
-    private int match_time; // reset each match
+    private int match_time; // reset each match (happens automatically)
 
     // App
     private GameController game_controller;
@@ -55,13 +57,30 @@ public class GameModel implements ActionListener
     }
 
     /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
+    public void initializeGame(int round_wins_needed, int turn_time_limit)
+    {
+        this.round_wins_needed = round_wins_needed;
+        this.turn_time_limit = turn_time_limit;
+    }
+
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
+    public void initializePlayer(String player_name, int health_points, int blood_points, int deck_size, int hand_size, List<CardTypes> cards_chosen, boolean is_host)
+    {
+        players[is_host ? 0 : 1] = new PlayerModel(player_name, health_points, blood_points, deck_size, hand_size, cards_chosen);
+    }
+
+    /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
     public void startNewRound()
     {
         round_time = 0;
 
-        // startTurn(); needs to be commented until controller logic is implemented
+        startTurn();
         game_timer.start();
     }
 
@@ -121,6 +140,9 @@ public class GameModel implements ActionListener
 
         performPostTurnAttacks();
 
+        players[0].updateCardsRemaining();
+        players[1].updateCardsRemaining();
+
         checkRoundMatchOver();
 
         if(game_state != GameStates.GAME_HALFTIME && game_state != GameStates.GAME_OVER)
@@ -162,7 +184,7 @@ public class GameModel implements ActionListener
             {
                 game_state = GameStates.GAME_HALFTIME;
             }
-            else // a player has gotten 3 wins
+            else // a player has gotten the required amount of wins
             {
                 decideMatchWinner();
 
@@ -201,7 +223,7 @@ public class GameModel implements ActionListener
     }
 
     /**
-     * @author Danny (s224774)
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
     public void actionPerformed(ActionEvent actionEvent) // gets called every second
     {
@@ -209,6 +231,12 @@ public class GameModel implements ActionListener
         turn_time++;
         round_time++;
         match_time++;
+
+        // End turns when turn time limit is reached
+        if(turn_time == turn_time_limit)
+        {
+            endTurn();
+        }
     }
 
     /////////////////////////
@@ -264,12 +292,25 @@ public class GameModel implements ActionListener
         return players;
     }
 
-    public PlayerModel getCurrentPlayer() {return current_player;}
+    /**
+     * @author Maria (s195685)
+     */
+    public PlayerModel getCurrentPlayer()
+    {
+        return current_player;
+    }
+
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
+    public int getRoundWinsNeeded()
+    {
+        return round_wins_needed;
+    }
 
     /**
      * @author Danny (s224774)
      */
-
     public PlayerModel getRoundWinningPlayer()
     {
         return round_winning_player;

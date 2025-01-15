@@ -4,7 +4,7 @@
 package dtu.master_of_creatures.models;
 
 /*
- * Imports for javascript
+ * Imports for java
  */
 import dtu.master_of_creatures.utilities.enums.PhaseTypes;
 
@@ -12,23 +12,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 
-
 /*
  * Board Model Logistics / Groundwork
  */
 public class BoardModel
 {
-    /**
-     * @author Romel (s215212) Maria (s195685)
-     */
-    
     // Fields
     private final List<CardModel> player1Lanes;
     private final List<CardModel> player2Lanes;
     // Game data
     private final GameModel game_model;
 
-    // Constructor
+    /**
+     * Constructor
+     * @author Maria (s195685)
+     */
     public BoardModel(GameModel game_model)
     {
         this.player1Lanes = new ArrayList<>(Arrays.asList(null, null, null));
@@ -36,19 +34,30 @@ public class BoardModel
         this.game_model = game_model;
     }
 
-    // Getters
+    /////////////////////////
+    //////// getters ////////
+    /////////////////////////
+
+    /**
+     * @author Maria (s195685)
+     */
     public List<CardModel> getPlayer1Lanes()
     {
         return player1Lanes;
     }
 
+    /**
+     * @author Maria (s195685)
+     */
     public List<CardModel> getPlayer2Lanes()
     {
         return player2Lanes;
     }
 
-
-    // Summon a creature in a specific lane
+    /**
+     * Summon a creature in a specific lane
+     * @author Maria (s195685), Danny (s224774)
+     */
     public void summonCreature(CardModel creature, int lane)
     {
         // assuming the name of game model object is game
@@ -62,7 +71,7 @@ public class BoardModel
             throw new IllegalArgumentException("Lane must be 0, 1, or 2.");
         }
 
-        List<CardModel> currentPlayerLanes = game_model.getCurrentPlayer().getIsHostPlayer() ? player1Lanes : player2Lanes;
+        List<CardModel> currentPlayerLanes = game_model.getCurrentPlayer() == game_model.getPlayers()[0] ? player1Lanes : player2Lanes;
 
         if (currentPlayerLanes.get(lane) != null) 
         {
@@ -72,7 +81,9 @@ public class BoardModel
         currentPlayerLanes.set(lane, creature);
     }
 
-
+    /**
+     * @author Maria (s195685), Romel (s215212)
+     */
     @Override
     public String toString() 
     {

@@ -43,11 +43,17 @@ public class GameController extends SceneController implements Initializable
         game_model.setGameState(GameStates.GAME_ACTIVE);
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public void playerSkippedTurn()
     {
         game_model.endTurn();
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public void playerConceded()
     {
         game_model.setGameState(GameStates.GAME_HALFTIME);
@@ -76,9 +82,12 @@ public class GameController extends SceneController implements Initializable
     }
 
     /////////////////////////
-    // setters and getters //
+    //////// setters ////////
     /////////////////////////
 
+    /**
+     * @author Danny (s224774)
+     */
     public void setCurrentPlayer(PlayerModel current_player)
     {
         this.current_player = current_player;

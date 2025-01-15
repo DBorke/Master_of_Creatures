@@ -22,5 +22,10 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
+      <Button layoutX="900.0" layoutY="350.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#joinGame" prefHeight="50.0" prefWidth="100.0" text="Join Game">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>
