@@ -91,8 +91,7 @@ public class GameModel implements ActionListener
     {
         turn_time = 0;
 
-        current_player = players[0];
-        // nextPlayer(); // needs player 2 information
+        nextPlayer();
         current_player.resetTurnDamageDone();
 
         phase_type = PhaseTypes.PLAYING_PHASE;
@@ -107,7 +106,7 @@ public class GameModel implements ActionListener
 
         if(current_player == null)
         {
-            current_player = players[randomizer.nextInt(0,1)]; // bound should be 2
+            current_player = players[randomizer.nextInt(0,2)];
         }
         else
         {
@@ -142,9 +141,11 @@ public class GameModel implements ActionListener
         performPostTurnAttacks();
 
         players[0].updateCardsRemaining();
-        //players[1].updateCardsRemaining(); // needs player 2 information
+        players[1].updateCardsRemaining();
 
-        //checkRoundMatchOver(); // needs player 2 information
+        checkRoundMatchOver();
+
+        System.out.println();
 
         if(game_state != GameStates.GAME_HALFTIME && game_state != GameStates.GAME_OVER)
         {

@@ -25,6 +25,8 @@ public class HostPregameController extends SceneController implements Initializa
     @FXML
     private TextField player_1_name;
     @FXML
+    private TextField player_2_name; // temp
+    @FXML
     private ComboBox<Integer> round_wins;
     @FXML
     private ComboBox<String> turn_time;
@@ -74,6 +76,7 @@ public class HostPregameController extends SceneController implements Initializa
     public void defaultMatchSettings()
     {
         player_1_name.setText("Player 1");
+        player_2_name.setText("Player 2");
 
         round_wins.getSelectionModel().select(2); // indices of the combo-boxes
         turn_time.getSelectionModel().select(1);
@@ -116,6 +119,7 @@ public class HostPregameController extends SceneController implements Initializa
         temp_list.add(CardTypes.WOLF);
 
         game_model.initializePlayer(player_1_name.getText(), health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), temp_list, true);
+        game_model.initializePlayer(player_2_name.getText(), health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), temp_list, false);
 
         // Models ready, go to playing scene
         goToGameScene();

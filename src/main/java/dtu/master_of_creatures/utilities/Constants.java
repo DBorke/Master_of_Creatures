@@ -1,7 +1,7 @@
 package dtu.master_of_creatures.utilities;
 
 /*
-Constants related to match settings options are chosen in the HostPregameController, to keep the code simple.
+Constants related to match settings are chosen in the HostPregameController, to keep the code simple.
 */
 
 public abstract class Constants
