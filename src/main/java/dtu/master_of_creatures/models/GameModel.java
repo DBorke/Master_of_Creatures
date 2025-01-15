@@ -89,7 +89,7 @@ public class GameModel implements ActionListener
      */
     public void startTurn()
     {
-        turn_time = 0;
+        turn_time = turn_time_limit;
 
         nextPlayer();
         current_player.resetTurnDamageDone();
@@ -222,18 +222,29 @@ public class GameModel implements ActionListener
         match_winning_player = round_wins[0] == 3 ? players[0] : players[1];
     }
 
+    public void playerConceded()
+    {
+        round_winning_player = current_player == players[0] ? players[1] : players[0];
+        game_state = GameStates.GAME_HALFTIME;
+    }
+
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
     public void actionPerformed(ActionEvent actionEvent) // gets called every second
     {
         // Increase time variables
-        turn_time++;
+        turn_time--;
         round_time++;
         match_time++;
 
+        if(game_state != GameStates.GAME_HALFTIME && game_state != GameStates.GAME_OVER)
+        {
+            game_controller.handleTimeUI(turn_time);
+        }
+
         // End turns when turn time limit is reached
-        if(turn_time == turn_time_limit)
+        if(turn_time == 0)
         {
             endTurn();
         }
@@ -323,6 +334,9 @@ public class GameModel implements ActionListener
     {
         return match_winning_player;
     }
+
+
+    public int getTurnTimeLimit() { return turn_time_limit; }
 
     /**
      * @author Danny (s224774)

@@ -14,12 +14,42 @@ import java.io.IOException;
 import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.text.Text;
 
 public class GameController extends SceneController implements Initializable
 {
     // JavaFX
     @FXML
+    private Button end_turn;
+    @FXML
+    private Button concede;
+    @FXML
     private Button sound_button;
+    @FXML
+    private Text turn_time;
+    // Player 1
+    @FXML
+    private Text p1_name;
+    @FXML
+    private Text p1_health;
+    @FXML
+    private Text p1_blood_points;
+    @FXML
+    private Text p1_remain_deck;
+    @FXML
+    private Text p1_remain_hand;
+    // Player 2
+    @FXML
+    private Text p2_name;
+    @FXML
+    private Text p2_health;
+    @FXML
+    private Text p2_blood_points;
+    @FXML
+    private Text p2_remain_deck;
+    @FXML
+    private Text p2_remain_hand;
+
 
     // Game data
     private final GameModel game_model;
@@ -41,12 +71,18 @@ public class GameController extends SceneController implements Initializable
     {
         game_model.startNewRound();
         game_model.setGameState(GameStates.GAME_ACTIVE);
+        turn_time.setText("Turn time left: " + game_model.getTurnTimeLimit());
+    }
+
+    public void handleTimeUI(int time)
+    {
+        turn_time.setText("Turn time left: " + time);
     }
 
     /**
      * @author Danny (s224774)
      */
-    public void playerSkippedTurn()
+    public void playerEndedTurn()
     {
         game_model.endTurn();
     }
@@ -54,11 +90,9 @@ public class GameController extends SceneController implements Initializable
     /**
      * @author Danny (s224774)
      */
-    public void playerConceded()
+    public void playerHasConceded()
     {
-        game_model.setGameState(GameStates.GAME_HALFTIME);
-
-        game_model.endTurn();
+        game_model.playerConceded();
     }
 
     /**
