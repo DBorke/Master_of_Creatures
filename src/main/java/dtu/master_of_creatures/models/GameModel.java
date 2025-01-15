@@ -28,7 +28,7 @@ public class GameModel implements ActionListener
     private int turn_time_limit;
     private int turn_time; // reset each turn
     private int round_time; // reset each round
-    private int match_time; // reset each match
+    private int match_time; // reset each match (happens automatically)
 
     // App
     private GameController game_controller;
@@ -92,7 +92,7 @@ public class GameModel implements ActionListener
         turn_time = 0;
 
         current_player = players[0];
-        // nextPlayer(); // needs player 2
+        // nextPlayer(); // needs player 2 information
         current_player.resetTurnDamageDone();
 
         phase_type = PhaseTypes.PLAYING_PHASE;
@@ -142,9 +142,9 @@ public class GameModel implements ActionListener
         performPostTurnAttacks();
 
         players[0].updateCardsRemaining();
-        //players[1].updateCardsRemaining();
+        //players[1].updateCardsRemaining(); // needs player 2 information
 
-        //checkRoundMatchOver();
+        //checkRoundMatchOver(); // needs player 2 information
 
         if(game_state != GameStates.GAME_HALFTIME && game_state != GameStates.GAME_OVER)
         {
@@ -185,7 +185,7 @@ public class GameModel implements ActionListener
             {
                 game_state = GameStates.GAME_HALFTIME;
             }
-            else // a player has gotten 3 wins
+            else // a player has gotten the required amount of wins
             {
                 decideMatchWinner();
 
@@ -224,7 +224,7 @@ public class GameModel implements ActionListener
     }
 
     /**
-     * @author Danny (s224774)
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
     public void actionPerformed(ActionEvent actionEvent) // gets called every second
     {
@@ -233,6 +233,7 @@ public class GameModel implements ActionListener
         round_time++;
         match_time++;
 
+        // End turns when turn time limit is reached
         if(turn_time == turn_time_limit)
         {
             endTurn();

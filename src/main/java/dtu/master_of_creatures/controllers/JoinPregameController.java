@@ -2,14 +2,14 @@ package dtu.master_of_creatures.controllers;
 
 // Project libraries
 import dtu.master_of_creatures.models.GameModel;
-import dtu.master_of_creatures.utilities.enums.CardTypes;
 import dtu.master_of_creatures.utilities.enums.GameStates;
+import dtu.master_of_creatures.utilities.enums.CardTypes;
 
 // Java libraries
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
+import java.util.List;
+import java.util.ArrayList;
 import java.io.IOException;
 
 // JavaFX libraries
@@ -23,9 +23,9 @@ public class JoinPregameController extends SceneController implements Initializa
 {
     // JavaFX
     @FXML
-    private TextField player_2_name;
-    @FXML
     private AnchorPane join_pregame_pane;
+    @FXML
+    private TextField player_2_name;
     @FXML
     private Button ready_up;
     @FXML
@@ -48,7 +48,6 @@ public class JoinPregameController extends SceneController implements Initializa
     {
         game_model.setGameState(GameStates.GAME_SETUP);
 
-        // Add GUI option elements
         defaultMatchSettings();
     }
 
@@ -68,7 +67,7 @@ public class JoinPregameController extends SceneController implements Initializa
         List<CardTypes> temp_list = new ArrayList<>();
         temp_list.add(CardTypes.WOLF);
 
-        game_model.initializePlayer(player_2_name.getText(), 5, 0, 15, 4, temp_list, false);
+        game_model.initializePlayer(player_2_name.getText(), 5, 0, 15, 4, temp_list, false); // needs information from other opponent's app
 
         join_pregame_pane.requestFocus();
         ready_up.setDisable(true);

@@ -2,7 +2,6 @@ package dtu.master_of_creatures.models;
 
 // Project libraries
 import dtu.master_of_creatures.utilities.enums.CardTypes;
-import dtu.master_of_creatures.utilities.Constants;
 
 // Java libraries
 import java.util.List;
@@ -113,7 +112,7 @@ public class PlayerModel
     {
         Random randomizer = new Random();
 
-        int card_index = randomizer.nextInt(0, Constants.getDefaultDeckSize());
+        int card_index = randomizer.nextInt(0, current_deck.size());
 
         cards_in_hand.add(current_deck.get(card_index));
         current_deck.remove(card_index);

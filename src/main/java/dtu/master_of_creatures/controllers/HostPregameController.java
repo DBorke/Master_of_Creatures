@@ -1,23 +1,22 @@
 package dtu.master_of_creatures.controllers;
 
 // Project libraries
-import dtu.master_of_creatures.models.CardModel;
 import dtu.master_of_creatures.models.GameModel;
-import dtu.master_of_creatures.utilities.enums.CardTypes;
 import dtu.master_of_creatures.utilities.enums.GameStates;
+import dtu.master_of_creatures.utilities.enums.CardTypes;
 
 // Java libraries
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
+import java.util.List;
+import java.util.ArrayList;
 import java.io.IOException;
 
 // JavaFX libraries
 import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
 public class HostPregameController extends SceneController implements Initializable
@@ -50,15 +49,16 @@ public class HostPregameController extends SceneController implements Initializa
     {
         game_model = getGameModel();
     }
+
     /**
-     * @author Danny (s224774)
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
     public void initialize(URL url, ResourceBundle resource_bundle)
     {
         game_model.setGameState(GameStates.GAME_SETUP);
 
         // Add and set up GUI option elements
-        round_wins.getItems().addAll(1, 2, 3, 4, 5);
+        round_wins.getItems().addAll(1, 2, 3, 4, 5); // match setting options
         turn_time.getItems().addAll("30 seconds", "60 seconds", "90 seconds", "120 seconds", "Unlimited");
         health_points.getItems().addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         blood_points.getItems().addAll(0, 1, 2, 3);
@@ -75,7 +75,7 @@ public class HostPregameController extends SceneController implements Initializa
     {
         player_1_name.setText("Player 1");
 
-        round_wins.getSelectionModel().select(2);
+        round_wins.getSelectionModel().select(2); // indices of the combo-boxes
         turn_time.getSelectionModel().select(1);
         health_points.getSelectionModel().select(4);
         blood_points.getSelectionModel().select(0);
@@ -88,13 +88,36 @@ public class HostPregameController extends SceneController implements Initializa
      */
     public void startGame() throws IOException
     {
-        game_model.initializeGame(round_wins.getSelectionModel().getSelectedItem(), Integer.parseInt(turn_time.getSelectionModel().getSelectedItem().substring(0,2)));
+        // Set up game model
+        String turn_time_string = turn_time.getSelectionModel().getSelectedItem();
+        int turn_time = 0;
 
+        if(!turn_time_string.equals("Unlimited"))
+        {
+            for(int char_index = 0; char_index < turn_time_string.length(); char_index++)
+            {
+                if(!Character.isDigit(turn_time_string.charAt(char_index)))
+                {
+                    turn_time = Integer.parseInt(turn_time_string.substring(0, char_index));
+
+                    break;
+                }
+            }
+        }
+        else
+        {
+            turn_time = -1; // infinite
+        }
+
+        game_model.initializeGame(round_wins.getSelectionModel().getSelectedItem(), turn_time);
+
+        // Set up player models
         List<CardTypes> temp_list = new ArrayList<>();
         temp_list.add(CardTypes.WOLF);
 
         game_model.initializePlayer(player_1_name.getText(), health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), temp_list, true);
 
+        // Models ready, go to playing scene
         goToGameScene();
     }
 
