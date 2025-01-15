@@ -20,10 +20,6 @@ public class GameController extends SceneController implements Initializable
 {
     // JavaFX
     @FXML
-    private Button end_turn;
-    @FXML
-    private Button concede;
-    @FXML
     private Button sound_button;
     @FXML
     private Text turn_time;
@@ -77,6 +73,25 @@ public class GameController extends SceneController implements Initializable
     public void handleTimeUI(int time)
     {
         turn_time.setText("Turn time left: " + time);
+    }
+
+    public void handlePlayerInfoUI(PlayerModel[] players)
+    {
+        // names
+        PlayerModel player1 = players[0];
+        PlayerModel player2 = players[1];
+        // player 1
+        p1_name.setText(current_player == player1 ? player1.getPlayerName() + " (current player)" : player1.getPlayerName());
+        p1_health.setText("Health: " + player1.getHealthPoints());
+        p1_blood_points.setText("Blood points: " + player1.getBloodPoints());
+        p1_remain_deck.setText("Remaining in deck: " + player1.getCurrentDeck().size());
+        p1_remain_hand.setText("Remaining in hand: " + player1.getCardsInHand().size());
+        // player 2
+        p2_name.setText(current_player == player2 ? player2.getPlayerName() + " (current player)" : player2.getPlayerName());
+        p2_health.setText("Health: " + player2.getHealthPoints());
+        p2_blood_points.setText("Blood points: " + player2.getBloodPoints());
+        p2_remain_deck.setText("Remaining in deck: " + player2.getCurrentDeck().size());
+        p2_remain_hand.setText("Remaining in hand: " + player2.getCardsInHand().size());
     }
 
     /**

@@ -71,6 +71,7 @@ public class GameModel implements ActionListener
     public void initializePlayer(String player_name, int health_points, int blood_points, int deck_size, int hand_size, List<CardTypes> cards_chosen, boolean is_host)
     {
         players[is_host ? 0 : 1] = new PlayerModel(player_name, health_points, blood_points, deck_size, hand_size, cards_chosen);
+
     }
 
     /**
@@ -82,6 +83,8 @@ public class GameModel implements ActionListener
 
         startTurn();
         game_timer.start();
+        game_controller.handlePlayerInfoUI(players);
+
     }
 
     /**
@@ -95,6 +98,7 @@ public class GameModel implements ActionListener
         current_player.resetTurnDamageDone();
 
         phase_type = PhaseTypes.PLAYING_PHASE;
+        game_controller.handlePlayerInfoUI(players);
     }
 
     /**
@@ -119,16 +123,22 @@ public class GameModel implements ActionListener
     public void playChosenCard()
     {
         // code for playing a card (called through GameController)
+        game_controller.handlePlayerInfoUI(players);
+
     }
 
     public void sacrificeChosenCards()
     {
         // code for sacrificing cards (called through GameController)
+        game_controller.handlePlayerInfoUI(players);
+
     }
 
     public void gambleWithChosenCards(List<CardTypes> cards_gambled_with)
     {
         // code for gambling with cards (called through GameController)
+        game_controller.handlePlayerInfoUI(players);
+
     }
 
     /**
@@ -154,6 +164,8 @@ public class GameModel implements ActionListener
     public void performPostTurnAttacks()
     {
         // code for making viable creatures attack each other and the player after each turn
+        game_controller.handlePlayerInfoUI(players);
+
     }
 
     /**
@@ -165,6 +177,7 @@ public class GameModel implements ActionListener
         {
             player.addToDeck(card_chosen, false); // to starting deck?
         }
+        game_controller.handlePlayerInfoUI(players);
     }
 
     /**
