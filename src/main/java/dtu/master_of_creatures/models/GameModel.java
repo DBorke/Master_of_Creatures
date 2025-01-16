@@ -88,6 +88,7 @@ public class GameModel implements ActionListener
         }
 
         game_controller.handlePlayerInfoUIs(players);
+        game_controller.initializePlayerHand(players);
 
         startTurn();
         game_timer.start();
