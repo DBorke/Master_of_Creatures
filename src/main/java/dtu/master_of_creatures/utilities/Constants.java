@@ -10,7 +10,6 @@ public abstract class Constants
     private static final int APP_RESOLUTION_X = 1920;
     private static final int APP_RESOLUTION_Y = 1080;
 
-
     /////////////////////////
     //////// getters ////////
     /////////////////////////

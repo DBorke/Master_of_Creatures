@@ -14,6 +14,7 @@ import java.io.IOException;
 import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 public class GameController extends SceneController implements Initializable
@@ -23,7 +24,6 @@ public class GameController extends SceneController implements Initializable
     private Button sound_button;
     @FXML
     private Text turn_time;
-    // Player 1
     @FXML
     private Text p1_name;
     @FXML
@@ -34,7 +34,6 @@ public class GameController extends SceneController implements Initializable
     private Text p1_remain_deck;
     @FXML
     private Text p1_remain_hand;
-    // Player 2
     @FXML
     private Text p2_name;
     @FXML
@@ -45,7 +44,6 @@ public class GameController extends SceneController implements Initializable
     private Text p2_remain_deck;
     @FXML
     private Text p2_remain_hand;
-
 
     // Game data
     private final GameModel game_model;
@@ -61,41 +59,62 @@ public class GameController extends SceneController implements Initializable
     }
 
     /**
-     * @author Danny (s224774)
+     * @author Danny (s224774), Maria (s195685), Mathias (s224273), Romel (s215212)
      */
     public void initialize(URL url, ResourceBundle resource_bundle)
     {
+        handleTurnTimeUI(game_model.getTurnTimeLimit());
+
         game_model.startNewRound();
         game_model.setGameState(GameStates.GAME_ACTIVE);
-        turn_time.setText("Turn time left: " + game_model.getTurnTimeLimit());
-    }
-
-    public void handleTimeUI(int time)
-    {
-        turn_time.setText("Turn time left: " + time);
-    }
-
-    public void handlePlayerInfoUI(PlayerModel[] players)
-    {
-        // names
-        PlayerModel player1 = players[0];
-        PlayerModel player2 = players[1];
-        // player 1
-        p1_name.setText(current_player == player1 ? player1.getPlayerName() + " (current player)" : player1.getPlayerName());
-        p1_health.setText("Health: " + player1.getHealthPoints());
-        p1_blood_points.setText("Blood points: " + player1.getBloodPoints());
-        p1_remain_deck.setText("Remaining in deck: " + player1.getCurrentDeck().size());
-        p1_remain_hand.setText("Remaining in hand: " + player1.getCardsInHand().size());
-        // player 2
-        p2_name.setText(current_player == player2 ? player2.getPlayerName() + " (current player)" : player2.getPlayerName());
-        p2_health.setText("Health: " + player2.getHealthPoints());
-        p2_blood_points.setText("Blood points: " + player2.getBloodPoints());
-        p2_remain_deck.setText("Remaining in deck: " + player2.getCurrentDeck().size());
-        p2_remain_hand.setText("Remaining in hand: " + player2.getCardsInHand().size());
     }
 
     /**
-     * @author Danny (s224774)
+     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
+     */
+    public void handleTurnTimeUI(int turn_time_remaining)
+    {
+        turn_time.setText("Turn time left: " + turn_time_remaining);
+
+        // Change text color depending on time left
+        if(turn_time_remaining > 10)
+        {
+            if(turn_time.getFill().equals(Color.RED))
+            {
+                turn_time.setFill(Color.BLACK); // default color
+            }
+        }
+        else // time is running out
+        {
+            turn_time.setFill(Color.RED);
+        }
+    }
+
+    /**
+     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
+     */
+    public void handlePlayerInfoUIs(PlayerModel[] players)
+    {
+        PlayerModel player_1 = players[0];
+        PlayerModel player_2 = players[1];
+
+        // Update UI information for player 1
+        p1_name.setText(current_player == player_1 ? player_1.getPlayerName() + " (current player)" : player_1.getPlayerName());
+        p1_health.setText("Health: " + player_1.getHealthPoints());
+        p1_blood_points.setText("Blood points: " + player_1.getBloodPoints());
+        p1_remain_deck.setText("Remaining in deck: " + player_1.getCurrentDeck().size());
+        p1_remain_hand.setText("Remaining in hand: " + player_1.getCardsInHand().size());
+
+        // Update UI information for player 2 (temp)
+        p2_name.setText(current_player == player_2 ? player_2.getPlayerName() + " (current player)" : player_2.getPlayerName());
+        p2_health.setText("Health: " + player_2.getHealthPoints());
+        p2_blood_points.setText("Blood points: " + player_2.getBloodPoints());
+        p2_remain_deck.setText("Remaining in deck: " + player_2.getCurrentDeck().size());
+        p2_remain_hand.setText("Remaining in hand: " + player_2.getCardsInHand().size());
+    }
+
+    /**
+     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
      */
     public void playerEndedTurn()
     {
@@ -103,11 +122,11 @@ public class GameController extends SceneController implements Initializable
     }
 
     /**
-     * @author Danny (s224774)
+     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
      */
     public void playerHasConceded()
     {
-        game_model.playerConceded();
+        game_model.checkRoundMatchOver(true);
     }
 
     /**

@@ -28,7 +28,7 @@ public class GameModel implements ActionListener
     private int turn_time_limit;
     private int turn_time; // reset each turn
     private int round_time; // reset each round
-    private int match_time; // reset each match (happens automatically)
+    private int match_time; // reset each match (auto)
 
     // App
     private GameController game_controller;
@@ -46,17 +46,6 @@ public class GameModel implements ActionListener
     }
 
     /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
-     */
-    public void resetGameForNextRound()
-    {
-        board_model = new BoardModel(this);
-
-        players[0].resetPlayerForNextRound();
-        players[1].resetPlayerForNextRound();
-    }
-
-    /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
     public void initializeGame(int round_wins_needed, int turn_time_limit)
@@ -71,24 +60,41 @@ public class GameModel implements ActionListener
     public void initializePlayer(String player_name, int health_points, int blood_points, int deck_size, int hand_size, List<CardTypes> cards_chosen, boolean is_host)
     {
         players[is_host ? 0 : 1] = new PlayerModel(player_name, health_points, blood_points, deck_size, hand_size, cards_chosen);
-
     }
 
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public void startNewRound()
+    public void resetGameForNextRound()
     {
+        board_model = new BoardModel(this);
+
+        players[0].resetPlayerForNextRound();
+        players[1].resetPlayerForNextRound(); // temp
+
         round_time = 0;
-
-        startTurn();
-        game_timer.start();
-        game_controller.handlePlayerInfoUI(players);
-
     }
 
     /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
+     * @author Danny (s224774), Maria (s195685), Carl Emil (s224168), Mathias (s224273), Romel (s215212)
+     */
+    public void startNewRound()
+    {
+        if(game_state == GameStates.GAME_HALFTIME)
+        {
+            resetGameForNextRound();
+
+            game_state = GameStates.GAME_ACTIVE;
+        }
+
+        game_controller.handlePlayerInfoUIs(players);
+
+        startTurn();
+        game_timer.start();
+    }
+
+    /**
+     * @author Danny (s224774), Maria (s195685), Carl Emil (s224168), Mathias (s224273), Romel (s215212)
      */
     public void startTurn()
     {
@@ -97,8 +103,9 @@ public class GameModel implements ActionListener
         nextPlayer();
         current_player.resetTurnDamageDone();
 
+        game_controller.handlePlayerInfoUIs(players);
+
         phase_type = PhaseTypes.PLAYING_PHASE;
-        game_controller.handlePlayerInfoUI(players);
     }
 
     /**
@@ -120,25 +127,28 @@ public class GameModel implements ActionListener
         game_controller.setCurrentPlayer(current_player);
     }
 
+    /**
+     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
+     */
     public void playChosenCard()
     {
-        // code for playing a card (called through GameController)
-        game_controller.handlePlayerInfoUI(players);
-
+        game_controller.handlePlayerInfoUIs(players);
     }
 
+    /**
+     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
+     */
     public void sacrificeChosenCards()
     {
-        // code for sacrificing cards (called through GameController)
-        game_controller.handlePlayerInfoUI(players);
-
+        game_controller.handlePlayerInfoUIs(players);
     }
 
+    /**
+     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
+     */
     public void gambleWithChosenCards(List<CardTypes> cards_gambled_with)
     {
-        // code for gambling with cards (called through GameController)
-        game_controller.handlePlayerInfoUI(players);
-
+        game_controller.handlePlayerInfoUIs(players);
     }
 
     /**
@@ -151,25 +161,21 @@ public class GameModel implements ActionListener
         performPostTurnAttacks();
 
         players[0].updateCardsRemaining();
-        players[1].updateCardsRemaining();
+        players[1].updateCardsRemaining(); // temp
 
-        checkRoundMatchOver();
-
-        if(game_state != GameStates.GAME_HALFTIME && game_state != GameStates.GAME_OVER)
-        {
-            startTurn();
-        }
-    }
-
-    public void performPostTurnAttacks()
-    {
-        // code for making viable creatures attack each other and the player after each turn
-        game_controller.handlePlayerInfoUI(players);
-
+        checkRoundMatchOver(false);
     }
 
     /**
-     * @author Danny (s224774)
+     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
+     */
+    public void performPostTurnAttacks()
+    {
+        game_controller.handlePlayerInfoUIs(players);
+    }
+
+    /**
+     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
      */
     public void addRewardCards(PlayerModel player, List<CardTypes> cards_chosen)
     {
@@ -177,34 +183,44 @@ public class GameModel implements ActionListener
         {
             player.addToDeck(card_chosen, false); // to starting deck?
         }
-        game_controller.handlePlayerInfoUI(players);
+
+        game_controller.handlePlayerInfoUIs(players);
     }
 
     /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
-    public void checkRoundMatchOver()
+    public void checkRoundMatchOver(boolean player_conceded_round)
     {
         PlayerModel opposing_player = current_player == players[0] ? players[1] : players[0];
 
-        if(opposing_player.getHealthPoints() <= 0 || (current_player.getCardsRemaining() == 0 && opposing_player.getCardsRemaining() == 0))
+        if(!player_conceded_round)
         {
-            decideRoundWinner(opposing_player);
-
-            round_wins[round_winning_player == players[0] ? 0 : 1]++;
-
-            if(round_wins[0] != 3 && round_wins[1] != 3)
+            if(opposing_player.getHealthPoints() <= 0 || (current_player.getCardsRemaining() == 0 && opposing_player.getCardsRemaining() == 0))
             {
-                game_state = GameStates.GAME_HALFTIME;
-            }
-            else // a player has gotten the required amount of wins
-            {
-                decideMatchWinner();
+                decideRoundWinner(opposing_player);
 
-                game_state = GameStates.GAME_OVER;
+                round_wins[round_winning_player == players[0] ? 0 : 1]++;
 
-                game_timer.stop();
+                if(round_wins[0] != 3 && round_wins[1] != 3)
+                {
+                    game_state = GameStates.GAME_HALFTIME;
+                }
+                else // a player has gotten the required amount of wins
+                {
+                    decideMatchWinner();
+
+                    game_state = GameStates.GAME_OVER;
+
+                    game_timer.stop();
+                }
             }
+        }
+        else // current player has conceded the round
+        {
+            round_winning_player = opposing_player;
+
+            game_state = GameStates.GAME_HALFTIME;
         }
     }
 
@@ -235,31 +251,31 @@ public class GameModel implements ActionListener
         match_winning_player = round_wins[0] == 3 ? players[0] : players[1];
     }
 
-    public void playerConceded()
-    {
-        round_winning_player = current_player == players[0] ? players[1] : players[0];
-        game_state = GameStates.GAME_HALFTIME;
-    }
-
     /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
+     * @author Danny (s224774), Maria (s195685), Carl Emil (s224168), Mathias (s224273), Romel (s215212)
      */
     public void actionPerformed(ActionEvent actionEvent) // gets called every second
     {
-        // Increase time variables
-        turn_time--;
-        round_time++;
-        match_time++;
-
         if(game_state != GameStates.GAME_HALFTIME && game_state != GameStates.GAME_OVER)
         {
-            game_controller.handleTimeUI(turn_time);
-        }
+            turn_time--; // time remaining, therefore subtraction
+            round_time++;
+            match_time++;
 
-        // End turns when turn time limit is reached
-        if(turn_time == 0)
-        {
-            endTurn();
+            if(turn_time >= 0)
+            {
+                game_controller.handleTurnTimeUI(turn_time);
+            }
+            else if(turn_time == -2) // slight delay to attack
+            {
+                endTurn();
+            }
+            else if(turn_time == -5) // delay to give time between turns
+            {
+                startTurn();
+
+                game_controller.handleTurnTimeUI(turn_time);
+            }
         }
     }
 
@@ -317,7 +333,7 @@ public class GameModel implements ActionListener
     }
 
     /**
-     * @author Maria (s195685)
+     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
      */
     public PlayerModel getCurrentPlayer()
     {
@@ -348,8 +364,13 @@ public class GameModel implements ActionListener
         return match_winning_player;
     }
 
-
-    public int getTurnTimeLimit() { return turn_time_limit; }
+    /**
+     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
+     */
+    public int getTurnTimeLimit()
+    {
+        return turn_time_limit;
+    }
 
     /**
      * @author Danny (s224774)

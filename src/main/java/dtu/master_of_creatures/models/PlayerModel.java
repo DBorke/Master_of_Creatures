@@ -106,7 +106,7 @@ public class PlayerModel
     }
 
     /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
     public void drawFromDeck()
     {
