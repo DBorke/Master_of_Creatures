@@ -67,7 +67,7 @@ public class GameModel implements ActionListener
      */
     public void initializePlayer(String player_name, List<CardTypes> cards_chosen, boolean is_host)
     {
-        players[is_host ? 0 : 1] = new PlayerModel(player_name, cards_chosen, match_settings);
+        players[is_host ? 0 : 1] = new PlayerModel(player_name, is_host ? 0 : 1, cards_chosen, this);
     }
 
     /**
@@ -151,8 +151,12 @@ public class GameModel implements ActionListener
      */
     public boolean playChosenCard(int hand_index, int field_index)
     {
-        if(current_player.placeCardInField(hand_index, field_index))
+        CardModel card_played = current_player.getCardsInHand().get(hand_index);
+
+        if(board_model.addRemoveCreatureFromField(card_played, field_index))
         {
+            current_player.removeFromHand(card_played);
+
             game_controller.handlePlayerInfoUIs();
 
             return true;

@@ -3,6 +3,7 @@ package dtu.master_of_creatures.controllers;
 // Project libraries
 import dtu.master_of_creatures.MasterOfCreaturesApp;
 import dtu.master_of_creatures.models.GameModel;
+import dtu.master_of_creatures.models.BoardModel;
 import dtu.master_of_creatures.models.PlayerModel;
 import dtu.master_of_creatures.models.CardModel;
 import dtu.master_of_creatures.utilities.enums.GameStates;
@@ -143,6 +144,7 @@ public class GameController extends SceneController implements Initializable
 
     // Game data
     private final GameModel game_model;
+    private final BoardModel board_model;
     private final PlayerModel player_1;
     private final PlayerModel player_2; // temp
     private PlayerModel current_player;
@@ -155,6 +157,8 @@ public class GameController extends SceneController implements Initializable
     {
         game_model = getGameModel();
         game_model.setGameController(this);
+
+        board_model = game_model.getBoardModel();
 
         PlayerModel[] players = game_model.getPlayers();
         player_1 = players[0];
@@ -370,7 +374,7 @@ public class GameController extends SceneController implements Initializable
         {
             if(hand_index < player_card_count)
             {
-                updateCardImage(player, player_hand.get(hand_index).getCreatureType(), hand_index, true);
+                updateCardImage(player, player_hand.get(hand_index).getCardType(), hand_index, true);
             }
             else // empty slot
             {
@@ -384,10 +388,10 @@ public class GameController extends SceneController implements Initializable
      */
     public void updatePlayersFieldImages() // updated for both players at a time
     {
-        CardModel[] p1_field_cards = player_1.getCardsInFields();
+        CardModel[] p1_field_cards = board_model.getPlayer1Lanes();
         CardModel p1_card_in_field;
 
-        CardModel[] p2_field_cards = player_2.getCardsInFields();
+        CardModel[] p2_field_cards = board_model.getPlayer2Lanes();
         CardModel p2_card_in_field;
 
         for(int field_index = 0; field_index < p1_field_cards.length; field_index++)
@@ -395,8 +399,8 @@ public class GameController extends SceneController implements Initializable
             p1_card_in_field = p1_field_cards[field_index];
             p2_card_in_field = p2_field_cards[field_index];
 
-            updateCardImage(player_1, (p1_card_in_field != null ? p1_card_in_field.getCreatureType() : null), field_index, false);
-            updateCardImage(player_2, (p2_card_in_field != null ? p2_card_in_field.getCreatureType() : null), field_index, false);
+            updateCardImage(player_1, (p1_card_in_field != null ? p1_card_in_field.getCardType() : null), field_index, false);
+            updateCardImage(player_2, (p2_card_in_field != null ? p2_card_in_field.getCardType() : null), field_index, false);
         }
     }
 

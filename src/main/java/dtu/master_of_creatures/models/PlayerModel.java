@@ -12,39 +12,43 @@ import java.util.Random;
 public class PlayerModel
 {
     private final String player_name;
+    private final int player_number;
     private int health_points;
     private int blood_points;
     private final List<CardModel> starting_deck;
     private List<CardModel> current_deck;
     private final List<CardModel> cards_in_hand;
-    private CardModel[] cards_in_fields;
     private int cards_remaining;
     private int turn_damage_done;
     private int round_damage_done;
     private int match_damage_done;
     private final HashMap<String, Integer> match_settings;
 
+    // Game data
+    private final GameModel game_model;
+
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
-    public PlayerModel(String player_name, List<CardTypes> cards_chosen, HashMap<String, Integer> match_settings)
+    public PlayerModel(String player_name, int player_number, List<CardTypes> cards_chosen, GameModel game_model)
     {
+        // Set up game related variables
+        this.game_model = game_model;
+        this.match_settings = game_model.getMatchSettings();
+
         // Set up player stats
         this.player_name = player_name;
+        this.player_number = player_number;
         health_points = match_settings.get("health points");
         blood_points = match_settings.get("blood points");
         turn_damage_done = 0;
         round_damage_done = 0;
         match_damage_done = 0;
 
-        // Set up game related variables
-        this.match_settings = match_settings;
-
         // Set up card related variables
         starting_deck = new ArrayList<>();
         current_deck = new ArrayList<>();
         cards_in_hand = new ArrayList<>();
-        cards_in_fields = new CardModel[3];
 
         createDecks(cards_chosen);
         createHand();
@@ -65,7 +69,6 @@ public class PlayerModel
         // Reset card related variables
         current_deck = new ArrayList<>(starting_deck);
         cards_in_hand.clear();
-        cards_in_fields = new CardModel[3];
 
         createHand();
 
@@ -177,41 +180,17 @@ public class PlayerModel
     }
 
     /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
-     */
-    public boolean placeCardInField(int hand_index, int field_index)
-    {
-        if(cards_in_fields[field_index] == null)
-        {
-            CardModel card_to_place = cards_in_hand.get(hand_index);
-
-            cards_in_fields[field_index] = card_to_place;
-            removeFromHand(card_to_place);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
-     */
-    public void removeCardFromField(int field_position)
-    {
-        cards_in_fields[field_position] = null;
-    }
-
-    /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
     public void updateCardsRemaining()
     {
         cards_remaining = current_deck.size() + cards_in_hand.size();
 
-        for(int card_index = 0; card_index < cards_in_fields.length; card_index++)
+        CardModel[] player_fields = player_number == 0 ? game_model.getBoardModel().getPlayer1Lanes() : game_model.getBoardModel().getPlayer2Lanes();
+
+        for(int card_index = 0; card_index < player_fields.length; card_index++)
         {
-            if(cards_in_fields[0] != null)
+            if(player_fields[0] != null)
             {
                 cards_remaining++;
             }
@@ -286,14 +265,6 @@ public class PlayerModel
     public List<CardModel> getCardsInHand()
     {
         return cards_in_hand;
-    }
-
-    /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
-     */
-    public CardModel[] getCardsInFields()
-    {
-        return cards_in_fields;
     }
 
     /**

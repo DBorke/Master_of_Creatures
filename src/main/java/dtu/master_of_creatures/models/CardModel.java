@@ -1,6 +1,6 @@
 package dtu.master_of_creatures.models;
-import dtu.master_of_creatures.utilities.enums.CardTypes;
 
+import dtu.master_of_creatures.utilities.enums.CardTypes;
 
 public class CardModel
 {
@@ -29,7 +29,7 @@ public class CardModel
     /**
      * @author Romel (s215212)
      */
-    public CardTypes getCreatureType() {
+    public CardTypes getCardType() {
         return card_type;
     }
 
@@ -60,6 +60,6 @@ public class CardModel
      */
     @Override
     public String toString() {
-        return String.format("CreatureModel{creature_type='%s', health=%d, attack=%d, cost=%d}", card_type, health, attack, cost);
+        return String.format("CardModel{card_type='%s', health=%d, attack=%d, cost=%d}", card_type, health, attack, cost);
     }
 }

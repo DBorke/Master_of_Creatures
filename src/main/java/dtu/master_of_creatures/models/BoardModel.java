@@ -8,8 +8,6 @@ package dtu.master_of_creatures.models;
  */
 import dtu.master_of_creatures.utilities.enums.PhaseTypes;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Arrays;
 
 /*
@@ -18,8 +16,9 @@ import java.util.Arrays;
 public class BoardModel
 {
     // Fields
-    private final List<CardModel> player1Lanes;
-    private final List<CardModel> player2Lanes;
+    private final CardModel[] player_1_lanes;
+    private final CardModel[] player_2_lanes;
+
     // Game data
     private final GameModel game_model;
 
@@ -29,9 +28,50 @@ public class BoardModel
      */
     public BoardModel(GameModel game_model)
     {
-        this.player1Lanes = new ArrayList<>(Arrays.asList(null, null, null));
-        this.player2Lanes = new ArrayList<>(Arrays.asList(null, null, null));
+        player_1_lanes = new CardModel[3];
+        player_2_lanes = new CardModel[3];
+
         this.game_model = game_model;
+    }
+
+    /**
+     * Summon a creature in a specific lane
+     * @author Maria (s195685), Danny (s224774)
+     */
+    public boolean addRemoveCreatureFromField(CardModel creature, int lane)
+    {
+        if (game_model.getPhaseType() != PhaseTypes.PLAYING_PHASE) // will change depending on the phase names. "SUMMON" is the planning/sacrifice/playing phase.
+        {
+            throw new IllegalStateException("You can only summon creatures during the summon phase.");
+        }
+
+        if (lane < 0 || lane > 2)
+        {
+            throw new IllegalArgumentException("Lane must be 0, 1, or 2.");
+        }
+
+        CardModel[] current_player_lanes = game_model.getCurrentPlayer() == game_model.getPlayers()[0] ? player_1_lanes : player_2_lanes;
+
+        if (current_player_lanes[lane] != null)
+        {
+            throw new IllegalStateException("Lane is already occupied.");
+        }
+
+        current_player_lanes[lane] = creature;
+
+        return true;
+    }
+
+    /**
+     * @author Maria (s195685), Romel (s215212)
+     */
+    @Override
+    public String toString()
+    {
+        return String.format(
+            "BoardModel{player_1_lanes=%s, player_2_lanes=%s}",
+            Arrays.toString(player_1_lanes), Arrays.toString(player_2_lanes)
+        );
     }
 
     /////////////////////////
@@ -41,55 +81,16 @@ public class BoardModel
     /**
      * @author Maria (s195685)
      */
-    public List<CardModel> getPlayer1Lanes()
+    public CardModel[] getPlayer1Lanes()
     {
-        return player1Lanes;
+        return player_1_lanes;
     }
 
     /**
      * @author Maria (s195685)
      */
-    public List<CardModel> getPlayer2Lanes()
+    public CardModel[] getPlayer2Lanes()
     {
-        return player2Lanes;
-    }
-
-    /**
-     * Summon a creature in a specific lane
-     * @author Maria (s195685), Danny (s224774)
-     */
-    public void summonCreature(CardModel creature, int lane)
-    {
-        // assuming the name of game model object is game
-        if (game_model.getPhaseType() != PhaseTypes.PLAYING_PHASE) // will change depending on the phase names. "SUMMON" is the planning/sacrifice/playing phase.
-        {
-            throw new IllegalStateException("You can only summon creatures during the summon phase.");
-        }
-
-        if (lane < 0 || lane > 2) 
-        {
-            throw new IllegalArgumentException("Lane must be 0, 1, or 2.");
-        }
-
-        List<CardModel> currentPlayerLanes = game_model.getCurrentPlayer() == game_model.getPlayers()[0] ? player1Lanes : player2Lanes;
-
-        if (currentPlayerLanes.get(lane) != null) 
-        {
-            throw new IllegalStateException("Lane is already occupied.");
-        }
-
-        currentPlayerLanes.set(lane, creature);
-    }
-
-    /**
-     * @author Maria (s195685), Romel (s215212)
-     */
-    @Override
-    public String toString() 
-    {
-        return String.format(
-                "BoardModel{player1Lanes=%s, player2Lanes=%s}",
-                player1Lanes, player2Lanes
-        );
+        return player_2_lanes;
     }
 }
