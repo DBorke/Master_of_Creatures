@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dtu.master_of_creatures.controllers.GameController">
+<AnchorPane prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dtu.master_of_creatures.controllers.GameController">
    <children>
       <Button focusTraversable="false" layoutX="50.0" layoutY="40.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#quitGame" prefHeight="40.0" prefWidth="60.0" text="Quit">
          <font>
@@ -74,99 +74,125 @@
             <Font name="System Italic" size="24.0" />
          </font>
       </Text>
-      <Button fx:id="end_turn" layoutX="600.0" layoutY="949.0" mnemonicParsing="false" onAction="#playerEndedTurn" text="End Turn">
+      <Button fx:id="end_turn" focusTraversable="false" layoutX="600.0" layoutY="949.0" mnemonicParsing="false" onAction="#playerEndedTurn" text="End Turn">
          <font>
             <Font size="23.0" />
          </font>
       </Button>
-      <Button fx:id="concede_round" layoutX="1012.0" layoutY="949.0" mnemonicParsing="false" onAction="#playerHasConceded" text="Concede round">
+      <Button fx:id="concede_round" focusTraversable="false" layoutX="1012.0" layoutY="949.0" mnemonicParsing="false" onAction="#playerHasConceded" text="Concede round">
          <font>
             <Font size="23.0" />
          </font>
       </Button>
-      <ImageView fx:id="p2_field_1" fitHeight="200.0" fitWidth="150.0" layoutX="642.0" layoutY="148.0" onMouseClicked="#playerPlacedCard1" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="p2_field_image_1" fitHeight="200.0" fitWidth="150.0" layoutX="642.0" layoutY="148.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../media/images/test.jpg" />
+            <Image url="@../media/images/card_back.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="p2_field_2" fitHeight="200.0" fitWidth="150.0" layoutX="825.0" layoutY="142.0" onMouseClicked="#playerPlacedCard2" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="p2_field_image_2" fitHeight="200.0" fitWidth="150.0" layoutX="825.0" layoutY="142.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../media/images/test.jpg" />
+            <Image url="@../media/images/card_back.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="p2_field_3" fitHeight="200.0" fitWidth="150.0" layoutX="989.0" layoutY="132.0" onMouseClicked="#playerPlacedCard3" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="p2_field_image_3" fitHeight="200.0" fitWidth="150.0" layoutX="989.0" layoutY="132.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../media/images/test.jpg" />
+            <Image url="@../media/images/card_back.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="p1_field_1" fitHeight="200.0" fitWidth="150.0" layoutX="644.0" layoutY="376.0" onMouseClicked="#playerPlacedCard1" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="p1_field_image_1" fitHeight="200.0" fitWidth="150.0" layoutX="644.0" layoutY="376.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../media/images/test.jpg" />
+            <Image url="@../media/images/card_back.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="p1_field_2" fitHeight="200.0" fitWidth="150.0" layoutX="819.0" layoutY="373.0" onMouseClicked="#playerPlacedCard2" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="p1_field_image_2" fitHeight="200.0" fitWidth="150.0" layoutX="819.0" layoutY="373.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../media/images/test.jpg" />
+            <Image url="@../media/images/card_back.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="p1_field_3" fitHeight="200.0" fitWidth="150.0" layoutX="983.0" layoutY="349.0" onMouseClicked="#playerPlacedCard3" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="p1_field_image_3" fitHeight="200.0" fitWidth="150.0" layoutX="983.0" layoutY="349.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../media/images/test.jpg" />
+            <Image url="@../media/images/card_back.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="p1_hand_1" fitHeight="175.0" fitWidth="125.0" layoutX="25.0" layoutY="699.0" onMouseClicked="#playerSelectedCard" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="p1_hand_image_2" disable="true" fitHeight="175.0" fitWidth="125.0" layoutX="184.0" layoutY="688.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../media/images/test.jpg" />
+            <Image url="@../media/images/card_back.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="p1_hand_2" fitHeight="175.0" fitWidth="125.0" layoutX="184.0" layoutY="688.0" onMouseClicked="#playerSelectedCard" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="p1_hand_image_3" fitHeight="175.0" fitWidth="125.0" layoutX="319.0" layoutY="668.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../media/images/test.jpg" />
+            <Image url="@../media/images/card_back.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="p1_hand_3" fitHeight="175.0" fitWidth="125.0" layoutX="319.0" layoutY="668.0" onMouseClicked="#playerSelectedCard" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="p1_hand_image_4" fitHeight="175.0" fitWidth="125.0" layoutX="470.0" layoutY="693.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../media/images/test.jpg" />
+            <Image url="@../media/images/card_back.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="p1_hand_4" fitHeight="175.0" fitWidth="125.0" layoutX="470.0" layoutY="693.0" onMouseClicked="#playerSelectedCard" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="p2_hand_image_4" fitHeight="175.0" fitWidth="125.0" layoutX="1547.0" layoutY="677.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../media/images/test.jpg" />
+            <Image url="@../media/images/card_back.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="p2_hand_4" fitHeight="175.0" fitWidth="125.0" layoutX="1547.0" layoutY="677.0" onMouseClicked="#playerSelectedCard" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="p1_hand_image_5" fitHeight="175.0" fitWidth="125.0" layoutX="636.0" layoutY="691.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../media/images/test.jpg" />
+            <Image url="@../media/images/card_back.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="p1_hand_5" fitHeight="175.0" fitWidth="125.0" layoutX="636.0" layoutY="691.0" onMouseClicked="#playerSelectedCard" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="p2_hand_image_1" fitHeight="175.0" fitWidth="125.0" layoutX="1113.0" layoutY="673.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../media/images/test.jpg" />
+            <Image url="@../media/images/card_back.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="p2_hand_1" fitHeight="175.0" fitWidth="125.0" layoutX="1113.0" layoutY="673.0" onMouseClicked="#playerSelectedCard" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="p2_hand_image_2" fitHeight="175.0" fitWidth="125.0" layoutX="1258.0" layoutY="681.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../media/images/test.jpg" />
+            <Image url="@../media/images/card_back.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="p2_hand_2" fitHeight="175.0" fitWidth="125.0" layoutX="1258.0" layoutY="681.0" onMouseClicked="#playerSelectedCard" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="p2_hand_image_3" fitHeight="175.0" fitWidth="125.0" layoutX="1406.0" layoutY="682.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../media/images/test.jpg" />
+            <Image url="@../media/images/card_back.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="p2_hand_3" fitHeight="175.0" fitWidth="125.0" layoutX="1406.0" layoutY="682.0" onMouseClicked="#playerSelectedCard" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="p2_hand_image_5" fitHeight="175.0" fitWidth="125.0" layoutX="1696.0" layoutY="672.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../media/images/test.jpg" />
+            <Image url="@../media/images/card_back.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="p2_hand_5" fitHeight="175.0" fitWidth="125.0" layoutX="1696.0" layoutY="672.0" onMouseClicked="#playerSelectedCard" pickOnBounds="true" preserveRatio="true">
+      <Button fx:id="p1_scroll_left" focusTraversable="false" layoutX="288.0" layoutY="901.0" mnemonicParsing="false" text="Left" />
+      <Button fx:id="p1_scroll_right" focusTraversable="false" layoutX="356.0" layoutY="901.0" mnemonicParsing="false" text="Right" />
+      <Button fx:id="p2_scroll_left" focusTraversable="false" layoutX="1445.0" layoutY="869.0" mnemonicParsing="false" text="Left" />
+      <Button fx:id="p2_scroll_right" focusTraversable="false" layoutX="1513.0" layoutY="869.0" mnemonicParsing="false" text="Right" />
+      <ImageView fx:id="p1_hand_image_1" fitHeight="175.0" fitWidth="125.0" layoutX="25.0" layoutY="699.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../media/images/test.jpg" />
+            <Image url="@../media/images/card_back.png" />
          </image>
       </ImageView>
-      <Button fx:id="p1_scroll_left" layoutX="288.0" layoutY="901.0" mnemonicParsing="false" text="Left" />
-      <Button fx:id="p1_scroll_right" layoutX="356.0" layoutY="901.0" mnemonicParsing="false" text="Right" />
-      <Button fx:id="p2_scroll_left" layoutX="1445.0" layoutY="869.0" mnemonicParsing="false" text="Left" />
-      <Button fx:id="p2_scroll_right" layoutX="1513.0" layoutY="869.0" mnemonicParsing="false" text="Right" />
+      <Button fx:id="p1_hand_1" focusTraversable="false" layoutX="25.0" layoutY="699.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
+      <Button fx:id="p1_hand_3" focusTraversable="false" layoutX="319.0" layoutY="667.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
+      <Button fx:id="p1_hand_4" focusTraversable="false" layoutX="470.0" layoutY="692.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
+      <Button fx:id="p1_hand_5" focusTraversable="false" layoutX="636.0" layoutY="690.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
+      <Button fx:id="p2_hand_1" focusTraversable="false" layoutX="1113.0" layoutY="672.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
+      <Button fx:id="p2_hand_2" focusTraversable="false" layoutX="1258.0" layoutY="681.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
+      <Button fx:id="p2_hand_4" focusTraversable="false" layoutX="1547.0" layoutY="676.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
+      <Button fx:id="p2_hand_5" focusTraversable="false" layoutX="1696.0" layoutY="671.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
+      <Button fx:id="p2_hand_3" focusTraversable="false" layoutX="1406.0" layoutY="681.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
+      <Button fx:id="p2_field_1" focusTraversable="false" layoutX="644.0" layoutY="147.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="190.0" prefWidth="150.0" text="Button" />
+      <Button fx:id="p2_field_2" focusTraversable="false" layoutX="825.0" layoutY="142.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="190.0" prefWidth="150.0" text="Button" />
+      <Button fx:id="p2_field_3" focusTraversable="false" layoutX="989.0" layoutY="132.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="190.0" prefWidth="150.0" text="Button" />
+      <Button fx:id="p1_field_1" focusTraversable="false" layoutX="644.0" layoutY="376.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="190.0" prefWidth="150.0" text="Button" />
+      <Button fx:id="p1_field_2" focusTraversable="false" layoutX="819.0" layoutY="373.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="190.0" prefWidth="150.0" text="Button" />
+      <Button fx:id="p1_field_3" focusTraversable="false" layoutX="983.0" layoutY="349.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="190.0" prefWidth="150.0" text="Button" />
+      <Button fx:id="p1_hand_2" focusTraversable="false" layoutX="184.0" layoutY="687.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
+      <Button fx:id="p1_draw" focusTraversable="false" layoutX="237.0" layoutY="958.0" mnemonicParsing="false" onAction="#playerDrewFromDeck" text="Draw from deck">
+         <font>
+            <Font size="23.0" />
+         </font>
+      </Button>
+      <Button fx:id="p2_draw" focusTraversable="false" layoutX="1402.0" layoutY="949.0" mnemonicParsing="false" onAction="#playerDrewFromDeck" text="Draw from deck">
+         <font>
+            <Font size="23.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

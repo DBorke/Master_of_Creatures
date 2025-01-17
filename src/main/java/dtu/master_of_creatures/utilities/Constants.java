@@ -6,7 +6,7 @@ Constants related to match settings are chosen in the HostPregameController, to 
 
 public abstract class Constants
 {
-    private static final String GAME_VERSION = "v. 0.12";
+    private static final String GAME_VERSION = "v. 0.27";
     private static final int APP_RESOLUTION_X = 1920;
     private static final int APP_RESOLUTION_Y = 1080;
 
