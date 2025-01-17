@@ -3,7 +3,7 @@ package dtu.master_of_creatures.controllers;
 // Project libraries
 import dtu.master_of_creatures.models.GameModel;
 import dtu.master_of_creatures.utilities.enums.GameStates;
-import dtu.master_of_creatures.utilities.enums.CardTypes;
+import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 
 // Java libraries
 import java.net.URL;
@@ -64,8 +64,8 @@ public class JoinPregameController extends SceneController implements Initializa
      */
     public void ready()
     {
-        List<CardTypes> temp_list = new ArrayList<>();
-        temp_list.add(CardTypes.WOLF);
+        List<CommonCardTypes> temp_list = new ArrayList<>();
+        temp_list.add(CommonCardTypes.WOLF);
 
         game_model.initializePlayer(p2_name.getText(), temp_list, false); // needs information from other opponent's app
 

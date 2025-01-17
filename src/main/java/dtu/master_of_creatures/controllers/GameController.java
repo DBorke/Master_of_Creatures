@@ -7,7 +7,7 @@ import dtu.master_of_creatures.models.BoardModel;
 import dtu.master_of_creatures.models.PlayerModel;
 import dtu.master_of_creatures.models.CardModel;
 import dtu.master_of_creatures.utilities.enums.GameStates;
-import dtu.master_of_creatures.utilities.enums.CardTypes;
+import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 
 // Java libraries
 import java.net.URL;
@@ -407,7 +407,7 @@ public class GameController extends SceneController implements Initializable
     /**
      * @author Danny (s224774), Maria (s195685)
      */
-    public void updateCardImage(PlayerModel player, CardTypes card_type, int slot_index, boolean in_hand)
+    public void updateCardImage(PlayerModel player, CommonCardTypes card_type, int slot_index, boolean in_hand)
     {
         ImageView slot_image;
 

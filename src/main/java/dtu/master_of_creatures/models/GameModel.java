@@ -4,7 +4,7 @@ package dtu.master_of_creatures.models;
 import dtu.master_of_creatures.controllers.GameController;
 import dtu.master_of_creatures.utilities.enums.GameStates;
 import dtu.master_of_creatures.utilities.enums.PhaseTypes;
-import dtu.master_of_creatures.utilities.enums.CardTypes;
+import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 
 // Java libraries
 import java.awt.event.ActionListener;
@@ -65,7 +65,7 @@ public class GameModel implements ActionListener
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
-    public void initializePlayer(String player_name, List<CardTypes> cards_chosen, boolean is_host)
+    public void initializePlayer(String player_name, List<CommonCardTypes> cards_chosen, boolean is_host)
     {
         players[is_host ? 0 : 1] = new PlayerModel(player_name, is_host ? 0 : 1, cards_chosen, this);
     }
@@ -176,7 +176,7 @@ public class GameModel implements ActionListener
     /**
      * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
      */
-    public void gambleWithChosenCards(List<CardTypes> cards_gambled_with)
+    public void gambleWithChosenCards(List<CommonCardTypes> cards_gambled_with)
     {
         game_controller.handlePlayerInfoUIs();
     }
@@ -216,9 +216,9 @@ public class GameModel implements ActionListener
     /**
      * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
      */
-    public void addRewardCards(PlayerModel player, List<CardTypes> cards_chosen)
+    public void addRewardCards(PlayerModel player, List<CommonCardTypes> cards_chosen)
     {
-        for(CardTypes card_chosen : cards_chosen)
+        for(CommonCardTypes card_chosen : cards_chosen)
         {
             player.addToDeck(card_chosen, false); // to starting deck?
         }

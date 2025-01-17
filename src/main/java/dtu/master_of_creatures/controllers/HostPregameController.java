@@ -3,7 +3,7 @@ package dtu.master_of_creatures.controllers;
 // Project libraries
 import dtu.master_of_creatures.models.GameModel;
 import dtu.master_of_creatures.utilities.enums.GameStates;
-import dtu.master_of_creatures.utilities.enums.CardTypes;
+import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 
 // Java libraries
 import java.net.URL;
@@ -31,8 +31,8 @@ public class HostPregameController extends SceneController implements Initializa
     private int deck_grid_cells;
     private double deck_grid_cell_size;
     private Button[] deck_grid_nodes;
-    private final List<CardTypes> p1_cards;
-    private final List<CardTypes> p2_cards; // temp
+    private final List<CommonCardTypes> p1_cards;
+    private final List<CommonCardTypes> p2_cards; // temp
     @FXML
     private TextField p1_name;
     @FXML
@@ -57,7 +57,7 @@ public class HostPregameController extends SceneController implements Initializa
 
     // Game data
     private final GameModel game_model;
-    private final CardTypes[] card_types_available;
+    private final CommonCardTypes[] card_types_available;
 
     // TEMP
     @FXML
@@ -73,7 +73,7 @@ public class HostPregameController extends SceneController implements Initializa
         p2_cards = new ArrayList<>(); // temp
 
         game_model = getGameModel();
-        card_types_available = CardTypes.values();
+        card_types_available = CommonCardTypes.values();
     }
 
     /**
