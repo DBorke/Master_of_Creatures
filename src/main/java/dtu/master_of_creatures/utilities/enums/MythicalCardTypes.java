@@ -2,9 +2,14 @@ package dtu.master_of_creatures.utilities.enums;
 
 public enum MythicalCardTypes
 {
-    RABBIT(2, 0, 0),
-    WOLF(1, 1, 1), // Health, Attack, Cost
-    DRAGON(10, 10, 4);
+    // Health, attack, cost
+    DRAGON(5, 7, 3),
+    HYDRA(4,5,3),
+    BISHOPFISH(7,2,2),
+    PHEONIX(3,4,2),
+    SHESHESHEN(8,1,2),
+    MOTHMAN(3,6,2);
+
 
     private final int health;
     private final int attack;
