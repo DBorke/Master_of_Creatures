@@ -2,29 +2,29 @@ package dtu.master_of_creatures.controllers;
 
 // Project libraries
 import dtu.master_of_creatures.MasterOfCreaturesApp;
-import dtu.master_of_creatures.models.CardModel;
 import dtu.master_of_creatures.models.GameModel;
 import dtu.master_of_creatures.models.PlayerModel;
-import dtu.master_of_creatures.utilities.enums.CardTypes;
+import dtu.master_of_creatures.models.CardModel;
 import dtu.master_of_creatures.utilities.enums.GameStates;
+import dtu.master_of_creatures.utilities.enums.CardTypes;
 
 // Java libraries
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.ResourceBundle;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.io.IOException;
 
 // JavaFX libraries
-import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.paint.Color;
 
 public class GameController extends SceneController implements Initializable
 {
@@ -43,23 +43,42 @@ public class GameController extends SceneController implements Initializable
     private Text p1_remain_deck;
     @FXML
     private Text p1_remain_hand;
-    private List<ImageView> p1_hand_list;
+    private List<Button> p1_hand_list;
     @FXML
-    private ImageView p1_hand_1;
+    private Button p1_hand_1;
     @FXML
-    private ImageView p1_hand_2;
+    private Button p1_hand_2;
     @FXML
-    private ImageView p1_hand_3;
+    private Button p1_hand_3;
     @FXML
-    private ImageView p1_hand_4;
+    private Button p1_hand_4;
     @FXML
-    private ImageView p1_hand_5;
+    private Button p1_hand_5;
+    private List<ImageView> p1_hand_image_list;
     @FXML
-    private ImageView p1_field_1;
+    private ImageView p1_hand_image_1;
     @FXML
-    private ImageView p1_field_2;
+    private ImageView p1_hand_image_2;
     @FXML
-    private ImageView p1_field_3;
+    private ImageView p1_hand_image_3;
+    @FXML
+    private ImageView p1_hand_image_4;
+    @FXML
+    private ImageView p1_hand_image_5;
+    private List<Button> p1_field_list;
+    @FXML
+    private Button p1_field_1;
+    @FXML
+    private Button p1_field_2;
+    @FXML
+    private Button p1_field_3;
+    private List<ImageView> p1_field_image_list;
+    @FXML
+    private ImageView p1_field_image_1;
+    @FXML
+    private ImageView p1_field_image_2;
+    @FXML
+    private ImageView p1_field_image_3;
     @FXML
     private Button p1_scroll_left;
     @FXML
@@ -74,41 +93,70 @@ public class GameController extends SceneController implements Initializable
     private Text p2_remain_deck;
     @FXML
     private Text p2_remain_hand;
-    private List<ImageView> p2_hand_list;
+    private List<Button> p2_hand_list;
     @FXML
-    private ImageView p2_hand_1;
+    private Button p2_hand_1;
     @FXML
-    private ImageView p2_hand_2;
+    private Button p2_hand_2;
     @FXML
-    private ImageView p2_hand_3;
+    private Button p2_hand_3;
     @FXML
-    private ImageView p2_hand_4;
+    private Button p2_hand_4;
     @FXML
-    private ImageView p2_hand_5;
+    private Button p2_hand_5;
+    private List<ImageView> p2_hand_image_list;
     @FXML
-    private ImageView p2_field_1;
+    private ImageView p2_hand_image_1;
     @FXML
-    private ImageView p2_field_2;
+    private ImageView p2_hand_image_2;
     @FXML
-    private ImageView p2_field_3;
+    private ImageView p2_hand_image_3;
+    @FXML
+    private ImageView p2_hand_image_4;
+    @FXML
+    private ImageView p2_hand_image_5;
+    private List<Button> p2_field_list;
+    @FXML
+    private Button p2_field_1;
+    @FXML
+    private Button p2_field_2;
+    @FXML
+    private Button p2_field_3;
+    private List<ImageView> p2_field_image_list;
+    @FXML
+    private ImageView p2_field_image_1;
+    @FXML
+    private ImageView p2_field_image_2;
+    @FXML
+    private ImageView p2_field_image_3;
     @FXML
     private Button p2_scroll_left;
     @FXML
     private Button p2_scroll_right;
-    @FXML
-    private ImageView selected_card;
+
+    private Button selected_slot;
+    private int hand_index;
 
     // Game data
     private final GameModel game_model;
+    private final PlayerModel player_1;
+    private final PlayerModel player_2; // temp
     private PlayerModel current_player;
+    private final HashMap<String, Integer> match_settings;
 
     /**
-     * @author Danny (s224774)
+     * @author Danny (s224774), Maria (s195685)
      */
     public GameController()
     {
         game_model = getGameModel();
         game_model.setGameController(this);
+
+        PlayerModel[] players = game_model.getPlayers();
+        player_1 = players[0];
+        player_2 = players[1]; // temp
+
+        match_settings = game_model.getMatchSettings();
     }
 
     /**
@@ -116,70 +164,20 @@ public class GameController extends SceneController implements Initializable
      */
     public void initialize(URL url, ResourceBundle resource_bundle)
     {
-        handleTurnTimeUI(game_model.getTurnTimeLimit());
+        handleTurnTimeUI(match_settings.get("time limit"));
 
         p1_hand_list = new ArrayList<>(List.of(p1_hand_1, p1_hand_2, p1_hand_3, p1_hand_4, p1_hand_5));
+        p1_hand_image_list = new ArrayList<>(List.of(p1_hand_image_1, p1_hand_image_2, p1_hand_image_3, p1_hand_image_4, p1_hand_image_5));
+        p1_field_list = new ArrayList<>(List.of(p1_field_1, p1_field_2, p1_field_3));
+        p1_field_image_list = new ArrayList<>(List.of(p1_field_image_1, p1_field_image_2, p1_field_image_3));
         p2_hand_list = new ArrayList<>(List.of(p2_hand_1, p2_hand_2, p2_hand_3, p2_hand_4, p2_hand_5));
+        p2_hand_image_list = new ArrayList<>(List.of(p2_hand_image_1, p2_hand_image_2, p2_hand_image_3, p2_hand_image_4, p2_hand_image_5));
+        p2_field_list = new ArrayList<>(List.of(p2_field_1, p2_field_2, p2_field_3));
+        p2_field_image_list = new ArrayList<>(List.of(p2_field_image_1, p2_field_image_2, p2_field_image_3));
 
         game_model.startNewRound();
         game_model.setGameState(GameStates.GAME_ACTIVE);
     }
-
-    public void initializePlayerHand(PlayerModel[] players)
-    {
-        PlayerModel player_1 = players[0];
-        PlayerModel player_2 = players[1];
-
-        List<CardModel> p1_hand = player_1.getCardsInHand();
-        List<CardModel> p2_hand = player_2.getCardsInHand();
-
-        int hand_index = 0;
-        for (CardModel card : p1_hand)
-        {
-            if (card.getCreatureType() == CardTypes.RABBIT)
-            {
-                p1_hand_list.get(hand_index).setImage(new Image(String.valueOf(MasterOfCreaturesApp.class.getResource("media/images/rabbit.png"))));
-
-            }
-            else if (card.getCreatureType() == CardTypes.WOLF)
-            {
-                p1_hand_list.get(hand_index).setImage(new Image(String.valueOf(MasterOfCreaturesApp.class.getResource("media/images/wolf.png"))));
-            }
-            else if (card.getCreatureType() == CardTypes.DRAGON)
-            {
-                p1_hand_list.get(hand_index).setImage(new Image(String.valueOf(MasterOfCreaturesApp.class.getResource("media/images/dragon.png"))));
-            }
-            else
-            {
-                p1_hand_list.get(hand_index).setImage(new Image(String.valueOf(MasterOfCreaturesApp.class.getResource("media/images/filler.png"))));
-            }
-            hand_index++;
-        }
-
-        hand_index = 0;
-        for (CardModel card : p2_hand)
-        {
-            if (card.getCreatureType() == CardTypes.RABBIT)
-            {
-                p2_hand_list.get(hand_index).setImage(new Image(String.valueOf(MasterOfCreaturesApp.class.getResource("media/images/rabbit.png"))));
-            }
-            else if (card.getCreatureType() == CardTypes.WOLF)
-            {
-                p2_hand_list.get(hand_index).setImage(new Image(String.valueOf(MasterOfCreaturesApp.class.getResource("media/images/wolf.png"))));
-            }
-            else if (card.getCreatureType() == CardTypes.DRAGON)
-            {
-                p2_hand_list.get(hand_index).setImage(new Image(String.valueOf(MasterOfCreaturesApp.class.getResource("media/images/dragon.png"))));
-            }
-            else
-            {
-                p2_hand_list.get(hand_index).setImage(new Image(String.valueOf(MasterOfCreaturesApp.class.getResource("media/images/filler.png"))));
-            }
-            hand_index++;
-        }
-
-    }
-
 
     /**
      * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
@@ -205,11 +203,8 @@ public class GameController extends SceneController implements Initializable
     /**
      * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
      */
-    public void handlePlayerInfoUIs(PlayerModel[] players)
+    public void handlePlayerInfoUIs()
     {
-        PlayerModel player_1 = players[0];
-        PlayerModel player_2 = players[1];
-
         // Update UI information for player 1
         p1_name.setText(current_player == player_1 ? player_1.getPlayerName() + " (current player)" : player_1.getPlayerName());
         p1_health.setText("Health: " + player_1.getHealthPoints());
@@ -225,49 +220,181 @@ public class GameController extends SceneController implements Initializable
         p2_remain_hand.setText("Remaining in hand: " + player_2.getCardsInHand().size());
     }
 
-    public void playerSelectedCard(ActionEvent event)
+    /**
+     * @author Maria (s195685), Danny
+     */
+    public void handlePlayerCardUIs()
     {
-        selected_card = (ImageView) event.getSource();
-
+        if(current_player != null) // subsequent turns
+        {
+            updatePlayerHandImages(current_player);
+            updatePlayersFieldImages();
+        }
+        else // first turn
+        {
+            updatePlayerHandImages(player_1);
+            updatePlayerHandImages(player_2);
+        }
     }
 
-    public void playerPlacedCard1(ActionEvent event)
+    /**
+     * @author Danny (s224774), Maria (s195685)
+     */
+    public void playerClickedOnCard(ActionEvent event)
     {
+        GameStates game_state = game_model.getGameState();
 
-        ImageView field = (ImageView) event.getSource();
-
-        if (selected_card != null)
+        if(game_state != GameStates.GAME_HALFTIME && game_state != GameStates.GAME_OVER)
         {
-            field.setImage(selected_card.getImage());
-            current_player.placeCardInField(current_player.getCardsInHand().get(p1_hand_list.indexOf(selected_card)),0);
-        }
+            Button slot = (Button) event.getSource();
+            int slot_index;
 
+            if(current_player == player_1)
+            {
+                slot_index = p1_hand_list.indexOf(slot);
+
+                if(player_1.getCardsInHand().size() > slot_index)
+                {
+                    selected_slot = slot;
+                }
+            }
+            else
+            {
+                slot_index = p2_hand_list.indexOf(slot);
+
+                if(player_2.getCardsInHand().size() > slot_index)
+                {
+                    selected_slot = slot;
+                }
+            }
+        }
     }
 
-    public void playerPlacedCard2(ActionEvent event)
+    /**
+     * @author Danny (s224774), Maria (s195685)
+     */
+    public void playerClickedOnField(ActionEvent event)
     {
+        GameStates game_state = game_model.getGameState();
 
-        ImageView field = (ImageView) event.getSource();
-
-        if (selected_card != null)
+        if(game_state != GameStates.GAME_HALFTIME && game_state != GameStates.GAME_OVER)
         {
-            field.setImage(selected_card.getImage());
-            current_player.placeCardInField(current_player.getCardsInHand().get(p1_hand_list.indexOf(selected_card)),1);
-        }
+            if(selected_slot != null) // make sure a card is selected from hand
+            {
+                Button field = (Button) event.getSource();
+                int slot_index;
 
+                if(current_player == player_1)
+                {
+                    slot_index = p1_field_list.indexOf(field);
+
+                    game_model.playChosenCard(hand_index, slot_index);
+
+                    updateCardImage(player_1, player_1.getCardsInHand().get(hand_index).getCreatureType(), slot_index ,false);
+                }
+                else
+                {
+                    slot_index = p2_field_list.indexOf(field);
+
+                    game_model.playChosenCard(hand_index, slot_index);
+
+                    updateCardImage(player_2, player_2.getCardsInHand().get(hand_index).getCreatureType(), slot_index ,false);
+                }
+
+                handlePlayerCardUIs(); // changes happened, update player card UIs
+
+                selected_slot = null; // reset card selection
+            }
+        }
     }
 
-    public void playerPlacedCard3(ActionEvent event)
+    /**
+     * @author Danny (s224774), Maria (s195685)
+     */
+    public void updatePlayerHandImages(PlayerModel player) // updated for both or one player at a time
     {
+        List<CardModel> player_hand = player.getCardsInHand();
+        int player_card_count = player_hand.size();
 
-        ImageView field = (ImageView) event.getSource();
-
-        if (selected_card != null)
+        for(int hand_index = 0; hand_index < p1_hand_list.size(); hand_index++)
         {
-            field.setImage(selected_card.getImage());
-            current_player.placeCardInField(current_player.getCardsInHand().get(p1_hand_list.indexOf(selected_card)),2);
+            if(hand_index < player_card_count)
+            {
+                updateCardImage(player, player_hand.get(hand_index).getCreatureType(), hand_index, true);
+            }
+            else // empty slot
+            {
+                updateCardImage(player, null, hand_index, true);
+            }
+        }
+    }
+
+    /**
+     * @author Danny (s224774), Maria (s195685)
+     */
+    public void updatePlayersFieldImages() // updated for both players at a time
+    {
+        CardModel[] p1_field_cards = player_1.getCardsInFields();
+        CardModel p1_card_in_field;
+
+        CardModel[] p2_field_cards = player_2.getCardsInFields();
+        CardModel p2_card_in_field;
+
+        for(int field_index = 0; field_index < p1_field_cards.length; field_index++)
+        {
+            p1_card_in_field = p1_field_cards[field_index];
+            p2_card_in_field = p2_field_cards[field_index];
+
+            updateCardImage(player_1, (p1_card_in_field != null ? p1_card_in_field.getCreatureType() : null), field_index, false);
+            updateCardImage(player_2, (p2_card_in_field != null ? p2_card_in_field.getCreatureType() : null), field_index, false);
+        }
+    }
+
+    /**
+     * @author Danny (s224774), Maria (s195685)
+     */
+    public void updateCardImage(PlayerModel player, CardTypes card_type, int slot_index, boolean in_hand)
+    {
+        ImageView slot_image;
+
+        if(player == player_1)
+        {
+            if(in_hand)
+            {
+                slot_image = p1_hand_image_list.get(slot_index);
+            }
+            else
+            {
+                slot_image = p1_field_image_list.get(slot_index);
+            }
+        }
+        else
+        {
+            if(in_hand)
+            {
+                slot_image = p2_hand_image_list.get(slot_index);
+            }
+            else
+            {
+                slot_image = p2_field_image_list.get(slot_index);
+            }
         }
 
+        if(card_type != null)
+        {
+            slot_image.setImage(new Image(String.valueOf(MasterOfCreaturesApp.class.getResource("media/images/" + card_type.name().toLowerCase() + ".png"))));
+        }
+        else
+        {
+            if(in_hand)
+            {
+                slot_image.setImage(null);
+            }
+            else
+            {
+                slot_image.setImage(new Image(String.valueOf(MasterOfCreaturesApp.class.getResource("media/images/card_back.png"))));
+            }
+        }
     }
 
     /**

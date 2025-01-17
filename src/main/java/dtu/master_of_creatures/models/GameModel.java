@@ -10,6 +10,7 @@ import dtu.master_of_creatures.utilities.enums.CardTypes;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.Timer;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -20,15 +21,14 @@ public class GameModel implements ActionListener
     private BoardModel board_model;
     private final PlayerModel[] players;
     private PlayerModel current_player;
-    private int round_wins_needed;
     private final int[] round_wins;
     private PlayerModel round_winning_player;
     private PlayerModel match_winning_player;
     private final Timer game_timer;
-    private int turn_time_limit;
     private int turn_time; // reset each turn
     private int round_time; // reset each round
     private int match_time; // reset each match (auto)
+    private final HashMap<String, Integer> match_settings;
 
     // App
     private GameController game_controller;
@@ -43,23 +43,30 @@ public class GameModel implements ActionListener
         round_wins = new int[2];
 
         game_timer = new Timer(1000, this); // delay is in milliseconds
+
+        match_settings = new HashMap<>();
     }
 
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
-    public void initializeGame(int round_wins_needed, int turn_time_limit)
+    public void initializeGame(int round_wins_needed, int turn_time_limit, int health_points, int blood_points, int deck_size, int hand_size)
     {
-        this.round_wins_needed = round_wins_needed;
-        this.turn_time_limit = turn_time_limit;
+        // Make backup of game related match settings
+        match_settings.put("round wins", round_wins_needed);
+        match_settings.put("time limit", turn_time_limit);
+        match_settings.put("health points", health_points);
+        match_settings.put("blood points", blood_points);
+        match_settings.put("deck size", deck_size);
+        match_settings.put("hand size", hand_size);
     }
 
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
-    public void initializePlayer(String player_name, int health_points, int blood_points, int deck_size, int hand_size, List<CardTypes> cards_chosen, boolean is_host)
+    public void initializePlayer(String player_name, List<CardTypes> cards_chosen, boolean is_host)
     {
-        players[is_host ? 0 : 1] = new PlayerModel(player_name, health_points, blood_points, deck_size, hand_size, cards_chosen);
+        players[is_host ? 0 : 1] = new PlayerModel(player_name, cards_chosen, match_settings);
     }
 
     /**
@@ -87,8 +94,8 @@ public class GameModel implements ActionListener
             game_state = GameStates.GAME_ACTIVE;
         }
 
-        game_controller.handlePlayerInfoUIs(players);
-        game_controller.initializePlayerHand(players);
+        game_controller.handlePlayerInfoUIs();
+        game_controller.handlePlayerCardUIs();
 
         startTurn();
         game_timer.start();
@@ -99,12 +106,12 @@ public class GameModel implements ActionListener
      */
     public void startTurn()
     {
-        turn_time = turn_time_limit;
+        turn_time = match_settings.get("time limit");
 
         nextPlayer();
         current_player.resetTurnDamageDone();
 
-        game_controller.handlePlayerInfoUIs(players);
+        game_controller.handlePlayerInfoUIs();
 
         phase_type = PhaseTypes.PLAYING_PHASE;
     }
@@ -131,9 +138,11 @@ public class GameModel implements ActionListener
     /**
      * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
      */
-    public void playChosenCard()
+    public void playChosenCard(int hand_index, int field_index)
     {
-        game_controller.handlePlayerInfoUIs(players);
+        current_player.placeCardInField(hand_index, field_index);
+
+        game_controller.handlePlayerInfoUIs();
     }
 
     /**
@@ -141,7 +150,7 @@ public class GameModel implements ActionListener
      */
     public void sacrificeChosenCards()
     {
-        game_controller.handlePlayerInfoUIs(players);
+        game_controller.handlePlayerInfoUIs();
     }
 
     /**
@@ -149,7 +158,7 @@ public class GameModel implements ActionListener
      */
     public void gambleWithChosenCards(List<CardTypes> cards_gambled_with)
     {
-        game_controller.handlePlayerInfoUIs(players);
+        game_controller.handlePlayerInfoUIs();
     }
 
     /**
@@ -157,6 +166,13 @@ public class GameModel implements ActionListener
      */
     public void endTurn()
     {
+        if(turn_time > 0)
+        {
+            turn_time = 0;
+
+            game_controller.handleTurnTimeUI(turn_time);
+        }
+
         phase_type = PhaseTypes.ATTACK_PHASE;
 
         performPostTurnAttacks();
@@ -172,7 +188,7 @@ public class GameModel implements ActionListener
      */
     public void performPostTurnAttacks()
     {
-        game_controller.handlePlayerInfoUIs(players);
+        game_controller.handlePlayerInfoUIs();
     }
 
     /**
@@ -185,7 +201,7 @@ public class GameModel implements ActionListener
             player.addToDeck(card_chosen, false); // to starting deck?
         }
 
-        game_controller.handlePlayerInfoUIs(players);
+        game_controller.handlePlayerInfoUIs();
     }
 
     /**
@@ -342,14 +358,6 @@ public class GameModel implements ActionListener
     }
 
     /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
-     */
-    public int getRoundWinsNeeded()
-    {
-        return round_wins_needed;
-    }
-
-    /**
      * @author Danny (s224774)
      */
     public PlayerModel getRoundWinningPlayer()
@@ -363,14 +371,6 @@ public class GameModel implements ActionListener
     public PlayerModel getMatchWinningPlayer()
     {
         return match_winning_player;
-    }
-
-    /**
-     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
-     */
-    public int getTurnTimeLimit()
-    {
-        return turn_time_limit;
     }
 
     /**
@@ -395,5 +395,13 @@ public class GameModel implements ActionListener
     public int getMatchTime()
     {
         return match_time;
+    }
+
+    /**
+     * @author Danny (s224774), Maria (s195685)
+     */
+    public HashMap<String, Integer> getMatchSettings()
+    {
+        return match_settings;
     }
 }

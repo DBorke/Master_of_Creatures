@@ -236,10 +236,10 @@ public class HostPregameController extends SceneController implements Initializa
                 turn_time = -1; // infinite
             }
 
-            game_model.initializeGame(round_wins.getSelectionModel().getSelectedItem(), turn_time);
+            game_model.initializeGame(round_wins.getSelectionModel().getSelectedItem(), turn_time, health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem());
 
-            game_model.initializePlayer(p1_name.getText(), health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), p1_cards, true);
-            game_model.initializePlayer(p2_name.getText(), health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), p2_cards, false); // temp
+            game_model.initializePlayer(p1_name.getText(), p1_cards, true);
+            game_model.initializePlayer(p2_name.getText(), p2_cards, false); // temp
 
             // Models ready, go to playing scene
             goToGameScene();

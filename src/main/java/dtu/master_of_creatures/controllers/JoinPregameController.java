@@ -67,7 +67,7 @@ public class JoinPregameController extends SceneController implements Initializa
         List<CardTypes> temp_list = new ArrayList<>();
         temp_list.add(CardTypes.WOLF);
 
-        game_model.initializePlayer(p2_name.getText(), 5, 0, 15, 4, temp_list, false); // needs information from other opponent's app
+        game_model.initializePlayer(p2_name.getText(), temp_list, false); // needs information from other opponent's app
 
         join_pregame_pane.requestFocus();
         ready_up.setDisable(true);
