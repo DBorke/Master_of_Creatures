@@ -77,7 +77,7 @@ public abstract class SceneController
     }
 
     /**
-     * @author Danny (s224774)
+     * @author Danny (s224774), Mathias (s224273)
      */
     public void gatherScreenInformation(GraphicsDevice screen)
     {
@@ -166,12 +166,16 @@ public abstract class SceneController
 
         if(sound_players != null) // make sure sounds are available
         {
-            // Stop all active sound effects
+            // Change mute status of all sound players
             for(MediaPlayer sound_player : sound_players.values())
             {
-                if(!sound_player.isMute())
+                if(!sound_unmuted && !sound_player.isMute())
                 {
                     sound_player.setMute(true);
+                }
+                else if(sound_unmuted && sound_player.isMute())
+                {
+                    sound_player.setMute(false);
                 }
             }
         }

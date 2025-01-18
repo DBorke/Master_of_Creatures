@@ -47,6 +47,9 @@ public class MenuController extends SceneController implements Initializable
         goToHostPregameScene();
     }
 
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
     public void joinGame() throws IOException
     {
         goToJoinPregameScene();

@@ -1,25 +1,35 @@
 package dtu.master_of_creatures.models;
-import dtu.master_of_creatures.utilities.enums.CardTypes;
 
+// Project libraries
+import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 
 public class CardModel
 {
     // Fields
-    private final CardTypes card_type;
-    private final int health;
-    private final int attack;
-
+    private final CommonCardTypes card_type;
+    private int health;
+    private int attack;
     private final int cost;
 
     /**
      * @author Romel (s215212), Danny (s224774)
      */
-    public CardModel(CardTypes card_type)
+    public CardModel(CommonCardTypes card_type)
     {
         this.card_type = card_type;
         this.health = card_type.getHealth();
         this.attack = card_type.getAttack();
         this.cost = card_type.getCost();
+    }
+
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
+     */
+    public int damageCard(int damage_done)
+    {
+        health -= damage_done;
+
+        return health;
     }
 
     /////////////////////////
@@ -29,7 +39,7 @@ public class CardModel
     /**
      * @author Romel (s215212)
      */
-    public CardTypes getCreatureType() {
+    public CommonCardTypes getCardType() {
         return card_type;
     }
 
@@ -47,7 +57,6 @@ public class CardModel
         return attack;
     }
 
-
     /**
      * @author Romel (s215212)
      */
@@ -60,6 +69,6 @@ public class CardModel
      */
     @Override
     public String toString() {
-        return String.format("CreatureModel{creature_type='%s', health=%d, attack=%d, cost=%d}", card_type, health, attack, cost);
+        return String.format("CardModel{card_type='%s', health=%d, attack=%d, cost=%d}", card_type, health, attack, cost);
     }
 }

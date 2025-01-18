@@ -28,7 +28,7 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
-      <TextField fx:id="player_2_name" alignment="CENTER" layoutX="880.0" layoutY="302.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#unready" onKeyTyped="#unready" prefHeight="30.0" prefWidth="160.0" promptText="player name">
+      <TextField fx:id="p2_name" alignment="CENTER" layoutX="880.0" layoutY="302.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#unready" onKeyTyped="#unready" prefHeight="30.0" prefWidth="160.0" promptText="player name">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
