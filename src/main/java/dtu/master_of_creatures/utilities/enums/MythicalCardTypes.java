@@ -10,14 +10,13 @@ public enum MythicalCardTypes
     SHESHESHEN(8,1,2),
     MOTHMAN(3,6,2);
 
-
     private final int health;
     private final int attack;
     private final int cost;
 
     /**
      * Enum constructor
-     * @author Romel (s215212)
+     * @author Maria (s195685)
      */
     MythicalCardTypes(int health, int attack, int cost)
     {
@@ -31,7 +30,7 @@ public enum MythicalCardTypes
     /////////////////////////
 
     /**
-     * @author Romel (s215212)
+     * @author Maria (s195685)
      */
     public int getHealth()
     {
@@ -39,7 +38,7 @@ public enum MythicalCardTypes
     }
 
     /**
-     * @author Romel (s215212)
+     * @author Maria (s195685)
      */
     public int getAttack()
     {
@@ -47,7 +46,7 @@ public enum MythicalCardTypes
     }
 
     /**
-     * @author Romel (s215212)
+     * @author Maria (s195685)
      */
     public int getCost()
     {

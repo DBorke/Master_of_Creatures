@@ -36,7 +36,6 @@ public enum CommonCardTypes
     BLOODHOUND(2,2,2),
     VULTURE(3,3,3);
 
-
     private final int health;
     private final int attack;
     private final int cost;

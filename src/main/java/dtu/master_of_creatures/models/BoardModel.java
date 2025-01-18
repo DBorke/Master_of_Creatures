@@ -1,18 +1,11 @@
-/*
- * Packages
- */
 package dtu.master_of_creatures.models;
 
-/*
- * Imports for java
- */
+// Project libraries
 import dtu.master_of_creatures.utilities.enums.PhaseTypes;
 
+// Java libraries
 import java.util.Arrays;
 
-/*
- * Board Model Logistics / Groundwork
- */
 public class BoardModel
 {
     // Fields
@@ -24,7 +17,7 @@ public class BoardModel
 
     /**
      * Constructor
-     * @author Maria (s195685)
+     * @author Maria (s195685), Danny (s224774)
      */
     public BoardModel(GameModel game_model)
     {
@@ -38,7 +31,7 @@ public class BoardModel
      * Summon a creature in a specific lane
      * @author Maria (s195685), Danny (s224774)
      */
-    public boolean addRemoveCreatureFromField(CardModel creature, int lane)
+    public boolean summonCreature(PlayerModel player, CardModel creature, int lane)
     {
         if (game_model.getPhaseType() != PhaseTypes.PLAYING_PHASE) // will change depending on the phase names. "SUMMON" is the planning/sacrifice/playing phase.
         {
@@ -50,16 +43,33 @@ public class BoardModel
             throw new IllegalArgumentException("Lane must be 0, 1, or 2.");
         }
 
-        CardModel[] current_player_lanes = game_model.getCurrentPlayer() == game_model.getPlayers()[0] ? player_1_lanes : player_2_lanes;
+        CardModel[] player_lanes = player == game_model.getPlayers()[0] ? player_1_lanes : player_2_lanes;
 
-        if (current_player_lanes[lane] != null)
+        if (player_lanes[lane] != null)
         {
             throw new IllegalStateException("Lane is already occupied.");
         }
 
-        current_player_lanes[lane] = creature;
+        player_lanes[lane] = creature;
 
         return true;
+    }
+
+    /**
+     * Remove a creature from a specific lane.
+     * @author Danny (s224774)
+     */
+    public void removeCreatureFromField(PlayerModel player, int lane)
+    {
+        if(lane >= 0 && lane <= 2)
+        {
+            CardModel[] player_lanes = player == game_model.getPlayers()[0] ? player_1_lanes : player_2_lanes;
+
+            if(player_lanes[lane] != null)
+            {
+                player_lanes[lane] = null;
+            }
+        }
     }
 
     /**

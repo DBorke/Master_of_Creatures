@@ -13,14 +13,14 @@ import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.HashMap;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 import java.io.IOException;
 
 // JavaFX libraries
 import javafx.fxml.Initializable;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -138,7 +138,6 @@ public class GameController extends SceneController implements Initializable
     private Button p2_scroll_right;
     @FXML
     private Button p2_draw;
-
     private int hand_slot_index;
     private CardModel selected_card;
 
@@ -188,7 +187,7 @@ public class GameController extends SceneController implements Initializable
     }
 
     /**
-     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
+     * @author Danny (s224774), Maria (s195685), Mathias (s224273), Romel (s215212)
      */
     public void handleTurnTimeUI(int turn_time_remaining)
     {
@@ -229,7 +228,7 @@ public class GameController extends SceneController implements Initializable
     }
 
     /**
-     * @author Maria (s195685), Danny
+     * @author Maria (s195685), Danny (s224774)
      */
     public void handlePlayerCardUIs()
     {
@@ -245,6 +244,9 @@ public class GameController extends SceneController implements Initializable
         }
     }
 
+    /**
+     * @author Danny (s224774), Maria (s195685), Carl Emil (s224168), Mathias (s224273), Romel (s215212)
+     */
     public void handlePlayerButtons()
     {
         if(current_player == player_1)
@@ -258,11 +260,11 @@ public class GameController extends SceneController implements Initializable
             p2_draw.setDisable(false);
         }
 
-        selected_card = null;
+        selected_card = null; // reset selection
     }
 
     /**
-     * @author Danny (s224774), Maria (s195685)
+     * @author Danny (s224774), Maria (s195685), Carl Emil (s224168), Mathias (s224273), Romel (s215212)
      */
     public void playerClickedOnCard(ActionEvent event)
     {
@@ -308,7 +310,7 @@ public class GameController extends SceneController implements Initializable
     }
 
     /**
-     * @author Danny (s224774), Maria (s195685)
+     * @author Danny (s224774), Maria (s195685), Carl Emil (s224168), Mathias (s224273), Romel (s215212)
      */
     public void playerClickedOnField(ActionEvent event)
     {
@@ -346,6 +348,9 @@ public class GameController extends SceneController implements Initializable
         }
     }
 
+    /**
+     * @author Danny (s224774), Maria (s195685), Carl Emil (s224168), Mathias (s224273), Romel (s215212)
+     */
     public void playerDrewFromDeck()
     {
         game_model.drawFromDeck();
@@ -409,6 +414,30 @@ public class GameController extends SceneController implements Initializable
      */
     public void updateCardImage(PlayerModel player, CommonCardTypes card_type, int slot_index, boolean in_hand)
     {
+        ImageView slot_image = getSlotImage(player, slot_index, in_hand);
+
+        if(card_type != null)
+        {
+            slot_image.setImage(new Image(String.valueOf(MasterOfCreaturesApp.class.getResource("media/images/" + card_type.name().toLowerCase() + ".png"))));
+        }
+        else
+        {
+            if(in_hand)
+            {
+                slot_image.setImage(null);
+            }
+            else
+            {
+                slot_image.setImage(new Image(String.valueOf(MasterOfCreaturesApp.class.getResource("media/images/card_back.png"))));
+            }
+        }
+    }
+
+    /**
+     * @author Danny (s224774), Maria (s195685)
+     */
+    private ImageView getSlotImage(PlayerModel player, int slot_index, boolean in_hand)
+    {
         ImageView slot_image;
 
         if(player == player_1)
@@ -434,21 +463,7 @@ public class GameController extends SceneController implements Initializable
             }
         }
 
-        if(card_type != null)
-        {
-            slot_image.setImage(new Image(String.valueOf(MasterOfCreaturesApp.class.getResource("media/images/" + card_type.name().toLowerCase() + ".png"))));
-        }
-        else
-        {
-            if(in_hand)
-            {
-                slot_image.setImage(null);
-            }
-            else
-            {
-                slot_image.setImage(new Image(String.valueOf(MasterOfCreaturesApp.class.getResource("media/images/card_back.png"))));
-            }
-        }
+        return slot_image;
     }
 
     /**

@@ -1,14 +1,14 @@
 package dtu.master_of_creatures.models;
 
+// Project libraries
 import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 
 public class CardModel
 {
     // Fields
     private final CommonCardTypes card_type;
-    private final int health;
-    private final int attack;
-
+    private int health;
+    private int attack;
     private final int cost;
 
     /**
@@ -20,6 +20,16 @@ public class CardModel
         this.health = card_type.getHealth();
         this.attack = card_type.getAttack();
         this.cost = card_type.getCost();
+    }
+
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
+     */
+    public int damageCard(int damage_done)
+    {
+        health -= damage_done;
+
+        return health;
     }
 
     /////////////////////////
@@ -46,7 +56,6 @@ public class CardModel
     public int getAttack() {
         return attack;
     }
-
 
     /**
      * @author Romel (s215212)

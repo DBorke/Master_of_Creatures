@@ -9,9 +9,9 @@ import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 // Java libraries
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.Timer;
 import java.util.HashMap;
 import java.util.List;
+import javax.swing.Timer;
 import java.util.Random;
 
 public class GameModel implements ActionListener
@@ -49,7 +49,7 @@ public class GameModel implements ActionListener
     }
 
     /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
+     * @author Danny (s224774), Maria (s195685)
      */
     public void initializeGame(int round_wins_needed, int turn_time_limit, int health_points, int blood_points, int deck_size, int hand_size)
     {
@@ -63,7 +63,7 @@ public class GameModel implements ActionListener
     }
 
     /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
+     * @author Danny (s224774), Maria (s195685)
      */
     public void initializePlayer(String player_name, List<CommonCardTypes> cards_chosen, boolean is_host)
     {
@@ -139,6 +139,9 @@ public class GameModel implements ActionListener
         game_controller.setCurrentPlayer(current_player);
     }
 
+    /**
+     * @author Danny (s224774), Maria (s195685), Carl Emil (s224168), Mathias (s224273), Romel (s215212)
+     */
     public void drawFromDeck()
     {
         current_player.drawFromDeck();
@@ -147,13 +150,13 @@ public class GameModel implements ActionListener
     }
 
     /**
-     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
+     * @author Danny (s224774), Maria (s195685), Carl Emil (s224168), Mathias (s224273), Romel (s215212)
      */
     public boolean playChosenCard(int hand_index, int field_index)
     {
         CardModel card_played = current_player.getCardsInHand().get(hand_index);
 
-        if(board_model.addRemoveCreatureFromField(card_played, field_index))
+        if(board_model.summonCreature(current_player, card_played, field_index))
         {
             current_player.removeFromHand(card_played);
 
@@ -206,11 +209,54 @@ public class GameModel implements ActionListener
     }
 
     /**
-     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
     public void performPostTurnAttacks()
     {
+        CardModel[] player_1_lanes = board_model.getPlayer1Lanes();
+        CardModel[] player_2_lanes = board_model.getPlayer2Lanes();
+
+        PlayerModel attacking_player = current_player == players[0] ? players[0] : players[1];
+        PlayerModel attacked_player = current_player == players[0] ? players[1] : players[0];
+        CardModel attacking_card;
+        CardModel attacked_card;
+
+        int post_attack_health;
+
+        for(int lane_index = 0; lane_index < 3; lane_index++)
+        {
+            attacking_card = attacking_player == players[0] ? player_1_lanes[lane_index] : player_2_lanes[lane_index];
+            attacked_card = attacking_player == players[0] ? player_2_lanes[lane_index] : player_1_lanes[lane_index];
+
+            if(attacking_card != null || attacked_card != null)
+            {
+                if(attacking_card != null && attacked_card != null)
+                {
+                    post_attack_health = attacked_card.damageCard(attacking_card.getAttack());
+
+                    if(post_attack_health <= 0) // card dead
+                    {
+                        board_model.removeCreatureFromField(attacked_player, lane_index);
+
+                        if(post_attack_health < 0) // player damaged
+                        {
+                            attacked_player.changeHealthPoints(post_attack_health);
+                        }
+                    }
+
+                    attacking_player.increaseDamageDone(attacking_card.getAttack()); // damage done to both cards and opponent player
+                }
+                else if(attacking_card != null)
+                {
+                    attacked_player.changeHealthPoints(-1 * attacking_card.getAttack());
+
+                    attacking_player.increaseDamageDone(attacking_card.getAttack()); // damage done to player
+                }
+            }
+        }
+
         game_controller.handlePlayerInfoUIs();
+        game_controller.handlePlayerCardUIs();
     }
 
     /**
@@ -305,7 +351,7 @@ public class GameModel implements ActionListener
             {
                 game_controller.handleTurnTimeUI(turn_time);
             }
-            else if(turn_time == -2) // slight delay to attack
+            else if(turn_time == -2 && turn_active) // slight delay to attack, make sure turn has not already ended
             {
                 endTurn();
             }
