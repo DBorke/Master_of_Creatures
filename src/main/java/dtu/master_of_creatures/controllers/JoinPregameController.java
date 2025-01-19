@@ -23,11 +23,11 @@ public class JoinPregameController extends SceneController implements Initializa
 {
     // JavaFX
     @FXML
-    private AnchorPane join_pregame_pane;
+    private AnchorPane join_pane;
     @FXML
-    private TextField p2_name;
+    private TextField player_name;
     @FXML
-    private Button ready_up;
+    private Button ready;
     @FXML
     private Button sound_button;
 
@@ -56,7 +56,7 @@ public class JoinPregameController extends SceneController implements Initializa
      */
     public void defaultMatchSettings()
     {
-        p2_name.setText("Player 2");
+        player_name.setText("Player 2");
     }
 
     /**
@@ -67,10 +67,10 @@ public class JoinPregameController extends SceneController implements Initializa
         List<CommonCardTypes> temp_list = new ArrayList<>();
         temp_list.add(CommonCardTypes.WOLF);
 
-        game_model.initializePlayer(p2_name.getText(), temp_list, false); // needs information from other opponent's app
+        game_model.initializePlayer(player_name.getText(), temp_list, false);
 
-        join_pregame_pane.requestFocus();
-        ready_up.setDisable(true);
+        join_pane.requestFocus(); // exit player name text field
+        ready.setDisable(true);
     }
 
     /**
@@ -78,7 +78,7 @@ public class JoinPregameController extends SceneController implements Initializa
      */
     public void unready()
     {
-        ready_up.setDisable(false);
+        ready.setDisable(false);
     }
 
     /**

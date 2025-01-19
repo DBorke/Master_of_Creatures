@@ -31,121 +31,80 @@ public class GameController extends SceneController implements Initializable
 {
     // JavaFX
     @FXML
-    private Button sound_button;
-    @FXML
     private Text turn_time;
     @FXML
-    private Text p1_name;
+    private Text player_name;
     @FXML
-    private Text p1_health;
+    private Text player_health;
     @FXML
-    private Text p1_blood_points;
+    private Text player_blood;
     @FXML
-    private Text p1_remain_deck;
+    private Text player_remain_deck;
+    private List<Button> player_hand_list;
     @FXML
-    private Text p1_remain_hand;
-    private List<Button> p1_hand_list;
+    private Button player_hand_1;
     @FXML
-    private Button p1_hand_1;
+    private Button player_hand_2;
     @FXML
-    private Button p1_hand_2;
+    private Button player_hand_3;
     @FXML
-    private Button p1_hand_3;
+    private Button player_hand_4;
     @FXML
-    private Button p1_hand_4;
+    private Button player_hand_5;
+    private List<ImageView> player_hand_image_list;
     @FXML
-    private Button p1_hand_5;
-    private List<ImageView> p1_hand_image_list;
+    private ImageView player_hand_image_1;
     @FXML
-    private ImageView p1_hand_image_1;
+    private ImageView player_hand_image_2;
     @FXML
-    private ImageView p1_hand_image_2;
+    private ImageView player_hand_image_3;
     @FXML
-    private ImageView p1_hand_image_3;
+    private ImageView player_hand_image_4;
     @FXML
-    private ImageView p1_hand_image_4;
+    private ImageView player_hand_image_5;
+    private List<Button> player_field_list;
     @FXML
-    private ImageView p1_hand_image_5;
-    private List<Button> p1_field_list;
+    private Button player_field_1;
     @FXML
-    private Button p1_field_1;
+    private Button player_field_2;
     @FXML
-    private Button p1_field_2;
+    private Button player_field_3;
+    private List<ImageView> player_field_image_list;
     @FXML
-    private Button p1_field_3;
-    private List<ImageView> p1_field_image_list;
+    private ImageView player_field_image_1;
     @FXML
-    private ImageView p1_field_image_1;
+    private ImageView player_field_image_2;
     @FXML
-    private ImageView p1_field_image_2;
+    private ImageView player_field_image_3;
     @FXML
-    private ImageView p1_field_image_3;
+    private Button player_draw;
     @FXML
-    private Button p1_scroll_left;
+    private Button player_scroll_left;
     @FXML
-    private Button p1_scroll_right;
+    private Button player_scroll_right;
     @FXML
-    private Button p1_draw;
+    private Text opponent_name;
     @FXML
-    private Text p2_name;
+    private Text opponent_health;
     @FXML
-    private Text p2_health;
+    private Text opponent_remain_deck;
+    private List<ImageView> opponent_field_image_list;
     @FXML
-    private Text p2_blood_points;
+    private ImageView opponent_field_image_1;
     @FXML
-    private Text p2_remain_deck;
+    private ImageView opponent_field_image_2;
     @FXML
-    private Text p2_remain_hand;
-    private List<Button> p2_hand_list;
+    private ImageView opponent_field_image_3;
     @FXML
-    private Button p2_hand_1;
-    @FXML
-    private Button p2_hand_2;
-    @FXML
-    private Button p2_hand_3;
-    @FXML
-    private Button p2_hand_4;
-    @FXML
-    private Button p2_hand_5;
-    private List<ImageView> p2_hand_image_list;
-    @FXML
-    private ImageView p2_hand_image_1;
-    @FXML
-    private ImageView p2_hand_image_2;
-    @FXML
-    private ImageView p2_hand_image_3;
-    @FXML
-    private ImageView p2_hand_image_4;
-    @FXML
-    private ImageView p2_hand_image_5;
-    private List<Button> p2_field_list;
-    @FXML
-    private Button p2_field_1;
-    @FXML
-    private Button p2_field_2;
-    @FXML
-    private Button p2_field_3;
-    private List<ImageView> p2_field_image_list;
-    @FXML
-    private ImageView p2_field_image_1;
-    @FXML
-    private ImageView p2_field_image_2;
-    @FXML
-    private ImageView p2_field_image_3;
-    @FXML
-    private Button p2_scroll_left;
-    @FXML
-    private Button p2_scroll_right;
-    @FXML
-    private Button p2_draw;
-    private int hand_slot_index;
+    private Button sound_button;
     private CardModel selected_card;
+    private int hand_slot_index;
 
     // Game data
     private final GameModel game_model;
     private final BoardModel board_model;
-    private final PlayerModel player_1;
-    private final PlayerModel player_2; // temp
+    private final PlayerModel player;
+    private final PlayerModel opponent;
     private PlayerModel current_player;
     private final HashMap<String, Integer> match_settings;
 
@@ -160,8 +119,8 @@ public class GameController extends SceneController implements Initializable
         board_model = game_model.getBoardModel();
 
         PlayerModel[] players = game_model.getPlayers();
-        player_1 = players[0];
-        player_2 = players[1]; // temp
+        player = players[0];
+        opponent = players[1];
 
         match_settings = game_model.getMatchSettings();
     }
@@ -173,17 +132,57 @@ public class GameController extends SceneController implements Initializable
     {
         handleTurnTimeUI(match_settings.get("time limit"));
 
-        p1_hand_list = new ArrayList<>(List.of(p1_hand_1, p1_hand_2, p1_hand_3, p1_hand_4, p1_hand_5));
-        p1_hand_image_list = new ArrayList<>(List.of(p1_hand_image_1, p1_hand_image_2, p1_hand_image_3, p1_hand_image_4, p1_hand_image_5));
-        p1_field_list = new ArrayList<>(List.of(p1_field_1, p1_field_2, p1_field_3));
-        p1_field_image_list = new ArrayList<>(List.of(p1_field_image_1, p1_field_image_2, p1_field_image_3));
-        p2_hand_list = new ArrayList<>(List.of(p2_hand_1, p2_hand_2, p2_hand_3, p2_hand_4, p2_hand_5));
-        p2_hand_image_list = new ArrayList<>(List.of(p2_hand_image_1, p2_hand_image_2, p2_hand_image_3, p2_hand_image_4, p2_hand_image_5));
-        p2_field_list = new ArrayList<>(List.of(p2_field_1, p2_field_2, p2_field_3));
-        p2_field_image_list = new ArrayList<>(List.of(p2_field_image_1, p2_field_image_2, p2_field_image_3));
+        // Initialize data structures for player
+        player_hand_list = new ArrayList<>(List.of(player_hand_1, player_hand_2, player_hand_3, player_hand_4, player_hand_5));
+        player_hand_image_list = new ArrayList<>(List.of(player_hand_image_1, player_hand_image_2, player_hand_image_3, player_hand_image_4, player_hand_image_5));
+        player_field_list = new ArrayList<>(List.of(player_field_1, player_field_2, player_field_3));
+        player_field_image_list = new ArrayList<>(List.of(player_field_image_1, player_field_image_2, player_field_image_3));
+
+        // Initialize data structures for opponent
+        opponent_field_image_list = new ArrayList<>(List.of(opponent_field_image_1, opponent_field_image_2, opponent_field_image_3));
 
         game_model.startNewRound();
         game_model.setGameState(GameStates.GAME_ACTIVE);
+    }
+
+    /**
+     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
+     */
+    public void handlePlayerInfoUIs()
+    {
+        // Update UI information for player
+        player_name.setText(current_player == player ? player.getPlayerName() + " (current player)" : player.getPlayerName());
+        player_health.setText("Health: " + player.getHealthPoints());
+        player_blood.setText("Blood points: " + player.getBloodPoints());
+        player_remain_deck.setText("Remaining in deck: " + player.getCurrentDeck().size());
+
+        // Update UI information for opponent
+        opponent_name.setText(current_player == opponent ? opponent.getPlayerName() + " (current player)" : opponent.getPlayerName());
+        opponent_health.setText("Health: " + opponent.getHealthPoints());
+        opponent_remain_deck.setText("Remaining in deck: " + opponent.getCurrentDeck().size());
+    }
+
+    /**
+     * @author Maria (s195685), Danny (s224774)
+     */
+    public void handlePlayerCardUIs()
+    {
+        updatePlayerHandImages();
+
+        if(current_player != null) // subsequent turns
+        {
+            updatePlayersFieldImages();
+        }
+    }
+
+    /**
+     * @author Danny (s224774), Maria (s195685), Carl Emil (s224168), Mathias (s224273), Romel (s215212)
+     */
+    public void handlePlayerButtons()
+    {
+        player_draw.setDisable(current_player != player);
+
+        selected_card = null; // reset selection
     }
 
     /**
@@ -208,62 +207,6 @@ public class GameController extends SceneController implements Initializable
     }
 
     /**
-     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
-     */
-    public void handlePlayerInfoUIs()
-    {
-        // Update UI information for player 1
-        p1_name.setText(current_player == player_1 ? player_1.getPlayerName() + " (current player)" : player_1.getPlayerName());
-        p1_health.setText("Health: " + player_1.getHealthPoints());
-        p1_blood_points.setText("Blood points: " + player_1.getBloodPoints());
-        p1_remain_deck.setText("Remaining in deck: " + player_1.getCurrentDeck().size());
-        p1_remain_hand.setText("Remaining in hand: " + player_1.getCardsInHand().size());
-
-        // Update UI information for player 2 (temp)
-        p2_name.setText(current_player == player_2 ? player_2.getPlayerName() + " (current player)" : player_2.getPlayerName());
-        p2_health.setText("Health: " + player_2.getHealthPoints());
-        p2_blood_points.setText("Blood points: " + player_2.getBloodPoints());
-        p2_remain_deck.setText("Remaining in deck: " + player_2.getCurrentDeck().size());
-        p2_remain_hand.setText("Remaining in hand: " + player_2.getCardsInHand().size());
-    }
-
-    /**
-     * @author Maria (s195685), Danny (s224774)
-     */
-    public void handlePlayerCardUIs()
-    {
-        if(current_player != null) // subsequent turns
-        {
-            updatePlayerHandImages(current_player);
-            updatePlayersFieldImages();
-        }
-        else // first turn
-        {
-            updatePlayerHandImages(player_1);
-            updatePlayerHandImages(player_2);
-        }
-    }
-
-    /**
-     * @author Danny (s224774), Maria (s195685), Carl Emil (s224168), Mathias (s224273), Romel (s215212)
-     */
-    public void handlePlayerButtons()
-    {
-        if(current_player == player_1)
-        {
-            p1_draw.setDisable(false);
-            p2_draw.setDisable(true);
-        }
-        else
-        {
-            p1_draw.setDisable(true);
-            p2_draw.setDisable(false);
-        }
-
-        selected_card = null; // reset selection
-    }
-
-    /**
      * @author Danny (s224774), Maria (s195685), Carl Emil (s224168), Mathias (s224273), Romel (s215212)
      */
     public void playerClickedOnCard(ActionEvent event)
@@ -277,32 +220,15 @@ public class GameController extends SceneController implements Initializable
                 Button slot = (Button) event.getSource();
                 int slot_index;
 
-                if(current_player == player_1)
+                if(current_player == player)
                 {
-                    slot_index = p1_hand_list.indexOf(slot);
+                    slot_index = player_hand_list.indexOf(slot);
 
-                    if(slot_index != -1) // make sure card is in player 1's hand
+                    if(player.getCardsInHand().size() > slot_index)
                     {
-                        if(player_1.getCardsInHand().size() > slot_index)
-                        {
-                            hand_slot_index = slot_index;
+                        hand_slot_index = slot_index;
 
-                            selected_card = player_1.getCardsInHand().get(slot_index);
-                        }
-                    }
-                }
-                else // player 2
-                {
-                    slot_index = p2_hand_list.indexOf(slot);
-
-                    if(slot_index != -1) // make sure card is in player 2's hand
-                    {
-                        if(player_2.getCardsInHand().size() > slot_index)
-                        {
-                            hand_slot_index = slot_index;
-
-                            selected_card = player_2.getCardsInHand().get(slot_index);
-                        }
+                        selected_card = player.getCardsInHand().get(slot_index);
                     }
                 }
             }
@@ -325,17 +251,10 @@ public class GameController extends SceneController implements Initializable
                     Button slot = (Button) event.getSource();
                     int slot_index;
 
-                    if(current_player == player_1)
+                    if(current_player == player)
                     {
-                        slot_index = p1_field_list.indexOf(slot);
-                    }
-                    else // player 2
-                    {
-                        slot_index = p2_field_list.indexOf(slot);
-                    }
+                        slot_index = player_field_list.indexOf(slot);
 
-                    if(slot_index != -1) // make sure the field belongs to the current player
-                    {
                         if(game_model.playChosenCard(hand_slot_index, slot_index))
                         {
                             handlePlayerCardUIs();
@@ -355,27 +274,20 @@ public class GameController extends SceneController implements Initializable
     {
         game_model.drawFromDeck();
 
-        updatePlayerHandImages(current_player);
+        updatePlayerHandImages();
 
-        if(current_player == player_1)
-        {
-            p1_draw.setDisable(true);
-        }
-        else
-        {
-            p2_draw.setDisable(true);
-        }
+        player_draw.setDisable(true);
     }
 
     /**
      * @author Danny (s224774), Maria (s195685)
      */
-    public void updatePlayerHandImages(PlayerModel player) // updated for one player at a time
+    public void updatePlayerHandImages() // updated for one player at a time
     {
         List<CardModel> player_hand = player.getCardsInHand();
         int player_card_count = player_hand.size();
 
-        for(int hand_index = 0; hand_index < p1_hand_list.size(); hand_index++)
+        for(int hand_index = 0; hand_index < player_hand_list.size(); hand_index++)
         {
             if(hand_index < player_card_count)
             {
@@ -393,28 +305,28 @@ public class GameController extends SceneController implements Initializable
      */
     public void updatePlayersFieldImages() // updated for both players at a time
     {
-        CardModel[] p1_field_cards = board_model.getPlayer1Lanes();
-        CardModel p1_card_in_field;
+        CardModel[] player_field_cards = board_model.getPlayer1Lanes();
+        CardModel player_field_card;
 
-        CardModel[] p2_field_cards = board_model.getPlayer2Lanes();
-        CardModel p2_card_in_field;
+        CardModel[] opponent_field_cards = board_model.getPlayer2Lanes();
+        CardModel opponent_field_card;
 
-        for(int field_index = 0; field_index < p1_field_cards.length; field_index++)
+        for(int field_index = 0; field_index < player_field_cards.length; field_index++)
         {
-            p1_card_in_field = p1_field_cards[field_index];
-            p2_card_in_field = p2_field_cards[field_index];
+            player_field_card = player_field_cards[field_index];
+            opponent_field_card = opponent_field_cards[field_index];
 
-            updateCardImage(player_1, (p1_card_in_field != null ? p1_card_in_field.getCardType() : null), field_index, false);
-            updateCardImage(player_2, (p2_card_in_field != null ? p2_card_in_field.getCardType() : null), field_index, false);
+            updateCardImage(player, (player_field_card != null ? player_field_card.getCardType() : null), field_index, false);
+            updateCardImage(opponent, (opponent_field_card != null ? opponent_field_card.getCardType() : null), field_index, false);
         }
     }
 
     /**
      * @author Danny (s224774), Maria (s195685)
      */
-    public void updateCardImage(PlayerModel player, CommonCardTypes card_type, int slot_index, boolean in_hand)
+    public void updateCardImage(PlayerModel updated_player, CommonCardTypes card_type, int slot_index, boolean in_hand)
     {
-        ImageView slot_image = getSlotImage(player, slot_index, in_hand);
+        ImageView slot_image = getSlotImage(updated_player, slot_index, in_hand);
 
         if(card_type != null)
         {
@@ -436,31 +348,24 @@ public class GameController extends SceneController implements Initializable
     /**
      * @author Danny (s224774), Maria (s195685)
      */
-    private ImageView getSlotImage(PlayerModel player, int slot_index, boolean in_hand)
+    private ImageView getSlotImage(PlayerModel updated_player, int slot_index, boolean in_hand)
     {
         ImageView slot_image;
 
-        if(player == player_1)
+        if(updated_player == player)
         {
             if(in_hand)
             {
-                slot_image = p1_hand_image_list.get(slot_index);
+                slot_image = player_hand_image_list.get(slot_index);
             }
             else
             {
-                slot_image = p1_field_image_list.get(slot_index);
+                slot_image = player_field_image_list.get(slot_index);
             }
         }
         else
         {
-            if(in_hand)
-            {
-                slot_image = p2_hand_image_list.get(slot_index);
-            }
-            else
-            {
-                slot_image = p2_field_image_list.get(slot_index);
-            }
+            slot_image = opponent_field_image_list.get(slot_index);
         }
 
         return slot_image;

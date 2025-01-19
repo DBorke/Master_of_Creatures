@@ -42,7 +42,7 @@ public class MenuController extends SceneController implements Initializable
     /**
      * @author Danny (s224774)
      */
-    public void newGame() throws IOException
+    public void newGame() throws IOException // for host player
     {
         goToHostPregameScene();
     }
@@ -50,7 +50,7 @@ public class MenuController extends SceneController implements Initializable
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
-    public void joinGame() throws IOException
+    public void joinGame() throws IOException // for joining player
     {
         goToJoinPregameScene();
     }
