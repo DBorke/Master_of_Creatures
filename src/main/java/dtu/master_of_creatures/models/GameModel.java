@@ -19,7 +19,7 @@ public class GameModel implements ActionListener
     private static GameStates game_state;
     private static PhaseTypes phase_type;
     private BoardModel board_model;
-    private final PlayerModel[] players;
+    private final PlayerModel[] players; // 0 = host, 1 = joining player
     private PlayerModel current_player;
     private boolean turn_active;
     private final int[] round_wins;
@@ -67,7 +67,9 @@ public class GameModel implements ActionListener
      */
     public void initializePlayer(String player_name, List<CommonCardTypes> cards_chosen, boolean is_host)
     {
-        players[is_host ? 0 : 1] = new PlayerModel(player_name, is_host ? 0 : 1, cards_chosen, this);
+        int player_index = is_host ? 0 : 1;
+
+        players[player_index] = new PlayerModel(player_name, player_index, cards_chosen, this);
     }
 
     /**
@@ -411,7 +413,6 @@ public class GameModel implements ActionListener
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-
     public PlayerModel[] getPlayers()
     {
         return players;
@@ -425,6 +426,9 @@ public class GameModel implements ActionListener
         return current_player;
     }
 
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
     public boolean getTurnActive()
     {
         return turn_active;
