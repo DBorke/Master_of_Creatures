@@ -6,6 +6,8 @@ import dtu.master_of_creatures.utilities.enums.GameStates;
 import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 
 // Java libraries
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.List;
@@ -21,7 +23,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
-public class HostPregameController extends SceneController implements Initializable
+import javax.swing.*;
+
+public class HostPregameController extends SceneController implements Initializable, ActionListener
 {
     // JavaFX
     @FXML
@@ -53,11 +57,11 @@ public class HostPregameController extends SceneController implements Initializa
     private Text cards_chosen_count;
     @FXML
     private Button sound_button;
+    private final Timer network_timer;
 
     // Game data
     private final GameModel game_model;
     private final CommonCardTypes[] card_types_available;
-    private boolean opponent_ready;
 
     /**
      * @author Danny (s224774), Mathias (s224273), Maria (s195685), Romel (s215212)
@@ -68,6 +72,8 @@ public class HostPregameController extends SceneController implements Initializa
 
         player_cards = new ArrayList<>();
         card_types_available = CommonCardTypes.values();
+
+        network_timer = new Timer(1000, this); // delay is in milliseconds
     }
 
     /**
@@ -196,11 +202,9 @@ public class HostPregameController extends SceneController implements Initializa
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
-    public void startGame() throws IOException
+    public void finishMatchSetup()
     {
-        opponent_ready = true;
-
-        if(player_cards.size() == deck_size_selected && opponent_ready)
+        if(player_cards.size() == deck_size_selected)
         {
             // Set up game model
             String turn_time_string = turn_time.getSelectionModel().getSelectedItem();
@@ -225,10 +229,13 @@ public class HostPregameController extends SceneController implements Initializa
 
             game_model.initializeGame(round_wins.getSelectionModel().getSelectedItem(), turn_time, health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem());
             game_model.initializePlayer(player_name.getText(), player_cards, true);
-
-            // Models ready, go to playing scene
-            goToGameScene();
         }
+
+        game_model.setPlayerReady(true);
+
+        network_timer.start();
+
+        System.out.println("Waiting for client.");
     }
 
     /**
@@ -257,6 +264,25 @@ public class HostPregameController extends SceneController implements Initializa
         return (row_to_convert * 4) + column_to_convert;
     }
 
+    public void actionPerformed(ActionEvent actionEvent) // gets called every 0.1 seconds
+    {
+        if(game_model.getPlayerReady() && game_model.getOpponentReady())
+        {
+            try
+            {
+                goToGameScene();
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+        else
+        {
+            System.out.println("No client connected.");
+        }
+    }
+
     /////////////////////////
     //////// setters ////////
     /////////////////////////
@@ -264,10 +290,5 @@ public class HostPregameController extends SceneController implements Initializa
     public void setOpponentName(String opponent_chosen_name)
     {
         opponent_name.setText(opponent_chosen_name);
-    }
-
-    public void setOpponentReady(boolean opponent_ready)
-    {
-        this.opponent_ready = opponent_ready;
     }
 }

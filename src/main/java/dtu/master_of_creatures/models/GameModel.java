@@ -2,6 +2,10 @@ package dtu.master_of_creatures.models;
 
 // Project libraries
 import dtu.master_of_creatures.controllers.GameController;
+import dtu.master_of_creatures.controllers.HostPregameController;
+import dtu.master_of_creatures.models.network.ClientModel;
+import dtu.master_of_creatures.models.network.HostModel;
+import dtu.master_of_creatures.models.network.ThreadModel;
 import dtu.master_of_creatures.utilities.enums.GameStates;
 import dtu.master_of_creatures.utilities.enums.PhaseTypes;
 import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
@@ -9,10 +13,12 @@ import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 // Java libraries
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.Timer;
 import java.util.Random;
+import java.util.logging.Logger;
 
 public class GameModel implements ActionListener
 {
@@ -20,6 +26,8 @@ public class GameModel implements ActionListener
     private static PhaseTypes phase_type;
     private BoardModel board_model;
     private PlayerModel player;
+    private boolean player_ready;
+    private boolean opponent_ready;
     private String opponent_player_name;
     private int opponent_player_number;
     private int opponent_player_health;
@@ -34,9 +42,14 @@ public class GameModel implements ActionListener
     private int round_time;
     private int match_time;
     private final HashMap<String, Integer> match_settings;
+    private HostModel host;
+    private ClientModel client;
+    private final String uri = "tcp://localhost:8080/?keep";
+    private static final Logger logger = Logger.getLogger(GameModel.class.getName());
 
     // App
     private GameController game_controller;
+    private HostPregameController host_pregame_controller;
 
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
@@ -57,12 +70,14 @@ public class GameModel implements ActionListener
     public void initializeGame(int round_wins_needed, int turn_time_limit, int health_points, int blood_points, int deck_size, int hand_size)
     {
         // Make backup of game related match settings
+        /*
         match_settings.put("round wins", round_wins_needed);
         match_settings.put("time limit", turn_time_limit);
         match_settings.put("health points", health_points);
         match_settings.put("blood points", blood_points);
         match_settings.put("deck size", deck_size);
         match_settings.put("hand size", hand_size);
+         */
     }
 
     /**
@@ -70,7 +85,54 @@ public class GameModel implements ActionListener
      */
     public void initializePlayer(String player_name, List<CommonCardTypes> cards_chosen, boolean is_host)
     {
+        match_settings.put("round wins", 3);
+        match_settings.put("time limit", 60);
+        match_settings.put("health points", 5);
+        match_settings.put("blood points", 0);
+        match_settings.put("deck size", 15);
+        match_settings.put("hand size", 4);
+
         player = new PlayerModel(player_name, is_host ? 0 : 1, cards_chosen, this);
+
+        if(is_host)
+        {
+            initializeHostClient();
+        }
+        else
+        {
+            initializeClientModel();
+        }
+    }
+
+    public void initializeHostClient()
+    {
+        host = new HostModel(uri); // check if it keeps the server up
+
+        Runnable initialize_host_parameters = () ->
+        {
+            host.initializeGameSpace(player.getPlayerName(), "Player 2", 30, 30, 10, 10, 5);
+            logger.info("Host setup complete, notifying client");
+        };
+
+        // Create host thread
+        Thread initialize_thread = new ThreadModel(initialize_host_parameters);
+
+        // Start host thread
+        initialize_thread.start();
+    }
+
+    public void initializeClientModel()
+    {
+        ClientModel client;
+
+        try
+        {
+            client = new ClientModel(uri);
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -348,7 +410,7 @@ public class GameModel implements ActionListener
      */
     public void actionPerformed(ActionEvent actionEvent) // gets called every second
     {
-        if(game_state != GameStates.GAME_HALFTIME && game_state != GameStates.GAME_OVER)
+        if(game_state == GameStates.GAME_ACTIVE)
         {
             turn_time--; // time remaining, therefore subtraction
             round_time++;
@@ -383,12 +445,27 @@ public class GameModel implements ActionListener
         GameModel.game_state = game_state;
     }
 
+    public void setHostPregameController(HostPregameController host_pregame_controller)
+    {
+        this.host_pregame_controller = host_pregame_controller;
+    }
+
     /**
      * @author Danny (s224774)
      */
     public void setGameController(GameController game_controller)
     {
         this.game_controller = game_controller;
+    }
+
+    public void setPlayerReady(boolean player_ready)
+    {
+        this.player_ready = player_ready;
+    }
+
+    public void setOpponentReady(boolean opponent_ready)
+    {
+        this.opponent_ready = opponent_ready;
     }
 
     /**
@@ -421,6 +498,16 @@ public class GameModel implements ActionListener
     public PlayerModel getPlayer()
     {
         return player;
+    }
+
+    public boolean getPlayerReady()
+    {
+        return opponent_ready;
+    }
+
+    public boolean getOpponentReady()
+    {
+        return opponent_ready;
     }
 
     /**

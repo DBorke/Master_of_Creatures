@@ -6,6 +6,8 @@ import dtu.master_of_creatures.utilities.enums.GameStates;
 import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 
 // Java libraries
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.List;
@@ -19,7 +21,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-public class JoinPregameController extends SceneController implements Initializable
+import javax.swing.*;
+
+public class JoinPregameController extends SceneController implements Initializable, ActionListener
 {
     // JavaFX
     @FXML
@@ -30,6 +34,7 @@ public class JoinPregameController extends SceneController implements Initializa
     private Button ready;
     @FXML
     private Button sound_button;
+    private final Timer network_timer;
 
     // Game data
     private final GameModel game_model;
@@ -40,6 +45,8 @@ public class JoinPregameController extends SceneController implements Initializa
     public JoinPregameController()
     {
         game_model = getGameModel();
+
+        network_timer = new Timer(1000, this); // delay is in milliseconds
     }
     /**
      * @author Danny (s224774)
@@ -71,6 +78,12 @@ public class JoinPregameController extends SceneController implements Initializa
 
         join_pane.requestFocus(); // exit player name text field
         ready.setDisable(true);
+
+        game_model.setOpponentReady(true);
+
+        network_timer.start();
+
+        // test if repository is ready
     }
 
     /**
@@ -97,5 +110,24 @@ public class JoinPregameController extends SceneController implements Initializa
         super.muteSound();
 
         sound_button.setText(getSoundUnmuted() ? "Sound On" : "Sound Off");
+    }
+
+    public void actionPerformed(ActionEvent actionEvent) // gets called every 0.1 seconds
+    {
+        if(game_model.getPlayerReady() && game_model.getOpponentReady())
+        {
+            try
+            {
+                goToGameScene();
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+        else
+        {
+            System.out.println("No host connected.");
+        }
     }
 }
