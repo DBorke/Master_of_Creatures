@@ -104,8 +104,11 @@ public class GameController extends SceneController implements Initializable
     private final GameModel game_model;
     private final BoardModel board_model;
     private final PlayerModel player;
-    private final PlayerModel opponent;
-    private PlayerModel current_player;
+    private final String opponent_player_name;
+    private final int opponent_player_number;
+    private int opponent_player_health;
+    private int opponent_cards_remaining;
+    private int current_player_number;
     private final HashMap<String, Integer> match_settings;
 
     /**
@@ -118,9 +121,12 @@ public class GameController extends SceneController implements Initializable
 
         board_model = game_model.getBoardModel();
 
-        PlayerModel[] players = game_model.getPlayers();
-        player = players[0];
-        opponent = players[1];
+        // Fetch player information
+        player = game_model.getPlayer();
+        opponent_player_name = game_model.getOpponentPlayerName();
+        opponent_player_number = game_model.getOpponentPlayerNumber();
+        opponent_player_health = game_model.getOpponentPlayerHealth();
+        opponent_cards_remaining = game_model.getOpponentCardsRemaining();
 
         match_settings = game_model.getMatchSettings();
     }
@@ -145,21 +151,27 @@ public class GameController extends SceneController implements Initializable
         game_model.setGameState(GameStates.GAME_ACTIVE);
     }
 
+    public void updateOpponentPlayerInfo(int opponent_player_health, int opponent_cards_remaining)
+    {
+        this.opponent_player_health = opponent_player_health;
+        this.opponent_cards_remaining = opponent_cards_remaining;
+    }
+
     /**
      * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
      */
     public void handlePlayerInfoUIs()
     {
         // Update UI information for player
-        player_name.setText(current_player == player ? player.getPlayerName() + " (current player)" : player.getPlayerName());
+        player_name.setText(current_player_number == player.getPlayerNumber() ? player.getPlayerName() + " (current player)" : player.getPlayerName());
         player_health.setText("Health: " + player.getHealthPoints());
         player_blood.setText("Blood points: " + player.getBloodPoints());
         player_remain_deck.setText("Remaining in deck: " + player.getCurrentDeck().size());
 
         // Update UI information for opponent
-        opponent_name.setText(current_player == opponent ? opponent.getPlayerName() + " (current player)" : opponent.getPlayerName());
-        opponent_health.setText("Health: " + opponent.getHealthPoints());
-        opponent_remain_deck.setText("Remaining in deck: " + opponent.getCurrentDeck().size());
+        opponent_name.setText(current_player_number != player.getPlayerNumber() ? opponent_player_name + " (current player)" : opponent_player_name);
+        opponent_health.setText("Health: " + opponent_player_health);
+        opponent_remain_deck.setText("Remaining in deck: " + opponent_cards_remaining);
     }
 
     /**
@@ -169,7 +181,7 @@ public class GameController extends SceneController implements Initializable
     {
         updatePlayerHandImages();
 
-        if(current_player != null) // subsequent turns
+        if(current_player_number != -1) // after the first turn
         {
             updatePlayersFieldImages();
         }
@@ -180,7 +192,7 @@ public class GameController extends SceneController implements Initializable
      */
     public void handlePlayerButtons()
     {
-        player_draw.setDisable(current_player != player);
+        player_draw.setDisable(current_player_number != player.getPlayerNumber());
 
         selected_card = null; // reset selection
     }
@@ -220,7 +232,7 @@ public class GameController extends SceneController implements Initializable
                 Button slot = (Button) event.getSource();
                 int slot_index;
 
-                if(current_player == player)
+                if(current_player_number == player.getPlayerNumber())
                 {
                     slot_index = player_hand_list.indexOf(slot);
 
@@ -251,7 +263,7 @@ public class GameController extends SceneController implements Initializable
                     Button slot = (Button) event.getSource();
                     int slot_index;
 
-                    if(current_player == player)
+                    if(current_player_number == player.getPlayerNumber())
                     {
                         slot_index = player_field_list.indexOf(slot);
 
@@ -291,11 +303,11 @@ public class GameController extends SceneController implements Initializable
         {
             if(hand_index < player_card_count)
             {
-                updateCardImage(player, player_hand.get(hand_index).getCardType(), hand_index, true);
+                updateCardImage(player.getPlayerNumber(), player_hand.get(hand_index).getCardType(), hand_index, true);
             }
             else // empty slot
             {
-                updateCardImage(player, null, hand_index, true);
+                updateCardImage(player.getPlayerNumber(), null, hand_index, true);
             }
         }
     }
@@ -316,17 +328,17 @@ public class GameController extends SceneController implements Initializable
             player_field_card = player_field_cards[field_index];
             opponent_field_card = opponent_field_cards[field_index];
 
-            updateCardImage(player, (player_field_card != null ? player_field_card.getCardType() : null), field_index, false);
-            updateCardImage(opponent, (opponent_field_card != null ? opponent_field_card.getCardType() : null), field_index, false);
+            updateCardImage(player.getPlayerNumber(), (player_field_card != null ? player_field_card.getCardType() : null), field_index, false);
+            updateCardImage(opponent_player_number, (opponent_field_card != null ? opponent_field_card.getCardType() : null), field_index, false);
         }
     }
 
     /**
      * @author Danny (s224774), Maria (s195685)
      */
-    public void updateCardImage(PlayerModel updated_player, CommonCardTypes card_type, int slot_index, boolean in_hand)
+    public void updateCardImage(int player_number, CommonCardTypes card_type, int slot_index, boolean in_hand)
     {
-        ImageView slot_image = getSlotImage(updated_player, slot_index, in_hand);
+        ImageView slot_image = getSlotImage(player_number, slot_index, in_hand);
 
         if(card_type != null)
         {
@@ -348,11 +360,11 @@ public class GameController extends SceneController implements Initializable
     /**
      * @author Danny (s224774), Maria (s195685)
      */
-    private ImageView getSlotImage(PlayerModel updated_player, int slot_index, boolean in_hand)
+    private ImageView getSlotImage(int player_number, int slot_index, boolean in_hand)
     {
         ImageView slot_image;
 
-        if(updated_player == player)
+        if(player_number == player.getPlayerNumber())
         {
             if(in_hand)
             {
@@ -414,8 +426,8 @@ public class GameController extends SceneController implements Initializable
     /**
      * @author Danny (s224774)
      */
-    public void setCurrentPlayer(PlayerModel current_player)
+    public void setCurrentPlayerNumber(int current_player_number)
     {
-        this.current_player = current_player;
+        this.current_player_number = current_player_number;
     }
 }

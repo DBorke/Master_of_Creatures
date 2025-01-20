@@ -9,6 +9,15 @@ public abstract class Constants
     private static final String GAME_VERSION = "v. 0.35";
     private static final int APP_RESOLUTION_X = 1920;
     private static final int APP_RESOLUTION_Y = 1080;
+    public static final String PLAYER1_FIELD = "player1_field";
+    public static final String PLAYER2_FIELD = "player2_field";
+    public static final String PLAYERS = "players";
+    public static final String PLAYER1 = "player1";
+    public static final String PLAYER2 = "player2";
+    public static final String CREATURE_ATTACK_FLAG = "AttackFlag";
+    public static final String PLAYER_ATTACK_FLAG = "PlayerAttackFlag";
+    public static final String LOCK = "LOCKED";
+    public static final String GAME = "game";
 
     /////////////////////////
     //////// getters ////////

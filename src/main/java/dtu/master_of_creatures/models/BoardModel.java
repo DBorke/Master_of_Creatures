@@ -31,7 +31,7 @@ public class BoardModel
      * Summon a creature in a specific lane
      * @author Maria (s195685), Danny (s224774)
      */
-    public boolean summonCreature(PlayerModel player, CardModel creature, int lane)
+    public boolean summonCreature(CardModel creature, int lane) // can only be called for the local player
     {
         if (game_model.getPhaseType() != PhaseTypes.PLAYING_PHASE) // will change depending on the phase names. "SUMMON" is the planning/sacrifice/playing phase.
         {
@@ -43,7 +43,7 @@ public class BoardModel
             throw new IllegalArgumentException("Lane must be 0, 1, or 2.");
         }
 
-        CardModel[] player_lanes = player == game_model.getPlayers()[0] ? player_1_lanes : player_2_lanes;
+        CardModel[] player_lanes = game_model.getPlayer().getPlayerNumber() == 0 ? player_1_lanes : player_2_lanes;
 
         if (player_lanes[lane] != null)
         {
@@ -59,11 +59,11 @@ public class BoardModel
      * Remove a creature from a specific lane.
      * @author Danny (s224774)
      */
-    public void removeCreatureFromField(PlayerModel player, int lane)
+    public void removeCreatureFromField(int player_number, int lane) // can be called for both the local and remote player
     {
         if(lane >= 0 && lane <= 2)
         {
-            CardModel[] player_lanes = player == game_model.getPlayers()[0] ? player_1_lanes : player_2_lanes;
+            CardModel[] player_lanes = player_number == 0 ? player_1_lanes : player_2_lanes;
 
             if(player_lanes[lane] != null)
             {

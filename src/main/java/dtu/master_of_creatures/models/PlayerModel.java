@@ -144,7 +144,7 @@ public class PlayerModel
         }
         else
         {
-           current_deck.add(new CardModel(card_to_add));
+            current_deck.add(new CardModel(card_to_add));
         }
     }
 
@@ -225,6 +225,14 @@ public class PlayerModel
     public String getPlayerName()
     {
         return player_name;
+    }
+
+    /**
+     * @author Danny (s224774)
+     */
+    public int getPlayerNumber()
+    {
+        return player_number;
     }
 
     /**

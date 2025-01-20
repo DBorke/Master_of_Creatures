@@ -1,5 +1,9 @@
 module dtu.master_of_creatures
 {
+    // Java libraries
+    requires java.logging;
+    requires java.sql;
+
     // JavaFX libraries
     requires javafx.base;
     requires javafx.controls;

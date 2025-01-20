@@ -3,7 +3,10 @@ package dtu.master_of_creatures.models;
 // Project libraries
 import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 
-public class CardModel
+// Java libraries
+import java.io.Serializable;
+
+public class CardModel implements Serializable
 {
     // Fields
     private final CommonCardTypes card_type;

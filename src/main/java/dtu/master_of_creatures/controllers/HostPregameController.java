@@ -198,6 +198,8 @@ public class HostPregameController extends SceneController implements Initializa
      */
     public void startGame() throws IOException
     {
+        opponent_ready = true;
+
         if(player_cards.size() == deck_size_selected && opponent_ready)
         {
             // Set up game model
