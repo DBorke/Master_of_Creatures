@@ -2,6 +2,8 @@ package dtu.master_of_creatures.controllers;
 
 // Project libraries
 import dtu.master_of_creatures.models.GameModel;
+import dtu.master_of_creatures.models.network.HostModel;
+import dtu.master_of_creatures.models.network.ThreadModel;
 import dtu.master_of_creatures.utilities.enums.GameStates;
 import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 
@@ -61,6 +63,7 @@ public class HostPregameController extends SceneController implements Initializa
 
     // Game data
     private final GameModel game_model;
+    //private final HostModel host;
     private final CommonCardTypes[] card_types_available;
 
     /**
@@ -69,6 +72,7 @@ public class HostPregameController extends SceneController implements Initializa
     public HostPregameController()
     {
         game_model = getGameModel();
+        game_model.initializeHostModel();
 
         player_cards = new ArrayList<>();
         card_types_available = CommonCardTypes.values();
@@ -227,11 +231,15 @@ public class HostPregameController extends SceneController implements Initializa
                 turn_time = -1; // infinite
             }
 
-            game_model.initializeGame(round_wins.getSelectionModel().getSelectedItem(), turn_time, health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem());
+            game_model.initializeGame(round_wins.getSelectionModel().getSelectedItem(), turn_time, health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), true);
+            game_model.getHost().initializeGameSpace(player_name.getText(), "Waiting for client.", round_wins.getSelectionModel().getSelectedItem(), turn_time, health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem()+hand_size.getSelectionModel().getSelectedItem(),deck_size.getSelectionModel().getSelectedItem()+hand_size.getSelectionModel().getSelectedItem(),false);
             game_model.initializePlayer(player_name.getText(), player_cards, true);
         }
 
+
         game_model.setPlayerReady(true);
+
+
 
         network_timer.start();
 
@@ -266,7 +274,28 @@ public class HostPregameController extends SceneController implements Initializa
 
     public void actionPerformed(ActionEvent actionEvent) // gets called every 0.1 seconds
     {
-        if(game_model.getPlayerReady() && game_model.getOpponentReady())
+        Runnable initialize_host_parameters = () ->
+        {
+            try {
+
+                boolean[] result = game_model.getHost().queryPlayerReadyFlag();
+                if ( result[1])
+                {
+                    game_model.setOpponentReady(true);
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        };
+
+        // Create host thread
+        Thread initialize_thread = new ThreadModel(initialize_host_parameters);
+
+        // Start host thread
+        initialize_thread.start();
+        System.out.println(game_model.getPlayerReady());
+        System.out.println(game_model.getOpponentReady());
+        if( game_model.getPlayerReady() && game_model.getOpponentReady())
         {
             try
             {

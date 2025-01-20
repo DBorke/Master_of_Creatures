@@ -2,6 +2,7 @@ package dtu.master_of_creatures.controllers;
 
 // Project libraries
 import dtu.master_of_creatures.models.GameModel;
+import dtu.master_of_creatures.models.network.ClientModel;
 import dtu.master_of_creatures.utilities.enums.GameStates;
 import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 
@@ -9,6 +10,7 @@ import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.List;
 import java.util.ArrayList;
@@ -39,14 +41,17 @@ public class JoinPregameController extends SceneController implements Initializa
     // Game data
     private final GameModel game_model;
 
+
     /**
      * @author Danny (s224774)
      */
     public JoinPregameController()
     {
         game_model = getGameModel();
+        game_model.initializeClientModel();
 
         network_timer = new Timer(1000, this); // delay is in milliseconds
+
     }
     /**
      * @author Danny (s224774)
@@ -73,13 +78,20 @@ public class JoinPregameController extends SceneController implements Initializa
     {
         List<CommonCardTypes> temp_list = new ArrayList<>();
         temp_list.add(CommonCardTypes.WOLF);
+        Object[] settings = game_model.getClient().queryGameSettings();
 
+        while (settings == null )
+        {
+            settings = game_model.getClient().queryGameSettings();
+        }
+        game_model.initializeGame( (Integer) settings[1], (Integer) settings[2], (Integer)  settings[3],(Integer)  settings[4], (Integer) settings[5], (Integer) settings[6], false);
         game_model.initializePlayer(player_name.getText(), temp_list, false);
+        game_model.setPlayerReady(true);
 
         join_pane.requestFocus(); // exit player name text field
         ready.setDisable(true);
 
-        game_model.setOpponentReady(true);
+
 
         network_timer.start();
 
@@ -114,8 +126,34 @@ public class JoinPregameController extends SceneController implements Initializa
 
     public void actionPerformed(ActionEvent actionEvent) // gets called every 0.1 seconds
     {
+
+        Runnable runnable = () -> {
+
+
+            try {
+                boolean [] result = game_model.getClient().queryPlayerReadyFlag();
+                if ( result[0])
+                {
+                    game_model.getClient().updatePlayerReadyFlag( true , true );
+                    game_model.setOpponentReady(true);
+                }
+
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        };
+
+        Thread thread = new Thread(runnable);
+        thread.start();
+        System.out.println(game_model.getPlayerReady());
+        System.out.println(game_model.getOpponentReady());
+
+
+
         if(game_model.getPlayerReady() && game_model.getOpponentReady())
         {
+
             try
             {
                 goToGameScene();

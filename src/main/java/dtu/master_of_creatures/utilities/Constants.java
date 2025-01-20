@@ -6,6 +6,7 @@ Constants related to match settings are chosen in the HostPregameController, to 
 
 public abstract class Constants
 {
+    public static final String GAME_SETTINGS = "game_settings"; ;
     private static final String GAME_VERSION = "v. 0.35";
     private static final int APP_RESOLUTION_X = 1920;
     private static final int APP_RESOLUTION_Y = 1080;
@@ -18,6 +19,7 @@ public abstract class Constants
     public static final String PLAYER_ATTACK_FLAG = "PlayerAttackFlag";
     public static final String LOCK = "LOCKED";
     public static final String GAME = "game";
+    public static final String PLAYER_READY = "player_ready";
 
     /////////////////////////
     //////// getters ////////

@@ -22,7 +22,7 @@ public class PlayerModel
     private int turn_damage_done;
     private int round_damage_done;
     private int match_damage_done;
-    private final HashMap<String, Integer> match_settings;
+    private HashMap<String, Integer> match_settings;
 
     // Game data
     private final GameModel game_model;
@@ -39,6 +39,7 @@ public class PlayerModel
         // Set up player stats
         this.player_name = player_name;
         this.player_number = player_number;
+        System.out.println("Match settings: " + match_settings);
         health_points = match_settings.get("health points");
         blood_points = match_settings.get("blood points");
         turn_damage_done = 0;
@@ -305,5 +306,9 @@ public class PlayerModel
     public int getMatchDamageDone()
     {
         return match_damage_done;
+    }
+
+    public void setMatchSettings(HashMap<String, Integer> match_settings) {
+        this.match_settings = match_settings;
     }
 }

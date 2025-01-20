@@ -26,7 +26,7 @@ public class GameModel implements ActionListener
     private static PhaseTypes phase_type;
     private BoardModel board_model;
     private PlayerModel player;
-    private boolean player_ready;
+    private boolean player_ready = true;
     private boolean opponent_ready;
     private String opponent_player_name;
     private int opponent_player_number;
@@ -54,30 +54,32 @@ public class GameModel implements ActionListener
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
+
     public GameModel()
     {
         board_model = new BoardModel(this);
         round_wins = new int[2];
 
         game_timer = new Timer(1000, this); // delay is in milliseconds
-
         match_settings = new HashMap<>();
     }
 
     /**
      * @author Danny (s224774), Maria (s195685)
      */
-    public void initializeGame(int round_wins_needed, int turn_time_limit, int health_points, int blood_points, int deck_size, int hand_size)
+    public void initializeGame(int round_wins_needed, int turn_time_limit, int health_points, int blood_points, int deck_size, int hand_size, boolean is_host)
     {
         // Make backup of game related match settings
-        /*
+
         match_settings.put("round wins", round_wins_needed);
         match_settings.put("time limit", turn_time_limit);
         match_settings.put("health points", health_points);
         match_settings.put("blood points", blood_points);
         match_settings.put("deck size", deck_size);
         match_settings.put("hand size", hand_size);
-         */
+
+
+
     }
 
     /**
@@ -85,55 +87,26 @@ public class GameModel implements ActionListener
      */
     public void initializePlayer(String player_name, List<CommonCardTypes> cards_chosen, boolean is_host)
     {
-        match_settings.put("round wins", 3);
-        match_settings.put("time limit", 60);
-        match_settings.put("health points", 5);
-        match_settings.put("blood points", 0);
-        match_settings.put("deck size", 15);
-        match_settings.put("hand size", 4);
 
         player = new PlayerModel(player_name, is_host ? 0 : 1, cards_chosen, this);
 
-        if(is_host)
-        {
-            initializeHostClient();
-        }
-        else
-        {
-            initializeClientModel();
-        }
     }
 
-    public void initializeHostClient()
+    public void initializeHostModel()
     {
-        host = new HostModel(uri); // check if it keeps the server up
+        host = new HostModel(uri);
 
-        Runnable initialize_host_parameters = () ->
-        {
-            host.initializeGameSpace(player.getPlayerName(), "Player 2", 30, 30, 10, 10, 5);
-            logger.info("Host setup complete, notifying client");
-        };
-
-        // Create host thread
-        Thread initialize_thread = new ThreadModel(initialize_host_parameters);
-
-        // Start host thread
-        initialize_thread.start();
     }
 
     public void initializeClientModel()
     {
-        ClientModel client;
-
-        try
-        {
+        try {
             client = new ClientModel(uri);
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
 
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
@@ -502,7 +475,7 @@ public class GameModel implements ActionListener
 
     public boolean getPlayerReady()
     {
-        return opponent_ready;
+        return player_ready;
     }
 
     public boolean getOpponentReady()
@@ -596,5 +569,15 @@ public class GameModel implements ActionListener
     public HashMap<String, Integer> getMatchSettings()
     {
         return match_settings;
+    }
+
+    public HostModel getHost()
+    {
+        return host;
+    }
+
+    public ClientModel getClient()
+    {
+        return client;
     }
 }

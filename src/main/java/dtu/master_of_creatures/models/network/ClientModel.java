@@ -23,6 +23,8 @@ public class ClientModel
     private final RemoteSpace playerAttackedFlag;
     private final RemoteSpace game;
     private final RemoteSpace lock;
+    private final RemoteSpace gameSettings;
+    private final RemoteSpace playerReady;
     private static final Logger logger = Logger.getLogger(ClientModel.class.getName());
 
     public ClientModel(String uri) throws IOException
@@ -35,6 +37,8 @@ public class ClientModel
         playerAttackedFlag = new RemoteSpace("tcp://localhost:8080/"+ PLAYER_ATTACK_FLAG + "?keep");
         lock = new RemoteSpace("tcp://localhost:8080/" + LOCK + "?keep");
         game = new RemoteSpace("tcp://localhost:8080/" + GAME + "?keep");
+        gameSettings = new RemoteSpace("tcp://localhost:8080/" + GAME_SETTINGS + "?keep");
+        playerReady = new RemoteSpace("tcp://localhost:8080/" + PLAYER_READY + "?keep");
 
         logger.info("Client connected to spaces at " + uri);
 
@@ -70,6 +74,94 @@ public class ClientModel
             return card;
         }
     }
+
+    public boolean[] queryPlayerReadyFlag() throws InterruptedException
+    {
+        logger.info("Thread " + Thread.currentThread().getName() + " is querying player ready flag");
+        Object[] result = playerReady.queryp(new ActualField(PLAYER_READY), new FormalField(Boolean.class), new FormalField(Boolean.class));
+        return new boolean[]{(boolean) result[1], (boolean) result[2]};
+    }
+
+    public void updatePlayerReadyFlag(boolean player1_ready, boolean player2_ready) throws InterruptedException
+    {
+        logger.info("Thread " + Thread.currentThread().getName() + " is updating player ready flag");
+        Object[] existingPlayerReady = playerReady.getp(new ActualField(PLAYER_READY), new FormalField(Boolean.class), new FormalField(Boolean.class));
+
+        if (existingPlayerReady == null)
+        {
+            logger.warning("No existing player ready found.");
+        }
+        else
+        {
+            logger.info("Existing player ready removed.");
+        }
+
+        playerReady.put(PLAYER_READY, player1_ready, player2_ready);
+        logger.info("Player ready updated.");
+    }
+
+    public Object[] queryGameSettings() {
+        logger.info("Before querying game settings");
+        Object[] result = null;
+        try {
+            result = gameSettings.queryp(new ActualField(GAME_SETTINGS), new FormalField(Integer.class), new FormalField(String.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(String.class), new FormalField(String.class));
+        } catch (InterruptedException e) {
+            logger.warning("Failed to query game settings: " + e.getMessage());
+        }
+        return result;
+    }
+
+    public void updateGameSettings(int round_wins, String turn_time, int health_points, int blood_points, int deck_size, int hand_size, String player1name, String player2name)
+    {
+        try
+        {
+            logger.info("Updating game settings...");
+            Object[] existingGameSettings = gameSettings.getp(new ActualField(GAME_SETTINGS), new FormalField(Integer.class), new FormalField(String.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(String.class), new FormalField(String.class));
+
+            if (existingGameSettings == null)
+            {
+                logger.warning("No existing game settings found.");
+            }
+            else
+            {
+                logger.info("Existing game settings removed.");
+            }
+
+            gameSettings.put(GAME_SETTINGS, round_wins, turn_time, health_points, blood_points, deck_size, hand_size, player1name, player2name);
+            logger.info("Game settings updated.");
+        }
+        catch (InterruptedException e)
+        {
+            Thread.currentThread().interrupt();
+            logger.severe("Failed to update game settings: " + e.getMessage());
+        }
+    }
+
+    private Object queryPlayerReady() throws InterruptedException
+    {
+        logger.info("Querying player ready space...");
+        Object[] result = playerReady.getp(new ActualField(PLAYER_READY), new FormalField(Boolean.class), new FormalField(Boolean.class));
+        return result;
+    }
+
+    private void updatePlayerReady(boolean player1_ready, boolean player2_ready) throws InterruptedException
+    {
+        logger.info("Updating player ready space...");
+        Object[] existingPlayerReady = playerReady.getp(new ActualField(PLAYER_READY), new FormalField(Boolean.class), new FormalField(Boolean.class));
+
+        if (existingPlayerReady == null)
+        {
+            logger.warning("No existing player ready found.");
+        }
+        else
+        {
+            logger.info("Existing player ready removed.");
+        }
+
+        playerReady.put(PLAYER_READY, player1_ready, player2_ready);
+        logger.info("Player ready updated.");
+    }
+
 
     public synchronized Object[] queryPlayer(String playerName) throws InterruptedException
     {
@@ -175,7 +267,7 @@ public class ClientModel
     public void queryGame() throws InterruptedException
     {
         logger.info("Querying game space...");
-        Object[] result = game.queryp(new ActualField(GAME), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Boolean.class), new FormalField(GameStates.class));
+        Object[] result = game.queryp(new ActualField(GAME), new FormalField(Boolean.class), new FormalField(Integer.class), new FormalField(Boolean.class), new FormalField(GameStates.class));
 
         if (result == null)
         {
@@ -312,12 +404,12 @@ public class ClientModel
         logger.info("Thread " + Thread.currentThread().getName() + " updated player attack flag for player" + player + " to state " + state);
     }
 
-    public void updateGame(int turn_ends, int round_wins, boolean turn_active, GameStates game_state)
+    public void updateGame(boolean turn_ends, int round_wins, boolean turn_active, GameStates game_state)
     {
         try
         {
             logger.info("Updating game space...");
-            Object[] existingGame = game.getp(new ActualField(GAME), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Boolean.class), new FormalField(GameStates.class));
+            Object[] existingGame = game.getp(new ActualField(GAME), new FormalField(Boolean.class), new FormalField(Integer.class), new FormalField(Boolean.class), new FormalField(GameStates.class));
 
             if (existingGame == null)
             {
