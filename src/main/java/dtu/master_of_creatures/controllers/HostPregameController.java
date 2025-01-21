@@ -94,7 +94,7 @@ public class HostPregameController extends SceneController implements Initializa
 
         // Add and set up GUI option elements
         round_wins.getItems().addAll(1, 2, 3, 4, 5); // match setting options
-        turn_time.getItems().addAll("30 seconds", "60 seconds", "90 seconds", "120 seconds", "Unlimited");
+        turn_time.getItems().addAll("10 seconds", "60 seconds", "90 seconds", "120 seconds", "Unlimited");
         health_points.getItems().addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         blood_points.getItems().addAll(0, 1, 2, 3);
         deck_size.getItems().addAll(5, 10, 15, 20, 25);

@@ -129,7 +129,7 @@ public class GameModel implements ActionListener
         round_winning_player = -1; // no round winner
 
         game_controller.handlePlayerInfoUIs();
-        game_controller.handlePlayerCardUIs();
+        game_controller.handlePlayerCardUIs(true);
 
         startTurn();
         game_timer.start();
@@ -194,6 +194,7 @@ public class GameModel implements ActionListener
                 player.removeFromHand(card_played);
 
                 game_controller.handlePlayerInfoUIs();
+                game_controller.handlePlayerCardUIs(true);
 
                 // Update own player fields on the network
                 Runnable runnable = () ->
@@ -240,7 +241,7 @@ public class GameModel implements ActionListener
             game_controller.handleTurnTimeUI(turn_time);
         }
 
-        performPostTurnAttacks();
+        //performPostTurnAttacks();
 
         // Update opposing player fields on the network
         if(player.getPlayerNumber() != current_player_number)
@@ -282,7 +283,7 @@ public class GameModel implements ActionListener
         }
 
         game_controller.handlePlayerInfoUIs();
-        game_controller.handlePlayerCardUIs();
+        game_controller.handlePlayerCardUIs(false);
 
         System.out.println(player.getPlayerNumber() + " :" + Arrays.toString(board_model.getPlayer1Lanes()));
         System.out.println(player.getPlayerNumber() + " :" + Arrays.toString(board_model.getPlayer2Lanes()));

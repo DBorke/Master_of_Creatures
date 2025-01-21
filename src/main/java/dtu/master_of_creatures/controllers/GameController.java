@@ -186,13 +186,17 @@ public class GameController extends SceneController implements Initializable
     /**
      * @author Maria (s195685), Danny (s224774)
      */
-    public void handlePlayerCardUIs()
+    public void handlePlayerCardUIs(boolean update_player)
     {
-        updatePlayerHandImages();
-
-        if(current_player_number != -1) // after the first turn
+        if(update_player)
         {
-            updatePlayersFieldImages();
+            updatePlayerHandImages();
+
+            updatePlayerFieldImages(true);
+        }
+        else
+        {
+            updateOpponentFieldImages(false);
         }
     }
 
@@ -273,8 +277,6 @@ public class GameController extends SceneController implements Initializable
 
                     if(game_model.playChosenCard(hand_slot_index, slot_index))
                     {
-                        handlePlayerCardUIs();
-
                         selected_card = null; // reset card selection
                     }
                 }
@@ -306,11 +308,11 @@ public class GameController extends SceneController implements Initializable
         {
             if(hand_index < player_card_count)
             {
-                updateCardImage(player.getPlayerNumber(), player_hand.get(hand_index).getCardType(), hand_index, true);
+                updateCardImage(player.getPlayerNumber(), player_hand.get(hand_index).getCardType(), hand_index, true, true);
             }
             else // empty slot
             {
-                updateCardImage(player.getPlayerNumber(), null, hand_index, true);
+                updateCardImage(player.getPlayerNumber(), null, hand_index, true, true);
             }
         }
     }
@@ -318,30 +320,45 @@ public class GameController extends SceneController implements Initializable
     /**
      * @author Danny (s224774), Maria (s195685)
      */
-    public void updatePlayersFieldImages() // updated for both players at a time
+    public void updatePlayerFieldImages(boolean update_player) // updated for both players at a time
     {
-        CardModel[] player_field_cards = player.getPlayerNumber() == 0 ? board_model.getPlayer2Lanes() : board_model.getPlayer1Lanes(); // just works
+        CardModel[] player_field_cards = player.getPlayerNumber() == 0 ? board_model.getPlayer1Lanes() : board_model.getPlayer2Lanes();
         CardModel player_field_card;
 
-        CardModel[] opponent_field_cards = player.getPlayerNumber() == 0 ? board_model.getPlayer1Lanes() : board_model.getPlayer2Lanes();
-        CardModel opponent_field_card;
+        System.out.println("UI player: " + Arrays.toString(player_field_cards));
 
         for(int field_index = 0; field_index < player_field_cards.length; field_index++)
         {
             player_field_card = player_field_cards[field_index];
-            opponent_field_card = opponent_field_cards[field_index];
 
-            updateCardImage(player.getPlayerNumber(), (player_field_card != null ? player_field_card.getCardType() : null), field_index, false);
-            updateCardImage(opponent_player_number, (opponent_field_card != null ? opponent_field_card.getCardType() : null), field_index, false);
+            updateCardImage(player.getPlayerNumber(), (player_field_card != null ? player_field_card.getCardType() : null), field_index, false, update_player);
         }
     }
 
     /**
      * @author Danny (s224774), Maria (s195685)
      */
-    public void updateCardImage(int player_number, CommonCardTypes card_type, int slot_index, boolean in_hand)
+    public void updateOpponentFieldImages(boolean update_player) // updated for both players at a time
     {
-        ImageView slot_image = getSlotImage(player_number, slot_index, in_hand);
+        CardModel[] opponent_field_cards = player.getPlayerNumber() == 0 ? board_model.getPlayer2Lanes() : board_model.getPlayer1Lanes();
+        CardModel opponent_field_card;
+
+        System.out.println("UI opponent: " + Arrays.toString(opponent_field_cards));
+
+        for(int field_index = 0; field_index < opponent_field_cards.length; field_index++)
+        {
+            opponent_field_card = opponent_field_cards[field_index];
+
+            updateCardImage(opponent_player_number, (opponent_field_card != null ? opponent_field_card.getCardType() : null), field_index, false, update_player);
+        }
+    }
+
+    /**
+     * @author Danny (s224774), Maria (s195685)
+     */
+    public void updateCardImage(int player_number, CommonCardTypes card_type, int slot_index, boolean in_hand, boolean update_player)
+    {
+        ImageView slot_image = getSlotImage(player_number, slot_index, in_hand, update_player);
 
         if(card_type != null)
         {
@@ -370,27 +387,26 @@ public class GameController extends SceneController implements Initializable
     /**
      * @author Danny (s224774), Maria (s195685)
      */
-    private ImageView getSlotImage(int player_number, int slot_index, boolean in_hand)
+    private ImageView getSlotImage(int player_number, int slot_index, boolean in_hand, boolean update_player)
     {
         ImageView slot_image = null;
 
-        if(player_number == player.getPlayerNumber())
+        if(in_hand)
         {
-            if(in_hand)
-            {
-                slot_image = player_hand_image_list.get(slot_index);
-            }
-            else
-            {
-                slot_image = player_field_image_list.get(slot_index);
-            }
+            slot_image = player_hand_image_list.get(slot_index);
         }
         else
         {
-            if(!in_hand)
+            if(update_player)
+            {
+                slot_image = player_field_image_list.get(slot_index);
+            }
+            else
             {
                 slot_image = opponent_field_image_list.get(slot_index);
             }
+
+            System.out.println(player.getPlayerNumber() + ": " + update_player);
         }
 
         return slot_image;
