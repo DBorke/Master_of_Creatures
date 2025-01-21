@@ -451,24 +451,18 @@ public class ClientModel
         }
     }
 
-    public Object getLock() {
-        logger.info("Attempting to acquire lock");
+    public void getLock()
+    {
         try
         {
-            Object lock_check = lock.getp(new ActualField(LOCK));
-            if (lock_check == null)
-            {
-                logger.warning("Lock has not been released");
-                return null;
-            } else
-            {
-                logger.info("Lock successfully acquired");
-                return lock_check;
-            }
-        } catch (InterruptedException e)
-            {
-                logger.severe("Failed to acquire lock: " + e.getMessage());
-                Thread.currentThread().interrupt(); // Restore the interrupted status
-                return null;
-             }}
+            logger.info("Attempting to acquire lock");
+            lock.get(new ActualField(LOCK));
+            logger.info("Lock successfully acquired");
+        }
+        catch (InterruptedException e)
+        {
+            Thread.currentThread().interrupt();
+            logger.severe("Failed to acquire lock: " + e.getMessage());
+        }
     }
+}
