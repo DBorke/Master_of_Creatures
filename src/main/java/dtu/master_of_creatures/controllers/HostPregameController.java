@@ -3,6 +3,7 @@ package dtu.master_of_creatures.controllers;
 // Project libraries
 import dtu.master_of_creatures.models.GameModel;
 import dtu.master_of_creatures.models.network.ThreadModel;
+import dtu.master_of_creatures.utilities.Constants;
 import dtu.master_of_creatures.utilities.enums.GameStates;
 import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 
@@ -237,8 +238,10 @@ public class HostPregameController extends SceneController implements Initializa
             game_model.initializeMatchSettings(round_wins.getSelectionModel().getSelectedItem(), turn_time, health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), true);
             Runnable runnable = () ->{
                 game_model.getHost().initializeGameSpace(player_name.getText(), "Waiting for client.", round_wins.getSelectionModel().getSelectedItem(), final_turn_time, health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem()+hand_size.getSelectionModel().getSelectedItem(),deck_size.getSelectionModel().getSelectedItem()+hand_size.getSelectionModel().getSelectedItem(),false);
-                game_model.getHost().updateGameSettings(round_wins.getSelectionModel().getSelectedItem(), Integer.parseInt(String.valueOf(final_turn_time)), health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), "Adolf Hitler", "Winston Churchill");
+                game_model.getHost().updateGameSettings(round_wins.getSelectionModel().getSelectedItem(), Integer.parseInt(String.valueOf(final_turn_time)), health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), "Player 1", "Player 2");
             };
+
+            System.out.println(game_model.getMatchSettings().toString());
 
             Thread thread = new ThreadModel(runnable);
             thread.start();
@@ -282,8 +285,10 @@ public class HostPregameController extends SceneController implements Initializa
                 boolean[] result = game_model.getHost().queryPlayerReadyFlag();
                 if (result[1])
                 {
-                    System.out.println(Arrays.toString(game_model.getHost().queryGameSettings()));
                     game_model.setOpponentReady(true);
+
+                    Object[] result2 = game_model.getHost().queryPlayer(Constants.PLAYER2);
+                    game_model.setOpponentPlayerName((String) result2[0]);
                 }
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);

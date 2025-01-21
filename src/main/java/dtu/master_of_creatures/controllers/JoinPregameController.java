@@ -2,6 +2,7 @@ package dtu.master_of_creatures.controllers;
 
 // Project libraries
 import dtu.master_of_creatures.models.GameModel;
+import dtu.master_of_creatures.utilities.Constants;
 import dtu.master_of_creatures.utilities.enums.GameStates;
 import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 
@@ -85,9 +86,10 @@ public class JoinPregameController extends SceneController implements Initializa
             game_model.initializeMatchSettings( (Integer) settings[1], (Integer) settings[2], (Integer)  settings[3],(Integer)  settings[4], (Integer) settings[5], (Integer) settings[6], false);
 
             System.out.println(game_model.getMatchSettings().toString());
-            //game_model.initializeMatchSettings( 1,1,1,1,1,1, false);
-            game_model.initializePlayer((String) settings[8], temp_list, false); // player 2 string
+            game_model.initializePlayer(player_name.getText(), temp_list, false); // player 2 string
             game_model.setPlayerReady(true);
+
+            game_model.getClient().updatePlayer(Constants.PLAYER2, player_name.getText(), game_model.getPlayer().getHealthPoints(), game_model.getPlayer().getCardsRemaining());
         };
 
         Thread test = new Thread(runnable);
@@ -131,12 +133,14 @@ public class JoinPregameController extends SceneController implements Initializa
                 {
                     game_model.getClient().updatePlayerReadyFlag( true , true );
                     game_model.setOpponentReady(true);
+
+                    Object[] result2 = game_model.getClient().queryPlayer(Constants.PLAYER1);
+                    game_model.setOpponentPlayerName((String) result2[0]);
                 }
 
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-
         };
 
 

@@ -402,6 +402,11 @@ public class GameModel implements ActionListener
         this.opponent_ready = opponent_ready;
     }
 
+    public void setOpponentPlayerName(String opponent_player_name)
+    {
+        this.opponent_player_name = opponent_player_name;
+    }
+
     /**
      * @author Danny (s224774)
      */

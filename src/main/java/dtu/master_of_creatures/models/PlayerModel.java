@@ -36,7 +36,6 @@ public class PlayerModel
         // Set up player stats
         this.player_name = player_name;
         this.player_number = player_number;
-        System.out.println("Match settings: " + match_settings);
         health_points = match_settings.get("health points");
         blood_points = match_settings.get("blood points");
 
