@@ -33,8 +33,6 @@ public class JoinPregameController extends SceneController implements Initializa
     private TextField player_name;
     @FXML
     private Button ready;
-    @FXML
-    private Button sound_button;
     private final Timer network_timer;
 
     // Game data
@@ -77,6 +75,20 @@ public class JoinPregameController extends SceneController implements Initializa
     {
         Runnable runnable = () -> {
             List<CommonCardTypes> temp_list = new ArrayList<>();
+            temp_list.add(CommonCardTypes.RABBIT);
+            temp_list.add(CommonCardTypes.RABBIT);
+            temp_list.add(CommonCardTypes.RABBIT);
+            temp_list.add(CommonCardTypes.RABBIT);
+            temp_list.add(CommonCardTypes.RABBIT);
+            temp_list.add(CommonCardTypes.RABBIT);
+            temp_list.add(CommonCardTypes.RABBIT);
+            temp_list.add(CommonCardTypes.WOLF);
+            temp_list.add(CommonCardTypes.WOLF);
+            temp_list.add(CommonCardTypes.WOLF);
+            temp_list.add(CommonCardTypes.WOLF);
+            temp_list.add(CommonCardTypes.WOLF);
+            temp_list.add(CommonCardTypes.WOLF);
+            temp_list.add(CommonCardTypes.WOLF);
             temp_list.add(CommonCardTypes.WOLF);
 
             Object[] settings = game_model.getClient().queryGameSettings();
@@ -87,7 +99,6 @@ public class JoinPregameController extends SceneController implements Initializa
 
             System.out.println(game_model.getMatchSettings().toString());
             game_model.initializePlayer(player_name.getText(), temp_list, false); // player 2 string
-            game_model.setPlayerReady(true);
 
             game_model.getClient().updatePlayer(Constants.PLAYER2, player_name.getText(), game_model.getPlayer().getHealthPoints(), game_model.getPlayer().getCardsRemaining());
         };

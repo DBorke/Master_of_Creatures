@@ -95,8 +95,6 @@ public class GameController extends SceneController implements Initializable
     private ImageView opponent_field_image_2;
     @FXML
     private ImageView opponent_field_image_3;
-    @FXML
-    private Button sound_button;
     private CardModel selected_card;
     private int hand_slot_index;
 
@@ -164,14 +162,14 @@ public class GameController extends SceneController implements Initializable
     {
         // Update UI information for player
         player_name.setText(current_player_number == player.getPlayerNumber() ? player.getPlayerName() + " (current player)" : player.getPlayerName());
-        player_health.setText("Health: " + player.getHealthPoints());
-        player_blood.setText("Blood points: " + player.getBloodPoints());
-        player_remain_deck.setText("Remaining in deck: " + player.getCurrentDeck().size());
+        player_health.setText("" + player.getHealthPoints());
+        player_blood.setText("" + player.getBloodPoints());
+        player_remain_deck.setText("" + player.getCurrentDeck().size());
 
         // Update UI information for opponent
         opponent_name.setText(current_player_number != player.getPlayerNumber() ? opponent_player_name + " (current player)" : opponent_player_name);
-        opponent_health.setText("Health: " + opponent_player_health);
-        opponent_remain_deck.setText("Remaining in deck: " + opponent_cards_remaining);
+        opponent_health.setText("" + opponent_player_health);
+        opponent_remain_deck.setText("" + opponent_cards_remaining);
     }
 
     /**
@@ -209,7 +207,7 @@ public class GameController extends SceneController implements Initializable
         {
             if(turn_time.getFill().equals(Color.RED))
             {
-                turn_time.setFill(Color.BLACK); // default color
+                turn_time.setFill(Color.WHITE); // default color
             }
         }
         else // time is running out
@@ -352,7 +350,14 @@ public class GameController extends SceneController implements Initializable
             }
             else
             {
-                slot_image.setImage(new Image(String.valueOf(MasterOfCreaturesApp.class.getResource("media/images/card_back.png"))));
+                if(game_model.getPlayer().getPlayerNumber() == player_number)
+                {
+                    slot_image.setImage(new Image(String.valueOf(MasterOfCreaturesApp.class.getResource("media/images/card_back_1.png"))));
+                }
+                else
+                {
+                    slot_image.setImage(new Image(String.valueOf(MasterOfCreaturesApp.class.getResource("media/images/card_back_2.png"))));
+                }
             }
         }
     }

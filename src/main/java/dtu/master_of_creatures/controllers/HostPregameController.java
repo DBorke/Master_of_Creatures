@@ -35,8 +35,6 @@ public class HostPregameController extends SceneController implements Initializa
     @FXML
     private TextField player_name;
     @FXML
-    private Text opponent_name;
-    @FXML
     private ComboBox<Integer> round_wins;
     @FXML
     private ComboBox<String> turn_time;
@@ -58,9 +56,7 @@ public class HostPregameController extends SceneController implements Initializa
     private double deck_grid_cell_size;
     private final List<CommonCardTypes> player_cards;
     @FXML
-    private Text cards_chosen_count;
-    @FXML
-    private Button sound_button;
+    private Text cards_chosen;
     private final Timer network_timer;
 
     // Game data
@@ -155,7 +151,6 @@ public class HostPregameController extends SceneController implements Initializa
     public void defaultMatchSettings()
     {
         player_name.setText("Player 1");
-        opponent_name.setText("Player 2");
 
         round_wins.getSelectionModel().select(2); // indices of the combo-boxes
         turn_time.getSelectionModel().select(1);
@@ -190,7 +185,7 @@ public class HostPregameController extends SceneController implements Initializa
     {
         deck_size_selected = deck_size.getSelectionModel().getSelectedItem();
 
-        cards_chosen_count.setText("Cards chosen: " + player_cards.size() + "/" + deck_size_selected);
+        cards_chosen.setText("Cards chosen: " + player_cards.size() + "/" + deck_size_selected);
     }
 
     /**
@@ -203,7 +198,7 @@ public class HostPregameController extends SceneController implements Initializa
 
         player_cards.clear(); // remove all cards from chosen deck
 
-        cards_chosen_count.setText("Cards chosen: " + 0 + "/" + deck_size_selected);
+        cards_chosen.setText("Cards chosen: " + 0 + "/" + deck_size_selected);
     }
 
     /**
@@ -248,14 +243,11 @@ public class HostPregameController extends SceneController implements Initializa
             //game_model.getHost().initializeGameSpace(player_name.getText(), "Waiting for client.", round_wins.getSelectionModel().getSelectedItem(), turn_time, health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem()+hand_size.getSelectionModel().getSelectedItem(),deck_size.getSelectionModel().getSelectedItem()+hand_size.getSelectionModel().getSelectedItem(),false);
 
             game_model.initializePlayer(player_name.getText(), player_cards, true);
+
+            game_model.setPlayerReady(true);
+
+            network_timer.start();
         }
-
-
-        game_model.setPlayerReady(true);
-
-
-
-        network_timer.start();
 
         System.out.println("Waiting for client.");
     }
@@ -324,14 +316,5 @@ public class HostPregameController extends SceneController implements Initializa
         // Start host thread
         initialize_thread.start();
 
-    }
-
-    /////////////////////////
-    //////// setters ////////
-    /////////////////////////
-
-    public void setOpponentName(String opponent_chosen_name)
-    {
-        opponent_name.setText(opponent_chosen_name);
     }
 }

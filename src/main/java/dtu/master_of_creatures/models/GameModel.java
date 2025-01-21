@@ -79,9 +79,11 @@ public class GameModel implements ActionListener
      */
     public void initializePlayer(String player_name, List<CommonCardTypes> cards_chosen, boolean is_host)
     {
-
         player = new PlayerModel(player_name, is_host ? 0 : 1, cards_chosen, this);
 
+        opponent_player_number = is_host ? 1 : 0;
+        opponent_player_health = match_settings.get("health points");
+        opponent_cards_remaining = match_settings.get("deck size") - match_settings.get("hand size");
     }
 
     public void initializeHostModel()
@@ -400,6 +402,16 @@ public class GameModel implements ActionListener
     public void setOpponentReady(boolean opponent_ready)
     {
         this.opponent_ready = opponent_ready;
+    }
+
+    public void setOpponentPlayerHealth(int opponent_player_health)
+    {
+        this.opponent_player_health = opponent_player_health;
+    }
+
+    public void setOpponentCardRemaining(int opponent_cards_remaining)
+    {
+        this.opponent_cards_remaining = opponent_cards_remaining;
     }
 
     public void setOpponentPlayerName(String opponent_player_name)

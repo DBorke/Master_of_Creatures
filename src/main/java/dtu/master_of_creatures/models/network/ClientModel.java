@@ -45,7 +45,7 @@ public class ClientModel
         // Add a delay to ensure synchronization with the host
         try
         {
-            Thread.sleep(5000); // Adjust the delay as needed
+            Thread.sleep(1000); // Adjust the delay as needed
         }
         catch (InterruptedException e)
         {

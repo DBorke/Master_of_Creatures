@@ -3,12 +3,21 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="join_pane" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dtu.master_of_creatures.controllers.JoinPregameController">
    <children>
-      <Label layoutX="705.0" layoutY="100.0" text="Match Settings">
+      <Rectangle arcHeight="5.0" arcWidth="5.0" height="1080.0" stroke="BLACK" strokeType="INSIDE" width="1920.0" />
+      <ImageView fitHeight="1080.0" fitWidth="1920.0">
+         <image>
+            <Image url="@../media/images/dark_cave_background.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="705.0" layoutY="100.0" text="Match Settings" textFill="WHITE">
          <font>
             <Font name="System Bold" size="72.0" />
          </font>
@@ -18,7 +27,7 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
-      <Button fx:id="ready" layoutX="900.0" layoutY="800.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#ready" prefHeight="50.0" prefWidth="100.0" text="Ready Up">
+      <Button fx:id="ready" layoutX="900.0" layoutY="800.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#ready" prefHeight="50.0" prefWidth="100.0" text="Ready">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
@@ -28,62 +37,62 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </TextField>
-      <Label layoutX="705.0" layoutY="367.0" text="Round wins">
+      <Label layoutX="705.0" layoutY="367.0" text="Round wins" textFill="WHITE">
          <font>
-            <Font size="14.0" />
+            <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <Label layoutX="860.0" layoutY="367.0" text="Turn time">
+      <Label layoutX="860.0" layoutY="367.0" text="Turn time" textFill="WHITE">
          <font>
-            <Font size="14.0" />
+            <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <Label layoutX="996.0" layoutY="367.0" text="Health points">
+      <Label layoutX="996.0" layoutY="367.0" text="Health points" textFill="WHITE">
          <font>
-            <Font size="14.0" />
+            <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <Label layoutX="1144.0" layoutY="367.0" text="Blood points">
+      <Label layoutX="1144.0" layoutY="367.0" text="Blood points" textFill="WHITE">
          <font>
-            <Font size="14.0" />
+            <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <Label layoutX="861.0" layoutY="455.0" text="Deck size">
+      <Label layoutX="861.0" layoutY="455.0" text="Deck size" textFill="WHITE">
          <font>
-            <Font size="14.0" />
+            <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <Label layoutX="1007.0" layoutY="455.0" text="Hand size">
+      <Label layoutX="1007.0" layoutY="455.0" text="Hand size" textFill="WHITE">
          <font>
-            <Font size="14.0" />
+            <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="round_wins_info" layoutX="734.0" layoutY="397.0" text="3">
-         <font>
-            <Font name="System Bold" size="24.0" />
-         </font>
-      </Label>
-      <Label fx:id="turn_time_info" layoutX="876.0" layoutY="397.0" text="60">
+      <Label fx:id="round_wins_info" layoutX="734.0" layoutY="397.0" text="3" textFill="WHITE">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <Label fx:id="health_points_info" layoutX="1031.0" layoutY="397.0" text="5">
+      <Label fx:id="turn_time_info" layoutX="876.0" layoutY="397.0" text="60" textFill="WHITE">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <Label fx:id="blood_points_info" layoutX="1177.0" layoutY="397.0" text="0">
+      <Label fx:id="health_points_info" layoutX="1031.0" layoutY="397.0" text="5" textFill="WHITE">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <Label fx:id="deck_size_info" layoutX="876.0" layoutY="487.0" text="15">
+      <Label fx:id="blood_points_info" layoutX="1177.0" layoutY="397.0" text="0" textFill="WHITE">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <Label fx:id="hand_size_info" layoutX="1033.0" layoutY="487.0" text="4">
+      <Label fx:id="deck_size_info" layoutX="876.0" layoutY="487.0" text="15" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+      <Label fx:id="hand_size_info" layoutX="1033.0" layoutY="487.0" text="4" textFill="WHITE">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>

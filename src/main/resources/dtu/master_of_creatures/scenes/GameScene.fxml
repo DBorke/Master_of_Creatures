@@ -4,135 +4,217 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dtu.master_of_creatures.controllers.GameController">
    <children>
-      <Button focusTraversable="false" layoutX="50.0" layoutY="40.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#quitGame" prefHeight="40.0" prefWidth="60.0" text="Quit">
+      <Rectangle arcHeight="5.0" arcWidth="5.0" height="1080.0" stroke="BLACK" strokeType="INSIDE" width="1920.0" />
+      <ImageView fitHeight="1080.0" fitWidth="1920.0">
+         <image>
+            <Image url="@../media/images/dark_cave_background.png" />
+         </image>
+      </ImageView>
+      <Button focusTraversable="false" layoutX="50.0" layoutY="40.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#quitGame" text="Quit">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
-      <Text fx:id="player_name" layoutX="63.0" layoutY="293.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Player 1" textAlignment="CENTER" wrappingWidth="347.7421875">
+      <Button fx:id="end_turn" focusTraversable="false" layoutX="1591.0" layoutY="990.0" mnemonicParsing="false" onAction="#playerEndedTurn" text="End Turn">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
+      <Button fx:id="concede_round" focusTraversable="false" layoutX="1728.0" layoutY="989.0" mnemonicParsing="false" onAction="#playerHasConceded" text="Concede round">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
+      <Button fx:id="player_scroll_left" focusTraversable="false" layoutX="753.0" layoutY="980.0" mnemonicParsing="false" text="Left">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
+      <Button fx:id="player_scroll_right" focusTraversable="false" layoutX="1026.0" layoutY="979.0" mnemonicParsing="false" text="Right">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
+      <Button fx:id="player_draw" focusTraversable="false" layoutX="841.0" layoutY="970.0" mnemonicParsing="false" onAction="#playerDrewFromDeck" text="Draw card">
+         <font>
+            <Font size="23.0" />
+         </font>
+      </Button>
+      <Text fx:id="player_name" fill="WHITE" layoutX="708.0" layoutY="741.0" stroke="BLACK" strokeType="OUTSIDE" text="Winston Churchill (you)" textAlignment="CENTER" wrappingWidth="400.0">
+         <font>
+            <Font name="System Bold" size="28.0" />
+         </font>
+      </Text>
+      <Text fx:id="opponent_name" fill="WHITE" layoutX="708.0" layoutY="75.0" stroke="BLACK" strokeType="OUTSIDE" text="Adolf Hitler (opponent)" textAlignment="CENTER" wrappingWidth="400.0">
+         <font>
+            <Font name="System Bold" size="28.0" />
+         </font>
+      </Text>
+      <ImageView fitHeight="60.0" fitWidth="60.0" layoutX="514.0" layoutY="969.0" pickOnBounds="true">
+         <image>
+            <Image url="@../media/images/health_icon.png" />
+         </image>
+      </ImageView>
+      <Text fx:id="player_health" fill="WHITE" layoutX="519.0" layoutY="1005.0" stroke="BLACK" strokeType="OUTSIDE" text="5" textAlignment="CENTER" wrappingWidth="50.0">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>
       </Text>
-      <Text fx:id="opponent_name" layoutX="1412.0" layoutY="279.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Player 2" textAlignment="CENTER" wrappingWidth="363.7421875">
+      <ImageView fitHeight="60.0" fitWidth="50.0" layoutX="596.0" layoutY="969.0" pickOnBounds="true">
+         <image>
+            <Image url="@../media/images/blood_icon.png" />
+         </image>
+      </ImageView>
+      <Text fx:id="player_blood" fill="WHITE" layoutX="614.0" layoutY="1011.0" stroke="BLACK" strokeType="OUTSIDE" text="0" textAlignment="CENTER">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>
       </Text>
-      <Text fx:id="opponent_health" layoutX="1543.0" layoutY="342.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Health" textAlignment="CENTER">
+      <Text fx:id="turn_time" fill="WHITE" layoutX="49.0" layoutY="1024.0" stroke="BLACK" strokeType="OUTSIDE" text="Turn time: 60" wrappingWidth="300.0">
          <font>
-            <Font name="System Italic" size="24.0" />
+            <Font name="System Bold" size="36.0" />
          </font>
       </Text>
-      <Text fx:id="player_health" layoutX="193.0" layoutY="361.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Health" textAlignment="CENTER">
+      <ImageView fx:id="opponent_field_image_1" fitHeight="200.0" fitWidth="150.0" layoutX="540.0" layoutY="205.0" pickOnBounds="true">
+         <image>
+            <Image url="@../media/images/card_back_2.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="opponent_field_image_2" fitHeight="200.0" fitWidth="150.0" layoutX="731.0" layoutY="205.0" pickOnBounds="true">
+         <image>
+            <Image url="@../media/images/card_back_2.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="opponent_field_image_3" fitHeight="200.0" fitWidth="150.0" layoutX="920.0" layoutY="205.0" pickOnBounds="true">
+         <image>
+            <Image url="@../media/images/card_back_2.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="p2_field_image_151" fitHeight="200.0" fitWidth="150.0" layoutX="1106.0" layoutY="205.0" pickOnBounds="true">
+         <image>
+            <Image url="@../media/images/card_back_2.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="p2_field_151" focusTraversable="false" layoutX="1106.0" layoutY="205.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="200.0" prefWidth="150.0" text="Button" />
+      <ImageView fx:id="player_field_image_1" fitHeight="200.0" fitWidth="150.0" layoutX="541.0" layoutY="428.0" pickOnBounds="true">
+         <image>
+            <Image url="@../media/images/card_back_1.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="player_field_1" focusTraversable="false" layoutX="541.0" layoutY="428.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="200.0" prefWidth="150.0" text="Button" />
+      <ImageView fx:id="player_field_image_2" fitHeight="200.0" fitWidth="150.0" layoutX="731.0" layoutY="428.0" pickOnBounds="true">
+         <image>
+            <Image url="@../media/images/card_back_1.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="player_field_2" focusTraversable="false" layoutX="731.0" layoutY="428.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="200.0" prefWidth="150.0" text="Button" />
+      <ImageView fx:id="player_field_image_3" fitHeight="200.0" fitWidth="150.0" layoutX="920.0" layoutY="428.0" pickOnBounds="true">
+         <image>
+            <Image url="@../media/images/card_back_1.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="player_field_3" focusTraversable="false" layoutX="920.0" layoutY="428.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="200.0" prefWidth="150.0" text="Button" />
+      <ImageView fx:id="p2_field_image_1511" fitHeight="200.0" fitWidth="150.0" layoutX="1106.0" layoutY="428.0" pickOnBounds="true">
+         <image>
+            <Image url="@../media/images/card_back_1.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="p2_field_1511" focusTraversable="false" layoutX="1106.0" layoutY="428.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="200.0" prefWidth="150.0" text="Button" />
+      <ImageView fx:id="player_hand_image_1" fitHeight="175.0" fitWidth="125.0" layoutX="380.0" layoutY="777.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../media/images/card_back_1.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="player_hand_1" focusTraversable="false" layoutX="380.0" layoutY="777.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
+      <ImageView fx:id="player_hand_image_2" fitHeight="175.0" fitWidth="125.0" layoutX="539.0" layoutY="777.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../media/images/card_back_1.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="player_hand_2" focusTraversable="false" layoutX="539.0" layoutY="777.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
+      <ImageView fx:id="player_hand_image_3" disable="true" fitHeight="175.0" fitWidth="125.0" layoutX="698.0" layoutY="778.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../media/images/card_back_1.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="player_hand_3" focusTraversable="false" layoutX="698.0" layoutY="777.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
+      <ImageView fx:id="player_hand_image_4" fitHeight="175.0" fitWidth="125.0" layoutX="845.0" layoutY="779.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../media/images/card_back_1.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="player_hand_4" focusTraversable="false" layoutX="845.0" layoutY="778.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
+      <ImageView fx:id="player_hand_image_5" fitHeight="175.0" fitWidth="125.0" layoutX="996.0" layoutY="780.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../media/images/card_back_1.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="player_hand_5" focusTraversable="false" layoutX="996.0" layoutY="779.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
+      <ImageView fx:id="player_hand_image_6" fitHeight="175.0" fitWidth="125.0" layoutX="1150.0" layoutY="781.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../media/images/card_back_1.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="player_hand_6" focusTraversable="false" layoutX="1150.0" layoutY="780.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
+      <ImageView fx:id="player_hand_image_7" fitHeight="175.0" fitWidth="125.0" layoutX="1304.0" layoutY="782.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../media/images/card_back_1.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="player_hand_7" focusTraversable="false" layoutX="1304.0" layoutY="781.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
+      <ImageView fitHeight="60.0" fitWidth="60.0" layoutX="776.0" layoutY="95.0" pickOnBounds="true">
+         <image>
+            <Image url="@../media/images/health_icon.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="65.0" fitWidth="55.0" layoutX="1187.0" layoutY="970.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../media/images/deck_icon.png" />
+         </image>
+      </ImageView>
+      <Text fx:id="player_remain_deck" fill="WHITE" layoutX="1179.0" layoutY="1010.0" stroke="BLACK" strokeType="OUTSIDE" text="11" textAlignment="CENTER" wrappingWidth="75.0">
          <font>
-            <Font name="System Italic" size="24.0" />
+            <Font name="System Bold" size="24.0" />
          </font>
       </Text>
-      <Text fx:id="player_blood" layoutX="169.0" layoutY="417.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Blood points" textAlignment="CENTER">
+      <ImageView fitHeight="65.0" fitWidth="55.0" layoutX="878.0" layoutY="96.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../media/images/deck_icon.png" />
+         </image>
+      </ImageView>
+      <Text fx:id="opponent_health" fill="WHITE" layoutX="799.0" layoutY="132.0" stroke="BLACK" strokeType="OUTSIDE" text="5" textAlignment="CENTER">
          <font>
-            <Font name="System Italic" size="24.0" />
+            <Font name="System Bold" size="24.0" />
          </font>
       </Text>
-      <Text fx:id="player_remain_deck" layoutX="133.0" layoutY="465.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Remaining in deck" textAlignment="CENTER" wrappingWidth="236.47265625">
+      <Text fx:id="opponent_remain_deck" fill="WHITE" layoutX="870.0" layoutY="133.0" stroke="BLACK" strokeType="OUTSIDE" text="11" textAlignment="CENTER" wrappingWidth="75.0">
          <font>
-            <Font name="System Italic" size="24.0" />
+            <Font name="System Bold" size="24.0" />
          </font>
       </Text>
-      <Text fx:id="opponent_remain_deck" layoutX="1481.0" layoutY="451.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Remaining in deck" textAlignment="CENTER" wrappingWidth="236.47265625">
+      <ImageView fitHeight="60.0" fitWidth="55.0" layoutX="1279.0" layoutY="970.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../media/images/wins_icon.png" />
+         </image>
+      </ImageView>
+      <Text fill="WHITE" layoutX="1271.0" layoutY="1009.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="2.0" text="0" textAlignment="CENTER" wrappingWidth="75.0">
          <font>
-            <Font name="System Italic" size="24.0" />
+            <Font name="System Bold" size="24.0" />
          </font>
       </Text>
-      <Text fx:id="turn_time" layoutX="782.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Turn time left: 60" textAlignment="CENTER" wrappingWidth="236.47265625">
+      <ImageView fitHeight="60.0" fitWidth="55.0" layoutX="971.0" layoutY="96.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../media/images/wins_icon.png" />
+         </image>
+      </ImageView>
+      <Text fill="WHITE" layoutX="961.0" layoutY="135.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="2.0" text="0" textAlignment="CENTER" wrappingWidth="75.0">
          <font>
-            <Font name="System Bold Italic" size="24.0" />
+            <Font name="System Bold" size="24.0" />
          </font>
       </Text>
-      <Button fx:id="end_turn" focusTraversable="false" layoutX="600.0" layoutY="949.0" mnemonicParsing="false" onAction="#playerEndedTurn" text="End Turn">
-         <font>
-            <Font size="23.0" />
-         </font>
-      </Button>
-      <Button fx:id="concede_round" focusTraversable="false" layoutX="1012.0" layoutY="949.0" mnemonicParsing="false" onAction="#playerHasConceded" text="Concede round">
-         <font>
-            <Font size="23.0" />
-         </font>
-      </Button>
-      <ImageView fx:id="opponent_field_image_1" fitHeight="200.0" fitWidth="150.0" layoutX="642.0" layoutY="148.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../media/images/card_back.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="opponent_field_image_2" fitHeight="200.0" fitWidth="150.0" layoutX="825.0" layoutY="142.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../media/images/card_back.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="opponent_field_image_3" fitHeight="200.0" fitWidth="150.0" layoutX="989.0" layoutY="132.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../media/images/card_back.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="player_field_image_1" fitHeight="200.0" fitWidth="150.0" layoutX="644.0" layoutY="376.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../media/images/card_back.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="player_field_image_2" fitHeight="200.0" fitWidth="150.0" layoutX="819.0" layoutY="373.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../media/images/card_back.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="player_field_image_3" fitHeight="200.0" fitWidth="150.0" layoutX="983.0" layoutY="349.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../media/images/card_back.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="player_hand_image_2" disable="true" fitHeight="175.0" fitWidth="125.0" layoutX="184.0" layoutY="688.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../media/images/card_back.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="player_hand_image_3" fitHeight="175.0" fitWidth="125.0" layoutX="319.0" layoutY="668.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../media/images/card_back.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="player_hand_image_4" fitHeight="175.0" fitWidth="125.0" layoutX="470.0" layoutY="693.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../media/images/card_back.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="player_hand_image_5" fitHeight="175.0" fitWidth="125.0" layoutX="636.0" layoutY="691.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../media/images/card_back.png" />
-         </image>
-      </ImageView>
-      <Button fx:id="player_scroll_left" focusTraversable="false" layoutX="288.0" layoutY="901.0" mnemonicParsing="false" text="Left" />
-      <Button fx:id="player_scroll_right" focusTraversable="false" layoutX="356.0" layoutY="901.0" mnemonicParsing="false" text="Right" />
-      <ImageView fx:id="player_hand_image_1" fitHeight="175.0" fitWidth="125.0" layoutX="25.0" layoutY="699.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../media/images/card_back.png" />
-         </image>
-      </ImageView>
-      <Button fx:id="player_hand_1" focusTraversable="false" layoutX="25.0" layoutY="699.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
-      <Button fx:id="player_hand_3" focusTraversable="false" layoutX="319.0" layoutY="667.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
-      <Button fx:id="player_hand_4" focusTraversable="false" layoutX="470.0" layoutY="692.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
-      <Button fx:id="player_hand_5" focusTraversable="false" layoutX="636.0" layoutY="690.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
-      <Button fx:id="player_field_1" focusTraversable="false" layoutX="644.0" layoutY="376.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="190.0" prefWidth="150.0" text="Button" />
-      <Button fx:id="player_field_2" focusTraversable="false" layoutX="819.0" layoutY="373.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="190.0" prefWidth="150.0" text="Button" />
-      <Button fx:id="player_field_3" focusTraversable="false" layoutX="983.0" layoutY="349.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="190.0" prefWidth="150.0" text="Button" />
-      <Button fx:id="player_hand_2" focusTraversable="false" layoutX="184.0" layoutY="687.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
-      <Button fx:id="player_draw" focusTraversable="false" layoutX="237.0" layoutY="958.0" mnemonicParsing="false" onAction="#playerDrewFromDeck" text="Draw from deck">
-         <font>
-            <Font size="23.0" />
-         </font>
-      </Button>
    </children>
 </AnchorPane>
