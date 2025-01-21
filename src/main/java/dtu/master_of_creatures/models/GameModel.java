@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.Timer;
-import java.util.Random;
 import java.util.logging.Logger;
 
 public class GameModel implements ActionListener
@@ -32,6 +31,7 @@ public class GameModel implements ActionListener
     private int opponent_player_health;
     private int opponent_cards_remaining;
     private int current_player_number;
+    private boolean[] opponent_field_flags;
     private boolean turn_active;
     private final int[] round_wins;
     private int round_winning_player;
@@ -56,6 +56,8 @@ public class GameModel implements ActionListener
     {
         board_model = new BoardModel(this);
         round_wins = new int[2];
+
+        opponent_field_flags = new boolean[4];
 
         game_timer = new Timer(1000, this); // delay is in milliseconds
         match_settings = new HashMap<>();
@@ -83,7 +85,7 @@ public class GameModel implements ActionListener
 
         player = new PlayerModel(player_name, player_number, cards_chosen, this);
 
-        opponent_player_number = player_number;
+        opponent_player_number = is_host ? 1 : 0;
         opponent_player_health = match_settings.get("health points");
         opponent_cards_remaining = match_settings.get("deck size") - match_settings.get("hand size");
     }
@@ -241,49 +243,7 @@ public class GameModel implements ActionListener
             game_controller.handleTurnTimeUI(turn_time);
         }
 
-        //performPostTurnAttacks();
-
-        // Update opposing player fields on the network
-        if(player.getPlayerNumber() != current_player_number)
-        {
-            Runnable runnable = () ->
-            {
-                if(player.getPlayerNumber() != current_player_number && player.getPlayerNumber() == 0)
-                {
-                    System.out.println("for host: " + player.getPlayerNumber());
-                    System.out.println("for host: " + current_player_number);
-
-                    board_model.summonCreature(host.queryCard(Constants.PLAYER2_FIELD, 0), 0, true);
-                    board_model.summonCreature(host.queryCard(Constants.PLAYER2_FIELD, 1), 1, true);
-                    board_model.summonCreature(host.queryCard(Constants.PLAYER2_FIELD, 2), 2, true);
-                    board_model.summonCreature(host.queryCard(Constants.PLAYER2_FIELD, 3), 3, true);
-                }
-                else if(player.getPlayerNumber() != current_player_number && player.getPlayerNumber() == 1)
-                {
-                    try
-                    {
-                        System.out.println("for client: " + player.getPlayerNumber());
-                        System.out.println("for client: " + current_player_number);
-
-                        board_model.summonCreature(client.queryCard(Constants.PLAYER1_FIELD, 0), 0, true);
-                        board_model.summonCreature(client.queryCard(Constants.PLAYER1_FIELD, 1), 1, true);
-                        board_model.summonCreature(client.queryCard(Constants.PLAYER1_FIELD, 2), 2, true);
-                        board_model.summonCreature(client.queryCard(Constants.PLAYER1_FIELD, 3), 3, true);
-
-                    }
-                    catch (InterruptedException e)
-                    {
-                        throw new RuntimeException(e);
-                    }
-                }
-            };
-
-            Thread place_thread = new Thread(runnable);
-            place_thread.start();
-        }
-
-        game_controller.handlePlayerInfoUIs();
-        game_controller.handlePlayerCardUIs(false);
+        performPostTurnAttacks();
 
         System.out.println(player.getPlayerNumber() + " :" + Arrays.toString(board_model.getPlayer1Lanes()));
         System.out.println(player.getPlayerNumber() + " :" + Arrays.toString(board_model.getPlayer2Lanes()));
@@ -304,7 +264,7 @@ public class GameModel implements ActionListener
 
         int post_attack_health;
 
-        for(int lane_index = 0; lane_index < 3; lane_index++)
+        for(int lane_index = 0; lane_index < 4; lane_index++)
         {
             attacking_card = current_player_number == 0 ? player_1_lanes[lane_index] : player_2_lanes[lane_index];
             attacked_card = current_player_number == 0 ? player_2_lanes[lane_index] : player_1_lanes[lane_index];
@@ -317,17 +277,111 @@ public class GameModel implements ActionListener
 
                     if(post_attack_health <= 0) // card dead
                     {
-                        board_model.removeCreatureFromField(opponent_player_number, lane_index);
+                        board_model.removeCreatureFromField(opponent_player_number, lane_index, player.getPlayerNumber() != 0);
+
+                        final int lane_index_2 = lane_index;
+
+                        System.out.println("Attacking card: " + attacking_card);
+                        System.out.println("Attacked card: " + attacked_card);
+
+                        // Update own player fields on the network
+                        Runnable runnable = () ->
+                        {
+                            if(opponent_player_number == 0)
+                            {
+                                host.updateCard(Constants.PLAYER1_FIELD, lane_index_2, null);
+                            }
+                            else
+                            {
+                                client.updateCard(Constants.PLAYER2_FIELD, lane_index_2, null);
+                            }
+
+                            opponent_field_flags[lane_index_2] = false;
+                        };
+
+                        Thread place_thread = new Thread(runnable);
+                        place_thread.start();
+
+                        System.out.println("FUCK THIS PIECE OF SHIT!!!!!!!!!!!!!!!");
+
+                        game_controller.handlePlayerCardUIs(true);
+                        game_controller.handlePlayerCardUIs(false);
 
                         if(post_attack_health < 0) // player damaged
                         {
-                            // method needed to update opponent player health
+                            final int post_attack_health_2 = post_attack_health;
+
+                            // Update own player fields on the network
+                            Runnable runnable2 = () ->
+                            {
+                                if(opponent_player_number == 0)
+                                {
+                                    host.updatePlayer(Constants.PLAYER1, opponent_player_health + post_attack_health_2, opponent_cards_remaining);
+
+                                    Object[] result = host.queryPlayer(Constants.PLAYER1);
+
+                                    opponent_player_health = (int) result[2];
+                                }
+                                else
+                                {
+                                    client.updatePlayer(Constants.PLAYER2, opponent_player_health + post_attack_health_2, opponent_cards_remaining);
+
+                                    try
+                                    {
+                                        client.updatePlayer(Constants.PLAYER2, opponent_player_health + post_attack_health_2, opponent_cards_remaining);
+
+                                        Object[] result = client.queryPlayer(Constants.PLAYER2);
+
+                                        opponent_player_health = (int) result[2];
+                                    }
+                                    catch (InterruptedException e)
+                                    {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+                            };
+
+                            Thread health_thread = new Thread(runnable2);
+                            health_thread.start();
                         }
                     }
                 }
                 else if(attacking_card != null)
                 {
-                    // method needed to update opponent player health
+                    final int post_attack_health_2 = attacking_card.getAttack();
+
+                    // Update own player fields on the network
+                    Runnable runnable2 = () ->
+                    {
+                        if(opponent_player_number == 0)
+                        {
+                            host.updatePlayer(Constants.PLAYER1, opponent_player_health + post_attack_health_2, opponent_cards_remaining);
+
+                            Object[] result = host.queryPlayer(Constants.PLAYER1);
+
+                            opponent_player_health = (int) result[2];
+                        }
+                        else
+                        {
+                            client.updatePlayer(Constants.PLAYER2, opponent_player_health + post_attack_health_2, opponent_cards_remaining);
+
+                            try
+                            {
+                                client.updatePlayer(Constants.PLAYER2, opponent_player_health + post_attack_health_2, opponent_cards_remaining);
+
+                                Object[] result = client.queryPlayer(Constants.PLAYER2);
+
+                                opponent_player_health = (int) result[2];
+                            }
+                            catch (InterruptedException e)
+                            {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    };
+
+                    Thread health_thread = new Thread(runnable2);
+                    health_thread.start();
                 }
             }
         }
@@ -407,6 +461,109 @@ public class GameModel implements ActionListener
         if(game_state == GameStates.GAME_ACTIVE)
         {
             turn_time--; // time remaining, therefore subtraction
+
+            // Update opposing player fields on the network
+            if(player.getPlayerNumber() != current_player_number)
+            {
+                Runnable runnable = () ->
+                {
+                    if(player.getPlayerNumber() != current_player_number && player.getPlayerNumber() == 0)
+                    {
+                        System.out.println("for host: " + player.getPlayerNumber());
+                        System.out.println("for host: " + current_player_number);
+
+                        CardModel queried_card = host.queryCard(Constants.PLAYER2_FIELD, 0);
+
+                        if(queried_card != null && !opponent_field_flags[0])
+                        {
+                            board_model.summonCreature(queried_card, 0, true);
+
+                            opponent_field_flags[0] = true;
+                        }
+
+                        queried_card = host.queryCard(Constants.PLAYER2_FIELD, 1);
+
+                        if(queried_card != null && !opponent_field_flags[1])
+                        {
+                            board_model.summonCreature(queried_card, 1, true);
+
+                            opponent_field_flags[1] = true;
+                        }
+
+                        queried_card = host.queryCard(Constants.PLAYER2_FIELD, 2);
+
+                        if(queried_card != null && !opponent_field_flags[2])
+                        {
+                            board_model.summonCreature(queried_card, 2, true);
+
+                            opponent_field_flags[2] = true;
+                        }
+
+                        queried_card = host.queryCard(Constants.PLAYER2_FIELD, 3);
+
+                        if(queried_card != null && !opponent_field_flags[3])
+                        {
+                            board_model.summonCreature(queried_card, 3, true);
+
+                            opponent_field_flags[3] = true;
+                        }
+                    }
+                    else if(player.getPlayerNumber() != current_player_number && player.getPlayerNumber() == 1)
+                    {
+                        try
+                        {
+                            System.out.println("for client: " + player.getPlayerNumber());
+                            System.out.println("for client: " + current_player_number);
+
+                            CardModel queried_card = client.queryCard(Constants.PLAYER1_FIELD, 0);
+
+                            if(queried_card != null && !opponent_field_flags[0])
+                            {
+                                board_model.summonCreature(queried_card, 0, true);
+
+                                opponent_field_flags[0] = true;
+                            }
+
+                            queried_card = client.queryCard(Constants.PLAYER1_FIELD, 1);
+
+                            if(queried_card != null && !opponent_field_flags[1])
+                            {
+                                board_model.summonCreature(queried_card, 1, true);
+
+                                opponent_field_flags[1] = true;
+                            }
+
+                            queried_card = client.queryCard(Constants.PLAYER1_FIELD, 2);
+
+                            if(queried_card != null && !opponent_field_flags[2])
+                            {
+                                board_model.summonCreature(queried_card, 2, true);
+
+                                opponent_field_flags[2] = true;
+                            }
+
+                            queried_card = client.queryCard(Constants.PLAYER1_FIELD, 3);
+
+                            if(queried_card != null && !opponent_field_flags[3])
+                            {
+                                board_model.summonCreature(queried_card, 3, true);
+
+                                opponent_field_flags[3] = true;
+                            }
+
+                        }
+                        catch (InterruptedException e)
+                        {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                };
+
+                Thread place_thread = new Thread(runnable);
+                place_thread.start();
+
+                game_controller.handlePlayerCardUIs(false);
+            }
 
             if(turn_time >= 0)
             {

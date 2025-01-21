@@ -63,11 +63,20 @@ public class BoardModel
      * Remove a creature from a specific lane.
      * @author Danny (s224774)
      */
-    public void removeCreatureFromField(int player_number, int lane) // can be called for both the local and remote player
+    public void removeCreatureFromField(int player_number, int lane, boolean update_opponent) // can be called for both the local and remote player
     {
         if(lane >= 0 && lane <= 3)
         {
-            CardModel[] player_lanes = player_number == 0 ? player_1_lanes : player_2_lanes;
+            CardModel[] player_lanes;
+
+            if(update_opponent)
+            {
+                player_lanes = game_model.getPlayer().getPlayerNumber() == 0 ? player_2_lanes : player_1_lanes;
+            }
+            else
+            {
+                player_lanes = game_model.getPlayer().getPlayerNumber() == 0 ? player_1_lanes : player_2_lanes;
+            }
 
             if(player_lanes[lane] != null)
             {

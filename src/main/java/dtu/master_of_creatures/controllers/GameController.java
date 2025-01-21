@@ -308,11 +308,11 @@ public class GameController extends SceneController implements Initializable
         {
             if(hand_index < player_card_count)
             {
-                updateCardImage(player.getPlayerNumber(), player_hand.get(hand_index).getCardType(), hand_index, true, true);
+                updateCardImage(player_hand.get(hand_index).getCardType(), hand_index, true, true);
             }
             else // empty slot
             {
-                updateCardImage(player.getPlayerNumber(), null, hand_index, true, true);
+                updateCardImage(null, hand_index, true, true);
             }
         }
     }
@@ -331,7 +331,7 @@ public class GameController extends SceneController implements Initializable
         {
             player_field_card = player_field_cards[field_index];
 
-            updateCardImage(player.getPlayerNumber(), (player_field_card != null ? player_field_card.getCardType() : null), field_index, false, update_player);
+            updateCardImage((player_field_card != null ? player_field_card.getCardType() : null), field_index, false, update_player);
         }
     }
 
@@ -349,16 +349,16 @@ public class GameController extends SceneController implements Initializable
         {
             opponent_field_card = opponent_field_cards[field_index];
 
-            updateCardImage(opponent_player_number, (opponent_field_card != null ? opponent_field_card.getCardType() : null), field_index, false, update_player);
+            updateCardImage((opponent_field_card != null ? opponent_field_card.getCardType() : null), field_index, false, update_player);
         }
     }
 
     /**
      * @author Danny (s224774), Maria (s195685)
      */
-    public void updateCardImage(int player_number, CommonCardTypes card_type, int slot_index, boolean in_hand, boolean update_player)
+    public void updateCardImage(CommonCardTypes card_type, int slot_index, boolean in_hand, boolean update_player)
     {
-        ImageView slot_image = getSlotImage(player_number, slot_index, in_hand, update_player);
+        ImageView slot_image = getSlotImage(slot_index, in_hand, update_player);
 
         if(card_type != null)
         {
@@ -372,7 +372,7 @@ public class GameController extends SceneController implements Initializable
             }
             else
             {
-                if(game_model.getPlayer().getPlayerNumber() == player_number)
+                if(update_player)
                 {
                     slot_image.setImage(new Image(String.valueOf(MasterOfCreaturesApp.class.getResource("media/images/card_back_1.png"))));
                 }
@@ -387,9 +387,9 @@ public class GameController extends SceneController implements Initializable
     /**
      * @author Danny (s224774), Maria (s195685)
      */
-    private ImageView getSlotImage(int player_number, int slot_index, boolean in_hand, boolean update_player)
+    private ImageView getSlotImage(int slot_index, boolean in_hand, boolean update_player)
     {
-        ImageView slot_image = null;
+        ImageView slot_image;
 
         if(in_hand)
         {

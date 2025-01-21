@@ -21,7 +21,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-import javax.swing.*;
 import javax.swing.Timer;
 
 public class JoinPregameController extends SceneController implements Initializable, ActionListener
@@ -100,7 +99,7 @@ public class JoinPregameController extends SceneController implements Initializa
             System.out.println(game_model.getMatchSettings().toString());
             game_model.initializePlayer(player_name.getText(), temp_list, false); // player 2 string
 
-            game_model.getClient().updatePlayer(Constants.PLAYER2, player_name.getText(), game_model.getPlayer().getHealthPoints(), game_model.getPlayer().getCardsRemaining());
+            game_model.getClient().initialUpdatePlayer(Constants.PLAYER2, player_name.getText(), game_model.getPlayer().getHealthPoints(), game_model.getPlayer().getCardsRemaining());
         };
 
         Thread test = new Thread(runnable);

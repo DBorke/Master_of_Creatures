@@ -306,7 +306,7 @@ public class ClientModel
         }
     }
 
-    public synchronized void updatePlayer(String playerName, String update_player_name, int health, int cardsRemaining)
+    public synchronized void initialUpdatePlayer(String playerName, String update_player_name, int health, int cardsRemaining)
     {
         try
         {
@@ -326,6 +326,35 @@ public class ClientModel
 
             // Add the updated player tuple
             players.put(playerName, update_player_name , health, cardsRemaining);
+            logger.info("Updated player: " + playerName);
+        }
+        catch (InterruptedException e)
+        {
+            Thread.currentThread().interrupt();
+            logger.severe("Failed to update player: " + e.getMessage());
+        }
+    }
+
+    public synchronized void updatePlayer(String playerName,  int health, int cardsRemaining)
+    {
+        try
+        {
+            logger.info("Before updating player: " + playerName);
+
+            // Attempt to remove the existing player tuple
+            Object[] existingPlayer = players.getp(new ActualField(playerName),new FormalField(String.class), new FormalField(Integer.class), new FormalField(Integer.class));
+
+            if (existingPlayer == null)
+            {
+                logger.warning("No existing player found: " + playerName);
+            }
+            else
+            {
+                logger.info("Existing player removed: " + playerName);
+            }
+
+            // Add the updated player tuple
+            players.put(playerName, existingPlayer[1] , health, cardsRemaining);
             logger.info("Updated player: " + playerName);
         }
         catch (InterruptedException e)
