@@ -409,16 +409,6 @@ public class GameController extends SceneController implements Initializable
         goToMenuScene();
     }
 
-    /**
-     * @author Danny (s224774)
-     */
-    public void muteSound()
-    {
-        super.muteSound();
-
-        sound_button.setText(getSoundUnmuted() ? "Sound On" : "Sound Off");
-    }
-
     /////////////////////////
     //////// setters ////////
     /////////////////////////

@@ -4,7 +4,6 @@ package dtu.master_of_creatures.controllers;
 import dtu.master_of_creatures.MasterOfCreaturesApp;
 import dtu.master_of_creatures.models.GameModel;
 import dtu.master_of_creatures.utilities.enums.GameStates;
-import dtu.master_of_creatures.utilities.enums.SoundLabels;
 import dtu.master_of_creatures.utilities.Constants;
 
 // Java libraries
@@ -34,10 +33,6 @@ public abstract class SceneController
 
     // Game data
     public static GameModel game_model;
-
-    // Sound data
-    private static boolean sound_unmuted = true;
-    private static HashMap<SoundLabels, MediaPlayer> sound_players;
 
     /**
      * @author Danny (s224774)
@@ -110,77 +105,6 @@ public abstract class SceneController
         app_scene.getRoot().setStyle("-fx-background-color: transparent;"); // make scene background invisible
     }
 
-    /**
-     * @author Danny (s224774)
-     */
-    public void playSoundEffect(SoundLabels sound_label, double volume)
-    {
-        if(sound_players == null)
-        {
-            sound_players = new HashMap<>();
-
-            createSoundPlayers();
-        }
-
-        if(sound_unmuted)
-        {
-            MediaPlayer sound_player = sound_players.get(sound_label);
-
-            sound_player.setVolume(volume);
-            sound_player.play();
-        }
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    private void createSoundPlayers()
-    {
-        SoundLabels[] sounds = SoundLabels.values();
-
-        for(SoundLabels sound_label : sounds)
-        {
-            sound_players.put(sound_label, new MediaPlayer(new Media(String.valueOf(MasterOfCreaturesApp.class.getResource("media/sounds/" + sound_label.name().toLowerCase() + ".mp3")))));
-        }
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public void stopSoundEffect(SoundLabels sound_label)
-    {
-        MediaPlayer sound_player = sound_players.get(sound_label);
-
-        if(!sound_player.isMute())
-        {
-            sound_player.stop();
-        }
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public void muteSound()
-    {
-        sound_unmuted = !sound_unmuted;
-
-        if(sound_players != null) // make sure sounds are available
-        {
-            // Change mute status of all sound players
-            for(MediaPlayer sound_player : sound_players.values())
-            {
-                if(!sound_unmuted && !sound_player.isMute())
-                {
-                    sound_player.setMute(true);
-                }
-                else if(sound_unmuted && sound_player.isMute())
-                {
-                    sound_player.setMute(false);
-                }
-            }
-        }
-    }
-
     /////////////////////////
     // setters and getters //
     /////////////////////////
@@ -224,13 +148,5 @@ public abstract class SceneController
     public GameModel getGameModel()
     {
         return game_model;
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public boolean getSoundUnmuted()
-    {
-        return sound_unmuted;
     }
 }

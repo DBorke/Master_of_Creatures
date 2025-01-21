@@ -54,14 +54,4 @@ public class MenuController extends SceneController implements Initializable
     {
         goToJoinPregameScene();
     }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public void muteSound()
-    {
-        super.muteSound();
-
-        sound_button.setText(getSoundUnmuted() ? "Sound On" : "Sound Off");
-    }
 }

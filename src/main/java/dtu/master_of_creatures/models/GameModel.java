@@ -5,7 +5,6 @@ import dtu.master_of_creatures.controllers.GameController;
 import dtu.master_of_creatures.controllers.HostPregameController;
 import dtu.master_of_creatures.models.network.ClientModel;
 import dtu.master_of_creatures.models.network.HostModel;
-import dtu.master_of_creatures.models.network.ThreadModel;
 import dtu.master_of_creatures.utilities.enums.GameStates;
 import dtu.master_of_creatures.utilities.enums.PhaseTypes;
 import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
@@ -39,8 +38,6 @@ public class GameModel implements ActionListener
     private int match_winning_player;
     private final Timer game_timer;
     private int turn_time;
-    private int round_time;
-    private int match_time;
     private final HashMap<String, Integer> match_settings;
     private HostModel host;
     private ClientModel client;
@@ -67,19 +64,14 @@ public class GameModel implements ActionListener
     /**
      * @author Danny (s224774), Maria (s195685)
      */
-    public void initializeGame(int round_wins_needed, int turn_time_limit, int health_points, int blood_points, int deck_size, int hand_size, boolean is_host)
+    public void initializeMatchSettings(int round_wins_needed, int turn_time_limit, int health_points, int blood_points, int deck_size, int hand_size, boolean is_host)
     {
-        // Make backup of game related match settings
-
         match_settings.put("round wins", round_wins_needed);
         match_settings.put("time limit", turn_time_limit);
         match_settings.put("health points", health_points);
         match_settings.put("blood points", blood_points);
         match_settings.put("deck size", deck_size);
         match_settings.put("hand size", hand_size);
-
-
-
     }
 
     /**
@@ -116,8 +108,6 @@ public class GameModel implements ActionListener
         board_model = new BoardModel(this);
 
         player.resetPlayerForNextRound();
-
-        round_time = 0;
     }
 
     /**
@@ -220,14 +210,6 @@ public class GameModel implements ActionListener
     }
 
     /**
-     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
-     */
-    public void gambleWithChosenCards(List<CommonCardTypes> cards_gambled_with)
-    {
-        game_controller.handlePlayerInfoUIs();
-    }
-
-    /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
     public void endTurn()
@@ -244,8 +226,6 @@ public class GameModel implements ActionListener
         phase_type = PhaseTypes.ATTACK_PHASE;
 
         performPostTurnAttacks();
-
-        player.updateCardsRemaining(); // needed for opponent too
 
         checkRoundMatchOver(false);
     }
@@ -283,33 +263,16 @@ public class GameModel implements ActionListener
                             // method needed to update opponent player health
                         }
                     }
-
-                    player.increaseDamageDone(attacking_card.getAttack()); // damage done to both cards and opponent player
                 }
                 else if(attacking_card != null)
                 {
                     // method needed to update opponent player health
-
-                    player.increaseDamageDone(attacking_card.getAttack()); // damage done to player
                 }
             }
         }
 
         game_controller.handlePlayerInfoUIs();
         game_controller.handlePlayerCardUIs();
-    }
-
-    /**
-     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
-     */
-    public void addRewardCards(PlayerModel player, List<CommonCardTypes> cards_chosen)
-    {
-        for(CommonCardTypes card_chosen : cards_chosen)
-        {
-            player.addToDeck(card_chosen, false); // to starting deck?
-        }
-
-        game_controller.handlePlayerInfoUIs();
     }
 
     /**
@@ -386,8 +349,6 @@ public class GameModel implements ActionListener
         if(game_state == GameStates.GAME_ACTIVE)
         {
             turn_time--; // time remaining, therefore subtraction
-            round_time++;
-            match_time++;
 
             if(turn_time >= 0)
             {
@@ -545,22 +506,6 @@ public class GameModel implements ActionListener
     public int getTurnTime()
     {
         return turn_time;
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public int getRoundTime()
-    {
-        return round_time;
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public int getMatchTime()
-    {
-        return match_time;
     }
 
     /**

@@ -2,7 +2,6 @@ package dtu.master_of_creatures.controllers;
 
 // Project libraries
 import dtu.master_of_creatures.models.GameModel;
-import dtu.master_of_creatures.models.network.ClientModel;
 import dtu.master_of_creatures.utilities.enums.GameStates;
 import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 
@@ -10,7 +9,6 @@ import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.List;
 import java.util.ArrayList;
@@ -78,14 +76,11 @@ public class JoinPregameController extends SceneController implements Initializa
     {
         List<CommonCardTypes> temp_list = new ArrayList<>();
         temp_list.add(CommonCardTypes.WOLF);
-        Object[] settings = game_model.getClient().queryGameSettings();
+        //Object[] settings = game_model.getClient().queryGameSettings();
 
-        while (settings == null )
-        {
-            settings = game_model.getClient().queryGameSettings();
-        }
-        game_model.initializeGame( (Integer) settings[1], (Integer) settings[2], (Integer)  settings[3],(Integer)  settings[4], (Integer) settings[5], (Integer) settings[6], false);
-        game_model.initializePlayer(player_name.getText(), temp_list, false);
+        //game_model.initializeGame( (Integer) settings[1], (Integer) settings[2], (Integer)  settings[3],(Integer)  settings[4], (Integer) settings[5], (Integer) settings[6], false);
+        game_model.initializeMatchSettings( 1,1,1,1,1,1, false);
+        game_model.initializePlayer(player_name.getText(), temp_list, false); // player 2 string
         game_model.setPlayerReady(true);
 
         join_pane.requestFocus(); // exit player name text field
@@ -112,16 +107,6 @@ public class JoinPregameController extends SceneController implements Initializa
     public void quitSetup() throws IOException
     {
         goToMenuScene();
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public void muteSound()
-    {
-        super.muteSound();
-
-        sound_button.setText(getSoundUnmuted() ? "Sound On" : "Sound Off");
     }
 
     public void actionPerformed(ActionEvent actionEvent) // gets called every 0.1 seconds

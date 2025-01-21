@@ -19,9 +19,6 @@ public class PlayerModel
     private List<CardModel> current_deck;
     private final List<CardModel> cards_in_hand;
     private int cards_remaining;
-    private int turn_damage_done;
-    private int round_damage_done;
-    private int match_damage_done;
     private HashMap<String, Integer> match_settings;
 
     // Game data
@@ -42,9 +39,6 @@ public class PlayerModel
         System.out.println("Match settings: " + match_settings);
         health_points = match_settings.get("health points");
         blood_points = match_settings.get("blood points");
-        turn_damage_done = 0;
-        round_damage_done = 0;
-        match_damage_done = 0;
 
         // Set up card related variables
         starting_deck = new ArrayList<>();
@@ -65,7 +59,6 @@ public class PlayerModel
         // Reset player stats
         health_points = match_settings.get("health points");
         blood_points = match_settings.get("blood points");
-        round_damage_done = 0;
 
         // Reset card related variables
         current_deck = new ArrayList<>(starting_deck);
@@ -198,24 +191,6 @@ public class PlayerModel
         }
     }
 
-    /**
-     * @author Danny (s224774)
-     */
-    public void increaseDamageDone(int damage_done)
-    {
-        turn_damage_done += damage_done;
-        round_damage_done += damage_done;
-        match_damage_done += damage_done;
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public void resetTurnDamageDone()
-    {
-        turn_damage_done = 0;
-    }
-
     /////////////////////////
     // setters and getters //
     /////////////////////////
@@ -282,33 +257,5 @@ public class PlayerModel
     public int getCardsRemaining()
     {
         return cards_remaining;
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public int getTurnDamageDone()
-    {
-        return turn_damage_done;
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public int getRoundDamageDone()
-    {
-        return round_damage_done;
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public int getMatchDamageDone()
-    {
-        return match_damage_done;
-    }
-
-    public void setMatchSettings(HashMap<String, Integer> match_settings) {
-        this.match_settings = match_settings;
     }
 }

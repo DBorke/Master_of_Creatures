@@ -104,7 +104,7 @@ public class ClientModel
         logger.info("Before querying game settings");
         Object[] result = null;
         try {
-            result = gameSettings.queryp(new ActualField(GAME_SETTINGS), new FormalField(Integer.class), new FormalField(String.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(String.class), new FormalField(String.class));
+            result = gameSettings.query(new ActualField(GAME_SETTINGS), new FormalField(Integer.class), new FormalField(String.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(String.class), new FormalField(String.class));
         } catch (InterruptedException e) {
             logger.warning("Failed to query game settings: " + e.getMessage());
         }

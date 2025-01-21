@@ -2,7 +2,6 @@ package dtu.master_of_creatures.controllers;
 
 // Project libraries
 import dtu.master_of_creatures.models.GameModel;
-import dtu.master_of_creatures.models.network.HostModel;
 import dtu.master_of_creatures.models.network.ThreadModel;
 import dtu.master_of_creatures.utilities.enums.GameStates;
 import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
@@ -231,7 +230,7 @@ public class HostPregameController extends SceneController implements Initializa
                 turn_time = -1; // infinite
             }
 
-            game_model.initializeGame(round_wins.getSelectionModel().getSelectedItem(), turn_time, health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), true);
+            game_model.initializeMatchSettings(round_wins.getSelectionModel().getSelectedItem(), turn_time, health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), true);
             game_model.getHost().initializeGameSpace(player_name.getText(), "Waiting for client.", round_wins.getSelectionModel().getSelectedItem(), turn_time, health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem()+hand_size.getSelectionModel().getSelectedItem(),deck_size.getSelectionModel().getSelectedItem()+hand_size.getSelectionModel().getSelectedItem(),false);
             game_model.initializePlayer(player_name.getText(), player_cards, true);
         }
@@ -252,16 +251,6 @@ public class HostPregameController extends SceneController implements Initializa
     public void quitSetup() throws IOException
     {
         goToMenuScene();
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public void muteSound()
-    {
-        super.muteSound();
-
-        sound_button.setText(getSoundUnmuted() ? "Sound On" : "Sound Off");
     }
 
     /**
