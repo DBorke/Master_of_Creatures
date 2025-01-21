@@ -554,18 +554,18 @@ public class HostModel
         }
     }
 
-    public void getLock()
+    public Object getLock()
     {
-        try
+        logger.info("Attempting to acquire lock");
+        Object lock_check= lock.getp(new ActualField(LOCK));
+        if (lock_check == null)
         {
-            logger.info("Attempting to acquire lock");
-            lock.get(new ActualField(LOCK));
-            logger.info("Lock successfully acquired");
+            logger.warning("Lock has not been released");
+            return null;
         }
-        catch (InterruptedException e)
-        {
-            Thread.currentThread().interrupt();
-            logger.severe("Failed to acquire lock: " + e.getMessage());
+        else{
+            logger.info("Lock successfully acquired");
+            return lock_check;
         }
     }
 

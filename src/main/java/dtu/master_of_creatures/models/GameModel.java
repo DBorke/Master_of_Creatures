@@ -158,10 +158,16 @@ public class GameModel implements ActionListener
         if(current_player_number == -1) // first turn
         {
             current_player_number = 0;
+
         }
         else // subsequent turns
         {
             current_player_number = current_player_number == 0 ? 1 : 0;
+            Runnable runnable = () ->
+            {
+                getHost().getLock();
+            };
+
         }
 
         game_controller.setCurrentPlayerNumber(current_player_number);
@@ -242,45 +248,24 @@ public class GameModel implements ActionListener
         }
 
         //performPostTurnAttacks();
-
-        // Update opposing player fields on the network
-        if(player.getPlayerNumber() != current_player_number)
+        Runnable runnable = () ->
         {
-            Runnable runnable = () ->
+            if(player.getPlayerNumber() == current_player_number && player.getPlayerNumber() == 0)
             {
-                if(player.getPlayerNumber() != current_player_number && player.getPlayerNumber() == 0)
-                {
-                    System.out.println("for host: " + player.getPlayerNumber());
-                    System.out.println("for host: " + current_player_number);
+                getHost().releaseLock(); ;
+            }
+            else if(player.getPlayerNumber() == current_player_number && player.getPlayerNumber() == 1)
+            {
+                getClient().releaseLock();
+            }
+        };
 
-                    board_model.summonCreature(host.queryCard(Constants.PLAYER2_FIELD, 0), 0, true);
-                    board_model.summonCreature(host.queryCard(Constants.PLAYER2_FIELD, 1), 1, true);
-                    board_model.summonCreature(host.queryCard(Constants.PLAYER2_FIELD, 2), 2, true);
-                    board_model.summonCreature(host.queryCard(Constants.PLAYER2_FIELD, 3), 3, true);
-                }
-                else if(player.getPlayerNumber() != current_player_number && player.getPlayerNumber() == 1)
-                {
-                    try
-                    {
-                        System.out.println("for client: " + player.getPlayerNumber());
-                        System.out.println("for client: " + current_player_number);
+        //Create New runnable thread to release lock
+        Thread place_thread = new Thread(runnable);
+        place_thread.start();
 
-                        board_model.summonCreature(client.queryCard(Constants.PLAYER1_FIELD, 0), 0, true);
-                        board_model.summonCreature(client.queryCard(Constants.PLAYER1_FIELD, 1), 1, true);
-                        board_model.summonCreature(client.queryCard(Constants.PLAYER1_FIELD, 2), 2, true);
-                        board_model.summonCreature(client.queryCard(Constants.PLAYER1_FIELD, 3), 3, true);
 
-                    }
-                    catch (InterruptedException e)
-                    {
-                        throw new RuntimeException(e);
-                    }
-                }
-            };
 
-            Thread place_thread = new Thread(runnable);
-            place_thread.start();
-        }
 
         game_controller.handlePlayerInfoUIs();
         game_controller.handlePlayerCardUIs(false);
@@ -407,6 +392,57 @@ public class GameModel implements ActionListener
         if(game_state == GameStates.GAME_ACTIVE)
         {
             turn_time--; // time remaining, therefore subtraction
+
+            // Update opposing player fields on the network
+            if(player.getPlayerNumber() != current_player_number)
+            {
+                Runnable runnable = () ->
+                {
+                    if(player.getPlayerNumber() != current_player_number && player.getPlayerNumber() == 0)
+                    {
+                        System.out.println("for host: " + player.getPlayerNumber());
+                        System.out.println("for host: " + current_player_number);
+
+                        board_model.summonCreature(host.queryCard(Constants.PLAYER2_FIELD, 0), 0, true);
+                        board_model.summonCreature(host.queryCard(Constants.PLAYER2_FIELD, 1), 1, true);
+                        board_model.summonCreature(host.queryCard(Constants.PLAYER2_FIELD, 2), 2, true);
+                        board_model.summonCreature(host.queryCard(Constants.PLAYER2_FIELD, 3), 3, true);
+
+                        if (getHost().getLock() != null)
+                        {
+                            endTurn();
+                        }
+                    }
+                    else if(player.getPlayerNumber() != current_player_number && player.getPlayerNumber() == 1)
+                    {
+                        try
+                        {
+                            System.out.println("for client: " + player.getPlayerNumber());
+                            System.out.println("for client: " + current_player_number);
+
+                            board_model.summonCreature(client.queryCard(Constants.PLAYER1_FIELD, 0), 0, true);
+                            board_model.summonCreature(client.queryCard(Constants.PLAYER1_FIELD, 1), 1, true);
+                            board_model.summonCreature(client.queryCard(Constants.PLAYER1_FIELD, 2), 2, true);
+                            board_model.summonCreature(client.queryCard(Constants.PLAYER1_FIELD, 3), 3, true);
+
+                            if (getClient().getLock() != null)
+                            {
+                                endTurn();
+                            }
+
+
+                        }
+                        catch (InterruptedException e)
+                        {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                };
+
+                //Create New runnable thread to release lock
+                Thread place_thread = new Thread(runnable);
+                place_thread.start();
+            }
 
             if(turn_time >= 0)
             {
