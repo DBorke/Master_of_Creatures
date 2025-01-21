@@ -9,10 +9,10 @@ import java.io.Serializable;
 public class CardModel implements Serializable
 {
     // Fields
-    private final CommonCardTypes card_type;
-    private int health;
-    private int attack;
-    private final int cost;
+    public final CommonCardTypes card_type;
+    public int health;
+    public int attack;
+    public final int cost;
 
     /**
      * @author Romel (s215212), Danny (s224774)

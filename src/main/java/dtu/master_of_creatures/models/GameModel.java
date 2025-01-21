@@ -5,14 +5,15 @@ import dtu.master_of_creatures.controllers.GameController;
 import dtu.master_of_creatures.controllers.HostPregameController;
 import dtu.master_of_creatures.models.network.ClientModel;
 import dtu.master_of_creatures.models.network.HostModel;
+import dtu.master_of_creatures.utilities.Constants;
 import dtu.master_of_creatures.utilities.enums.GameStates;
-import dtu.master_of_creatures.utilities.enums.PhaseTypes;
 import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 
 // Java libraries
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.Timer;
@@ -22,7 +23,6 @@ import java.util.logging.Logger;
 public class GameModel implements ActionListener
 {
     private static GameStates game_state;
-    private static PhaseTypes phase_type;
     private BoardModel board_model;
     private PlayerModel player;
     private boolean player_ready = true;
@@ -79,9 +79,11 @@ public class GameModel implements ActionListener
      */
     public void initializePlayer(String player_name, List<CommonCardTypes> cards_chosen, boolean is_host)
     {
-        player = new PlayerModel(player_name, is_host ? 0 : 1, cards_chosen, this);
+        int player_number = is_host ? 0 : 1;
 
-        opponent_player_number = is_host ? 1 : 0;
+        player = new PlayerModel(player_name, player_number, cards_chosen, this);
+
+        opponent_player_number = player_number;
         opponent_player_health = match_settings.get("health points");
         opponent_cards_remaining = match_settings.get("deck size") - match_settings.get("hand size");
     }
@@ -89,7 +91,6 @@ public class GameModel implements ActionListener
     public void initializeHostModel()
     {
         host = new HostModel(uri);
-
     }
 
     public void initializeClientModel()
@@ -146,8 +147,6 @@ public class GameModel implements ActionListener
         game_controller.handlePlayerInfoUIs();
         game_controller.handlePlayerButtons();
 
-        phase_type = PhaseTypes.PLAYING_PHASE;
-
         turn_active = true;
     }
 
@@ -158,7 +157,7 @@ public class GameModel implements ActionListener
     {
         if(current_player_number == -1) // first turn
         {
-            current_player_number = new Random().nextInt(0,2);
+            current_player_number = 0;
         }
         else // subsequent turns
         {
@@ -190,11 +189,27 @@ public class GameModel implements ActionListener
         {
             CardModel card_played = player.getCardsInHand().get(hand_index);
 
-            if(board_model.summonCreature(card_played, field_index))
+            if(board_model.summonCreature(card_played, field_index, false))
             {
                 player.removeFromHand(card_played);
 
                 game_controller.handlePlayerInfoUIs();
+
+                // Update own player fields on the network
+                Runnable runnable = () ->
+                {
+                    if(current_player_number == 0)
+                    {
+                        host.updateCard(Constants.PLAYER1_FIELD, field_index, card_played);
+                    }
+                    else
+                    {
+                        client.updateCard(Constants.PLAYER2_FIELD, field_index, card_played);
+                    }
+                };
+
+                Thread place_thread = new Thread(runnable);
+                place_thread.start();
 
                 return true;
             }
@@ -225,9 +240,52 @@ public class GameModel implements ActionListener
             game_controller.handleTurnTimeUI(turn_time);
         }
 
-        phase_type = PhaseTypes.ATTACK_PHASE;
-
         performPostTurnAttacks();
+
+        // Update opposing player fields on the network
+        if(player.getPlayerNumber() != current_player_number)
+        {
+            Runnable runnable = () ->
+            {
+                if(player.getPlayerNumber() != current_player_number && player.getPlayerNumber() == 0)
+                {
+                    System.out.println("for host: " + player.getPlayerNumber());
+                    System.out.println("for host: " + current_player_number);
+
+                    board_model.summonCreature(host.queryCard(Constants.PLAYER2_FIELD, 0), 0, true);
+                    board_model.summonCreature(host.queryCard(Constants.PLAYER2_FIELD, 1), 1, true);
+                    board_model.summonCreature(host.queryCard(Constants.PLAYER2_FIELD, 2), 2, true);
+                    board_model.summonCreature(host.queryCard(Constants.PLAYER2_FIELD, 3), 3, true);
+                }
+                else if(player.getPlayerNumber() != current_player_number && player.getPlayerNumber() == 1)
+                {
+                    try
+                    {
+                        System.out.println("for client: " + player.getPlayerNumber());
+                        System.out.println("for client: " + current_player_number);
+
+                        board_model.summonCreature(client.queryCard(Constants.PLAYER1_FIELD, 0), 0, true);
+                        board_model.summonCreature(client.queryCard(Constants.PLAYER1_FIELD, 1), 1, true);
+                        board_model.summonCreature(client.queryCard(Constants.PLAYER1_FIELD, 2), 2, true);
+                        board_model.summonCreature(client.queryCard(Constants.PLAYER1_FIELD, 3), 3, true);
+
+                    }
+                    catch (InterruptedException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                }
+            };
+
+            Thread place_thread = new Thread(runnable);
+            place_thread.start();
+        }
+
+        game_controller.handlePlayerInfoUIs();
+        game_controller.handlePlayerCardUIs();
+
+        System.out.println(player.getPlayerNumber() + " :" + Arrays.toString(board_model.getPlayer1Lanes()));
+        System.out.println(player.getPlayerNumber() + " :" + Arrays.toString(board_model.getPlayer2Lanes()));
 
         checkRoundMatchOver(false);
     }
@@ -272,9 +330,6 @@ public class GameModel implements ActionListener
                 }
             }
         }
-
-        game_controller.handlePlayerInfoUIs();
-        game_controller.handlePlayerCardUIs();
     }
 
     /**
@@ -428,14 +483,6 @@ public class GameModel implements ActionListener
     }
 
     /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
-     */
-    public PhaseTypes getPhaseType()
-    {
-        return phase_type;
-    }
-
-    /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
     public BoardModel getBoardModel()
@@ -491,6 +538,11 @@ public class GameModel implements ActionListener
     public int getOpponentCardsRemaining()
     {
         return opponent_cards_remaining;
+    }
+
+    public int getCurrentPlayerNumber()
+    {
+        return current_player_number;
     }
 
     /**

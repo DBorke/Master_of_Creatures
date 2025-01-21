@@ -94,12 +94,11 @@
             <Image url="@../media/images/card_back_2.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="p2_field_image_151" fitHeight="200.0" fitWidth="150.0" layoutX="1106.0" layoutY="205.0" pickOnBounds="true">
+      <ImageView fx:id="opponent_field_image_4" fitHeight="200.0" fitWidth="150.0" layoutX="1106.0" layoutY="205.0" pickOnBounds="true">
          <image>
             <Image url="@../media/images/card_back_2.png" />
          </image>
       </ImageView>
-      <Button fx:id="p2_field_151" focusTraversable="false" layoutX="1106.0" layoutY="205.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="200.0" prefWidth="150.0" text="Button" />
       <ImageView fx:id="player_field_image_1" fitHeight="200.0" fitWidth="150.0" layoutX="541.0" layoutY="428.0" pickOnBounds="true">
          <image>
             <Image url="@../media/images/card_back_1.png" />
@@ -118,12 +117,12 @@
          </image>
       </ImageView>
       <Button fx:id="player_field_3" focusTraversable="false" layoutX="920.0" layoutY="428.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="200.0" prefWidth="150.0" text="Button" />
-      <ImageView fx:id="p2_field_image_1511" fitHeight="200.0" fitWidth="150.0" layoutX="1106.0" layoutY="428.0" pickOnBounds="true">
+      <ImageView fx:id="player_field_image_4" fitHeight="200.0" fitWidth="150.0" layoutX="1106.0" layoutY="428.0" pickOnBounds="true">
          <image>
             <Image url="@../media/images/card_back_1.png" />
          </image>
       </ImageView>
-      <Button fx:id="p2_field_1511" focusTraversable="false" layoutX="1106.0" layoutY="428.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="200.0" prefWidth="150.0" text="Button" />
+      <Button fx:id="player_field_4" focusTraversable="false" layoutX="1106.0" layoutY="428.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="200.0" prefWidth="150.0" text="Button" />
       <ImageView fx:id="player_hand_image_1" fitHeight="175.0" fitWidth="125.0" layoutX="380.0" layoutY="777.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../media/images/card_back_1.png" />
