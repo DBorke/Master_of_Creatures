@@ -104,19 +104,19 @@ public class ClientModel
         logger.info("Before querying game settings");
         Object[] result = null;
         try {
-            result = gameSettings.query(new ActualField(GAME_SETTINGS), new FormalField(Integer.class), new FormalField(String.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(String.class), new FormalField(String.class));
+            result = gameSettings.query(new ActualField(GAME_SETTINGS), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(String.class), new FormalField(String.class));
         } catch (InterruptedException e) {
             logger.warning("Failed to query game settings: " + e.getMessage());
         }
         return result;
     }
 
-    public void updateGameSettings(int round_wins, String turn_time, int health_points, int blood_points, int deck_size, int hand_size, String player1name, String player2name)
+    public void updateGameSettings(int round_wins, int turn_time, int health_points, int blood_points, int deck_size, int hand_size, String player1name, String player2name)
     {
         try
         {
             logger.info("Updating game settings...");
-            Object[] existingGameSettings = gameSettings.getp(new ActualField(GAME_SETTINGS), new FormalField(Integer.class), new FormalField(String.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(String.class), new FormalField(String.class));
+            Object[] existingGameSettings = gameSettings.getp(new ActualField(GAME_SETTINGS), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(String.class), new FormalField(String.class));
 
             if (existingGameSettings == null)
             {

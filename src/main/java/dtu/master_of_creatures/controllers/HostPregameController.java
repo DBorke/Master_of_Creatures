@@ -10,12 +10,14 @@ import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.IOException;
 
 // JavaFX libraries
+import javafx.application.Platform;
 import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
@@ -197,6 +199,7 @@ public class HostPregameController extends SceneController implements Initializa
     {
         deck_size_selected = deck_size.getSelectionModel().getSelectedItem();
 
+
         player_cards.clear(); // remove all cards from chosen deck
 
         cards_chosen_count.setText("Cards chosen: " + 0 + "/" + deck_size_selected);
@@ -230,8 +233,17 @@ public class HostPregameController extends SceneController implements Initializa
                 turn_time = -1; // infinite
             }
 
+            final int final_turn_time = turn_time;
             game_model.initializeMatchSettings(round_wins.getSelectionModel().getSelectedItem(), turn_time, health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), true);
-            game_model.getHost().initializeGameSpace(player_name.getText(), "Waiting for client.", round_wins.getSelectionModel().getSelectedItem(), turn_time, health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem()+hand_size.getSelectionModel().getSelectedItem(),deck_size.getSelectionModel().getSelectedItem()+hand_size.getSelectionModel().getSelectedItem(),false);
+            Runnable runnable = () ->{
+                game_model.getHost().initializeGameSpace(player_name.getText(), "Waiting for client.", round_wins.getSelectionModel().getSelectedItem(), final_turn_time, health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem()+hand_size.getSelectionModel().getSelectedItem(),deck_size.getSelectionModel().getSelectedItem()+hand_size.getSelectionModel().getSelectedItem(),false);
+                game_model.getHost().updateGameSettings(round_wins.getSelectionModel().getSelectedItem(), Integer.parseInt(String.valueOf(final_turn_time)), health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), "Adolf Hitler", "Winston Churchill");
+            };
+
+            Thread thread = new ThreadModel(runnable);
+            thread.start();
+            //game_model.getHost().initializeGameSpace(player_name.getText(), "Waiting for client.", round_wins.getSelectionModel().getSelectedItem(), turn_time, health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem()+hand_size.getSelectionModel().getSelectedItem(),deck_size.getSelectionModel().getSelectedItem()+hand_size.getSelectionModel().getSelectedItem(),false);
+
             game_model.initializePlayer(player_name.getText(), player_cards, true);
         }
 
@@ -268,8 +280,9 @@ public class HostPregameController extends SceneController implements Initializa
             try {
 
                 boolean[] result = game_model.getHost().queryPlayerReadyFlag();
-                if ( result[1])
+                if (result[1])
                 {
+                    System.out.println(Arrays.toString(game_model.getHost().queryGameSettings()));
                     game_model.setOpponentReady(true);
                 }
             } catch (InterruptedException e) {
@@ -277,18 +290,18 @@ public class HostPregameController extends SceneController implements Initializa
             }
         };
 
-        // Create host thread
-        Thread initialize_thread = new ThreadModel(initialize_host_parameters);
 
-        // Start host thread
-        initialize_thread.start();
+
+        Platform.runLater(() -> {
         System.out.println(game_model.getPlayerReady());
         System.out.println(game_model.getOpponentReady());
+
         if( game_model.getPlayerReady() && game_model.getOpponentReady())
         {
             try
             {
                 goToGameScene();
+                network_timer.stop();
             }
             catch (IOException e)
             {
@@ -299,6 +312,13 @@ public class HostPregameController extends SceneController implements Initializa
         {
             System.out.println("No client connected.");
         }
+        });
+        // Create host thread
+        Thread initialize_thread = new ThreadModel(initialize_host_parameters);
+
+        // Start host thread
+        initialize_thread.start();
+
     }
 
     /////////////////////////

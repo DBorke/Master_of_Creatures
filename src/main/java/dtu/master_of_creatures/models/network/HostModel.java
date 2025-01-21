@@ -138,10 +138,9 @@ public class HostModel
 
     private void initializeGame_Settings(SequentialSpace gameSettings, int round_wins, int turn_time, int health_points, int blood_points, int deck_size, int hand_size, String player1name, String player2name) throws InterruptedException
     {
-            gameSettings.getp(new ActualField(GAME_SETTINGS));
-
+        if (game.queryp(new ActualField(GAME_SETTINGS)) == null) {
             gameSettings.put(GAME_SETTINGS, round_wins, turn_time, health_points, blood_points, deck_size, hand_size, player1name, player2name);
-
+        }
     }
 
     private void initializePlayerReady() throws InterruptedException
@@ -191,16 +190,16 @@ public class HostModel
 
     public Object[] queryGameSettings() throws InterruptedException {
         logger.info("Before querying game settings");
-        Object[] result = gameSettings.queryp(new ActualField(GAME_SETTINGS), new FormalField(Integer.class), new FormalField(String.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(String.class), new FormalField(String.class));
+        Object[] result = gameSettings.queryp(new ActualField(GAME_SETTINGS), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(String.class), new FormalField(String.class));
         return result;
     }
 
-    public void updateGameSettings(int round_wins, String turn_time, int health_points, int blood_points, int deck_size, int hand_size, String player1name, String player2name)
+    public void updateGameSettings(int round_wins, int turn_time, int health_points, int blood_points, int deck_size, int hand_size, String player1name, String player2name)
     {
         try
         {
             logger.info("Updating game settings...");
-            Object[] existingGameSettings = gameSettings.getp(new ActualField(GAME_SETTINGS), new FormalField(Integer.class), new FormalField(String.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(String.class), new FormalField(String.class));
+            Object[] existingGameSettings = gameSettings.getp(new ActualField(GAME_SETTINGS), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(String.class), new FormalField(String.class));
 
             if (existingGameSettings == null)
             {

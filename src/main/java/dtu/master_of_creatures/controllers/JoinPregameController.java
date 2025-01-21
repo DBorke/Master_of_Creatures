@@ -9,12 +9,11 @@ import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
-import java.util.ResourceBundle;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 import java.io.IOException;
 
 // JavaFX libraries
+import javafx.application.Platform;
 import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
 import javafx.scene.layout.AnchorPane;
@@ -22,6 +21,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
 import javax.swing.*;
+import javax.swing.Timer;
 
 public class JoinPregameController extends SceneController implements Initializable, ActionListener
 {
@@ -74,14 +74,24 @@ public class JoinPregameController extends SceneController implements Initializa
      */
     public void ready()
     {
-        List<CommonCardTypes> temp_list = new ArrayList<>();
-        temp_list.add(CommonCardTypes.WOLF);
-        //Object[] settings = game_model.getClient().queryGameSettings();
+        Runnable runnable = () -> {
+            List<CommonCardTypes> temp_list = new ArrayList<>();
+            temp_list.add(CommonCardTypes.WOLF);
 
-        //game_model.initializeGame( (Integer) settings[1], (Integer) settings[2], (Integer)  settings[3],(Integer)  settings[4], (Integer) settings[5], (Integer) settings[6], false);
-        game_model.initializeMatchSettings( 1,1,1,1,1,1, false);
-        game_model.initializePlayer(player_name.getText(), temp_list, false); // player 2 string
-        game_model.setPlayerReady(true);
+            Object[] settings = game_model.getClient().queryGameSettings();
+
+
+
+            game_model.initializeMatchSettings( (Integer) settings[1], (Integer) settings[2], (Integer)  settings[3],(Integer)  settings[4], (Integer) settings[5], (Integer) settings[6], false);
+
+            System.out.println(game_model.getMatchSettings().toString());
+            //game_model.initializeMatchSettings( 1,1,1,1,1,1, false);
+            game_model.initializePlayer((String) settings[8], temp_list, false); // player 2 string
+            game_model.setPlayerReady(true);
+        };
+
+        Thread test = new Thread(runnable);
+        test.start();
 
         join_pane.requestFocus(); // exit player name text field
         ready.setDisable(true);
@@ -129,12 +139,12 @@ public class JoinPregameController extends SceneController implements Initializa
 
         };
 
-        Thread thread = new Thread(runnable);
-        thread.start();
-        System.out.println(game_model.getPlayerReady());
-        System.out.println(game_model.getOpponentReady());
 
 
+
+        Platform.runLater(() -> {
+            System.out.println(game_model.getPlayerReady());
+            System.out.println(game_model.getOpponentReady());
 
         if(game_model.getPlayerReady() && game_model.getOpponentReady())
         {
@@ -142,6 +152,7 @@ public class JoinPregameController extends SceneController implements Initializa
             try
             {
                 goToGameScene();
+                network_timer.stop();
             }
             catch (IOException e)
             {
@@ -152,5 +163,9 @@ public class JoinPregameController extends SceneController implements Initializa
         {
             System.out.println("No host connected.");
         }
+        });
+
+        Thread thread = new Thread(runnable);
+        thread.start();
     }
 }
