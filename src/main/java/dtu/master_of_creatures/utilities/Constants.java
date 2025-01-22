@@ -20,6 +20,7 @@ public abstract class Constants
     public static final String LOCK = "LOCKED";
     public static final String GAME = "game";
     public static final String PLAYER_READY = "player_ready";
+    public static final String WINNER = "winner";
 
     /////////////////////////
     //////// getters ////////

@@ -305,11 +305,50 @@ public class GameModel implements ActionListener
                         if(post_attack_health < 0) // player damaged
                         {
                             match_winning_player = current_player_number;
+
+                            Runnable runnable2 = () ->
+                            {
+                                if (current_player_number == 0){
+                                    try {
+                                        getHost().updateWinner(0);
+                                    } catch (InterruptedException e) {
+                                        throw new RuntimeException(e);
+                                    }
+
+                                } else if (current_player_number == 1){
+                                    try {
+                                        getClient().updateWinner(1);
+                                    } catch (InterruptedException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }};
+                            Thread thread = new Thread(runnable2);
+                            thread.start();
+
                         }
                     }
                 }
                 else if(attacking_card != null && attacking_card.getAttack() > 0) // player damaged
                 {
+                    Runnable runnable = () ->
+                    {
+                        match_winning_player = current_player_number;
+                        if (current_player_number == 0){
+                            try {
+                                getHost().updateWinner(0);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+
+                        } else if (current_player_number == 1){
+                            try {
+                                getClient().updateWinner(1);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }};
+                    Thread thread = new Thread(runnable);
+                    thread.start();
                     match_winning_player = current_player_number;
                 }
             }
@@ -325,18 +364,18 @@ public class GameModel implements ActionListener
         {
             if(match_winning_player != -1)
             {
+                game_controller.playerHasWon(match_winning_player);
                 game_state = GameStates.GAME_OVER;
 
-                game_controller.playerHasWon(match_winning_player);
             }
         }
         else // current player has conceded the round
         {
             match_winning_player = opponent_player_number;
 
+            game_controller.playerHasWon(match_winning_player);
             game_state = GameStates.GAME_OVER;
 
-            game_controller.playerHasWon(match_winning_player);
         }
     }
 
@@ -400,6 +439,15 @@ public class GameModel implements ActionListener
                             System.out.println("Opposing playuer's turn is over");
                             endTurn();
                         }
+
+
+                        if (getHost().queryWinner() == 1)
+                        {
+                            System.out.println("Opposing playuer's won");
+                            endTurn();
+                        }
+
+
                     }
                     else if(player.getPlayerNumber() != current_player_number && player.getPlayerNumber() == 1)
                     {
@@ -444,11 +492,22 @@ public class GameModel implements ActionListener
                                 opponent_field_flags[3] = true;
                             }
 
+                            System.out.println("Winner:" + getClient().queryWinner());
+
+                            if (getClient().queryWinner() == 0)
+                            {
+                                System.out.println("Opposing playuer's won");
+                                endTurn();
+                            }
+
+
                             if (getClient().getLock() != null)
                             {
                                 System.out.println("Opposing playuer's turn is over");
                                 endTurn();
                             }
+
+
                         }
                         catch (InterruptedException e)
                         {
