@@ -15,7 +15,6 @@ import java.util.*;
 import java.io.IOException;
 
 // JavaFX libraries
-import dtu.master_of_creatures.utilities.enums.SoundLabels;
 import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
@@ -435,14 +434,6 @@ public class GameController extends SceneController implements Initializable {
         }
 
         return slot_image;
-    }
-
-    /**
-     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
-     */
-    public void playerEndedTurn()
-    {
-        game_model.endTurn();
     }
 
     public void playerHasWon(int match_winning_player)

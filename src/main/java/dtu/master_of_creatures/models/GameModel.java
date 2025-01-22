@@ -144,28 +144,9 @@ public class GameModel implements ActionListener
      */
     public void nextPlayer()
     {
-        if (current_player_number == 0)
-        {
-            Thread thread = new Thread() {
-                public void run() {
-                    getHost().releaseLock();
-                }
-            };
-            thread.start();
-        }
-        else if(current_player_number == 1)
-        {
-            Thread thread = new Thread() {
-                public void run() {
-                    getClient().releaseLock();
-                }
-            };
-            thread.start();
-        }
-
         if(current_player_number == -1) // first turn
         {
-            current_player_number = 1;
+            current_player_number = 0;
         }
         else // subsequent turns
         {
@@ -356,38 +337,14 @@ public class GameModel implements ActionListener
 
                         game_controller.handlePlayerCardUIs(true);
                         game_controller.handlePlayerCardUIs(false);
-
-                        if(post_attack_health < 0) // player damaged
-                        {
-                            match_winning_player = current_player_number;
-
-                            Runnable runnable2 = () ->
-                            {
-                                if (current_player_number == 0){
-                                    try {
-                                        getHost().updateWinner(0);
-                                    } catch (InterruptedException e) {
-                                        throw new RuntimeException(e);
-                                    }
-
-                                } else if (current_player_number == 1){
-                                    try {
-                                        getClient().updateWinner(1);
-                                    } catch (InterruptedException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                }};
-                            Thread thread = new Thread(runnable2);
-                            thread.start();
-
-                        }
                     }
                 }
                 else
                 {
+                    match_winning_player = current_player_number;
+
                     Runnable runnable = () ->
                     {
-                        match_winning_player = current_player_number;
                         if (current_player_number == 0){
                             try {
                                 getHost().updateWinner(0);
@@ -404,7 +361,6 @@ public class GameModel implements ActionListener
                         }};
                     Thread thread = new Thread(runnable);
                     thread.start();
-                    match_winning_player = current_player_number;
                 }
             }
         }
@@ -422,6 +378,7 @@ public class GameModel implements ActionListener
                 game_controller.playerHasWon(match_winning_player);
                 game_state = GameStates.GAME_OVER;
 
+                System.out.println("DET HER ER DEN FUCKING VINDER AF LORTE SPILLET: " + match_winning_player);
             }
         }
         else // current player has conceded the round
@@ -430,7 +387,6 @@ public class GameModel implements ActionListener
 
             game_controller.playerHasWon(match_winning_player);
             game_state = GameStates.GAME_OVER;
-
         }
     }
 
@@ -499,7 +455,11 @@ public class GameModel implements ActionListener
                         if (getHost().queryWinner() == 1)
                         {
                             System.out.println("Opposing playuer's won");
-                            endTurn();
+
+                            match_winning_player = 1;
+
+                            game_controller.playerHasWon(match_winning_player);
+                            game_state = GameStates.GAME_OVER;
                         }
 
 
@@ -552,7 +512,11 @@ public class GameModel implements ActionListener
                             if (getClient().queryWinner() == 0)
                             {
                                 System.out.println("Opposing playuer's won");
-                                endTurn();
+
+                                match_winning_player = 0;
+
+                                game_controller.playerHasWon(match_winning_player);
+                                game_state = GameStates.GAME_OVER;
                             }
 
 
@@ -561,8 +525,6 @@ public class GameModel implements ActionListener
                                 System.out.println("Opposing playuer's turn is over");
                                 endTurn();
                             }
-
-
                         }
                         catch (InterruptedException e)
                         {

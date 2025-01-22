@@ -35,10 +35,6 @@ public abstract class SceneController
     // Game data
     public static GameModel game_model;
 
-    // Sound data
-    private static boolean sound_unmuted = true;
-    private static HashMap<SoundLabels, MediaPlayer> sound_players;
-
     /**
      * @author Danny (s224774)
      */
@@ -47,13 +43,6 @@ public abstract class SceneController
         if(game_model == null || game_model.getGameState() == GameStates.GAME_QUIT) // for initializing and resetting
         {
             game_model = new GameModel();
-        }
-
-        if(sound_players == null)
-        {
-            sound_players = new HashMap<>();
-
-            createSoundPlayers();
         }
     }
 
@@ -115,57 +104,6 @@ public abstract class SceneController
         app_scene.getRoot().setTranslateY(scale_factor_y);
         app_scene.getRoot().getTransforms().setAll(transform_scale);
         app_scene.getRoot().setStyle("-fx-background-color: transparent;"); // make scene background invisible
-    }
-
-    private void createSoundPlayers()
-    {
-        SoundLabels[] sounds = SoundLabels.values();
-
-        for(SoundLabels sound_label : sounds)
-        {
-            sound_players.put(sound_label, new MediaPlayer(new Media(String.valueOf(MasterOfCreaturesApp.class.getResource("media/sounds/" + sound_label.name().toLowerCase() + ".mp3")))));
-        }
-    }
-
-    public void playSoundEffect(SoundLabels sound_label, double volume)
-    {
-        if(sound_unmuted)
-        {
-            MediaPlayer sound_player = sound_players.get(sound_label);
-
-            if(sound_label == SoundLabels.DAMP_CAVE) // theme music
-            {
-                if(sound_player.getCycleCount() != 10000)
-                {
-                    sound_player.setCycleCount(10000); // play "indefinitely"
-                }
-            }
-
-            sound_player.setVolume(volume);
-            sound_player.play();
-        }
-    }
-
-    public void stopSoundEffect(SoundLabels sound_label)
-    {
-        sound_players.get(sound_label).stop();
-    }
-
-    public void muteUnmuteSound()
-    {
-        sound_unmuted = !sound_unmuted;
-
-        // Stop all active sound effects
-        for(MediaPlayer sound_player : sound_players.values())
-        {
-            sound_player.stop();
-        }
-
-        // Play theme music if sound has been unmuted
-        if(sound_unmuted)
-        {
-            playSoundEffect(SoundLabels.DAMP_CAVE, 0.5);
-        }
     }
 
     /**

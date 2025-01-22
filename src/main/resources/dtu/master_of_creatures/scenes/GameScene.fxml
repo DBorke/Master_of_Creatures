@@ -17,11 +17,6 @@
             <Image url="@../media/images/dark_cave_background.png" />
          </image>
       </ImageView>
-      <Button fx:id="end_turn" focusTraversable="false" layoutX="1617.0" layoutY="989.0" mnemonicParsing="false" onAction="#playerEndedTurn" text="End Turn">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Button>
       <ToggleButton fx:id="player_sacrifice" focusTraversable="false" layoutX="655.0" layoutY="988.0" mnemonicParsing="false" onAction="#playerSacrificedChosenCard" text="Sacrifice: off">
          <font>
             <Font size="23.0" />

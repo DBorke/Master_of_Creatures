@@ -84,7 +84,7 @@ public class HostPregameController extends SceneController implements Initializa
         deck_grid_nodes = new Button[deck_grid_cells];
 
         // Add and set up GUI option elements
-        turn_time.getItems().addAll("30 seconds", "60 seconds", "90 seconds", "120 seconds", "Unlimited"); // match setting options
+        turn_time.getItems().addAll("10 seconds", "20 seconds", "30 seconds", "40 seconds", "50 seconds", "60 seconds"); // match setting options
         blood_points.getItems().addAll(0, 1, 2, 3);
         hand_size.getItems().addAll(3, 4, 5, 6, 7, 8, 9, 10);
         defaultMatchSettings();
@@ -140,7 +140,7 @@ public class HostPregameController extends SceneController implements Initializa
     {
         player_name.setText("Player 1");
 
-        turn_time.getSelectionModel().select(1); // indices of the combo-boxes
+        turn_time.getSelectionModel().select(2); // indices of the combo-boxes
         blood_points.getSelectionModel().select(0);
         hand_size.getSelectionModel().select(1);
     }
@@ -181,21 +181,14 @@ public class HostPregameController extends SceneController implements Initializa
             String turn_time_string = turn_time.getSelectionModel().getSelectedItem();
             int turn_time = 0;
 
-            if(!turn_time_string.equals("Unlimited"))
+            for(int char_index = 0; char_index < turn_time_string.length(); char_index++)
             {
-                for(int char_index = 0; char_index < turn_time_string.length(); char_index++)
+                if(!Character.isDigit(turn_time_string.charAt(char_index)))
                 {
-                    if(!Character.isDigit(turn_time_string.charAt(char_index)))
-                    {
-                        turn_time = Integer.parseInt(turn_time_string.substring(0, char_index));
+                    turn_time = Integer.parseInt(turn_time_string.substring(0, char_index));
 
-                        break;
-                    }
+                    break;
                 }
-            }
-            else
-            {
-                turn_time = -1; // infinite
             }
 
             final int final_turn_time = turn_time;
