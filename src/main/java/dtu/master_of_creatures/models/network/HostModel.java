@@ -160,7 +160,7 @@ public class HostModel
 
         if (lock.queryp(new ActualField(LOCK)) == null)
         {
-            //lock.put(LOCK);
+            lock.put(LOCK, -1);
             logger.info("Lock space initialized with LOCK value.");
         }
     }
@@ -569,42 +569,24 @@ public class HostModel
         return playerField.equals(PLAYER1_FIELD) ? player1Field : player2Field;
     }
 
-    public void releaseLock()
+    public void updateCurrentPlayer(int current_player) throws InterruptedException
     {
-        try
-        {
-            logger.info("Attempting to release lock");
-            lock.put(LOCK);
-            logger.info("Lock successfully released");
-            Thread.sleep(200); // Small delay to ensure synchronization
-        }
-        catch (InterruptedException e)
-        {
-            Thread.currentThread().interrupt();
-            logger.severe("Failed to release lock: " + e.getMessage());
-        }
+        logger.info("Updating winner space...");
+        Object[] previous_player = lock.getp(new ActualField(LOCK), new FormalField(Integer.class));
+        lock.put(LOCK, current_player);
+        logger.info("Current player updated to player " + current_player);
     }
 
-    public Object getLock()
+    public int queryCurrentPlayer()
     {
-        try
+        logger.info("Querying current player player...");
+        Object[] result = lock.queryp(new ActualField(LOCK), new FormalField(Integer.class));
+        if (result == null)
         {
-            logger.info("Attempting to acquire lock");
-            Object locked = lock.get(new ActualField(LOCK));
-            if (locked == null)
-            {
-                logger.warning("Failed to acquire lock");
-                return null;
-            }
-            logger.info("Lock successfully acquired");
-            return locked;
+            logger.warning("No winner found in the space.");
+            return -1;
         }
-        catch (InterruptedException e)
-        {
-            Thread.currentThread().interrupt();
-            logger.severe("Failed to acquire lock: " + e.getMessage());
-            return null;
-        }
+        return (int) result[1];
     }
 
 
