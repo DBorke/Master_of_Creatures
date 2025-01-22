@@ -4,7 +4,7 @@ package dtu.master_of_creatures.controllers;
 import dtu.master_of_creatures.models.GameModel;
 import dtu.master_of_creatures.utilities.Constants;
 import dtu.master_of_creatures.utilities.enums.GameStates;
-import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
+import dtu.master_of_creatures.utilities.enums.CardTypes;
 
 // Java libraries
 import java.awt.event.ActionEvent;
@@ -22,7 +22,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
-
 import javax.swing.Timer;
 
 public class JoinPregameController extends SceneController implements Initializable, ActionListener
@@ -39,7 +38,7 @@ public class JoinPregameController extends SceneController implements Initializa
     private int deck_grid_columns;
     private int deck_grid_cells;
     private double deck_grid_cell_size;
-    private final List<CommonCardTypes> player_cards;
+    private final List<CardTypes> player_cards;
     @FXML
     private Text cards_chosen;
     @FXML
@@ -48,7 +47,7 @@ public class JoinPregameController extends SceneController implements Initializa
 
     // Game data
     private final GameModel game_model;
-    private final CommonCardTypes[] card_types_available;
+    private final CardTypes[] card_types_available;
 
 
     /**
@@ -60,7 +59,7 @@ public class JoinPregameController extends SceneController implements Initializa
         game_model.initializeClientModel();
 
         player_cards = new ArrayList<>();
-        card_types_available = CommonCardTypes.values();
+        card_types_available = CardTypes.values();
 
         network_timer = new Timer(1000, this); // delay is in milliseconds
 

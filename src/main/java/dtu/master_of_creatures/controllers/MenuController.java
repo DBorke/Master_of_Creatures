@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 import java.io.IOException;
 
 // JavaFX libraries
+import dtu.master_of_creatures.utilities.enums.SoundLabels;
 import javafx.application.Platform;
 import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
@@ -34,6 +35,8 @@ public class MenuController extends SceneController implements Initializable
     public void initialize(URL url, ResourceBundle resource_bundle)
     {
         game_model.setGameState(GameStates.GAME_PENDING);
+
+        playSoundEffect(SoundLabels.DAMP_CAVE, 0.5);
     }
 
     /**

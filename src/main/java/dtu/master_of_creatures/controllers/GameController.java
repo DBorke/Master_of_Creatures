@@ -7,7 +7,7 @@ import dtu.master_of_creatures.models.BoardModel;
 import dtu.master_of_creatures.models.PlayerModel;
 import dtu.master_of_creatures.models.CardModel;
 import dtu.master_of_creatures.utilities.enums.GameStates;
-import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
+import dtu.master_of_creatures.utilities.enums.CardTypes;
 
 // Java libraries
 import java.net.URL;
@@ -15,6 +15,7 @@ import java.util.*;
 import java.io.IOException;
 
 // JavaFX libraries
+import dtu.master_of_creatures.utilities.enums.SoundLabels;
 import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
@@ -29,11 +30,11 @@ import javafx.scene.paint.Color;
 public class GameController extends SceneController implements Initializable {
     // JavaFX
     @FXML
-    private ToggleButton player_sacrifice;
-    @FXML
     private Text turn_time;
     @FXML
     private Text player_name;
+    @FXML
+    private Text player_blood;
     @FXML
     private Text player_remain_deck;
     private List<Button> player_hand_list;
@@ -86,6 +87,10 @@ public class GameController extends SceneController implements Initializable {
     private ImageView player_field_image_4;
     @FXML
     private Button player_draw;
+    @FXML
+    private ToggleButton player_sacrifice;
+    @FXML
+    private ToggleButton player_gamble;
     @FXML
     private Text opponent_name;
     private List<ImageView> opponent_field_image_list;
@@ -157,6 +162,7 @@ public class GameController extends SceneController implements Initializable {
     public void handlePlayerInfoUIs() {
         // Update UI information for player
         player_name.setText(current_player_number == player.getPlayerNumber() ? player.getPlayerName() + " (current player)" : player.getPlayerName());
+        player_blood.setText("" + player.getBloodPoints());
         player_remain_deck.setText("" + player.getCurrentDeck().size());
 
         // Update UI information for opponent
@@ -215,17 +221,27 @@ public class GameController extends SceneController implements Initializable {
 
                 slot_index = player_hand_list.indexOf(slot);
 
-                if (player.isInSacrificeMode()) {
-                    slot_index = player_hand_list.indexOf(slot);
-
+                if (player.getInSacrificeMode()) {
                     // Get the card in the field at the clicked slot index
                     selected_card = player.getCardsInHand().get(slot_index);
 
                     // Check if a card exists in the clicked slot
                     if (selected_card != null) {
                         // Trigger the sacrifice
-                        sacrificeCardForBloodPoints(selected_card);
-                        handlePlayerCardUIs(true); // ??
+
+                        game_model.sacrificeCardForBloodPoints(selected_card);
+                    }
+                }
+                else if(player.getInGambleMode())
+                {
+                    // Get the card in the field at the clicked slot index
+                    selected_card = player.getCardsInHand().get(slot_index);
+
+                    // Check if a card exists in the clicked slot
+                    if (selected_card != null) {
+                        // Trigger the sacrifice
+
+                        game_model.gambleCardForMythicalCard(selected_card);
                     }
                 }
 
@@ -261,19 +277,6 @@ public class GameController extends SceneController implements Initializable {
         }
     }
 
-    private void sacrificeCardForBloodPoints(CardModel cardInHand) {
-        // Update blood points for the current player
-        player.changeBloodPoints(cardInHand.getCost());
-        handlePlayerInfoUIs();
-
-        // Remove the creature from the field for the current player
-        player.removeFromHand(cardInHand);
-
-        // Update the UI for both players
-        handlePlayerCardUIs(true);
-        handlePlayerCardUIs(false);
-    }
-
     /**
      * @author Danny (s224774), Maria (s195685), Carl Emil (s224168), Mathias (s224273), Romel (s215212)
      */
@@ -287,11 +290,8 @@ public class GameController extends SceneController implements Initializable {
 
     public void playerSacrificedChosenCard()
     {
-        // Perform the sacrifice operation
-        game_model.sacrificeChosenCards();
-        updatePlayerHandImages();
-
-        if (!player.isInSacrificeMode()) {
+        // Change sacrifice status
+        if (!player.getInSacrificeMode()) {
             player_sacrifice.setText("Sacrifice: On");
             player.setInSacrificeMode(true);
             player_sacrifice.setSelected(true);
@@ -301,6 +301,23 @@ public class GameController extends SceneController implements Initializable {
             player_sacrifice.setText("Sacrifice: off");
             player.setInSacrificeMode(false);
             player_sacrifice.setSelected(false);
+        }
+    }
+
+    public void playerGambledChosenCard()
+    {
+        // Change gamble status
+        if (!player.getInGambleMode())
+        {
+            player_gamble.setText("Gamble: on");
+            player.setInGambleMode(true);
+            player_gamble.setSelected(true);
+        }
+        else
+        {
+            player_gamble.setText("Gamble: off");
+            player.setInGambleMode(false);
+            player_gamble.setSelected(false);
         }
     }
 
@@ -364,7 +381,7 @@ public class GameController extends SceneController implements Initializable {
     /**
      * @author Danny (s224774), Maria (s195685)
      */
-    public void updateCardImage(CommonCardTypes card_type, int slot_index, boolean in_hand, boolean update_player)
+    public void updateCardImage(CardTypes card_type, int slot_index, boolean in_hand, boolean update_player)
     {
         ImageView slot_image = getSlotImage(slot_index, in_hand, update_player);
 

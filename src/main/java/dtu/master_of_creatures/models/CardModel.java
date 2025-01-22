@@ -1,7 +1,7 @@
 package dtu.master_of_creatures.models;
 
 // Project libraries
-import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
+import dtu.master_of_creatures.utilities.enums.CardTypes;
 
 // Java libraries
 import java.io.Serializable;
@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class CardModel implements Serializable
 {
     // Fields
-    public final CommonCardTypes card_type;
+    public final CardTypes card_type;
     public int health;
     public int attack;
     public final int cost;
@@ -18,7 +18,7 @@ public class CardModel implements Serializable
     /**
      * @author Romel (s215212), Danny (s224774)
      */
-    public CardModel(CommonCardTypes card_type)
+    public CardModel(CardTypes card_type)
     {
         this.card_type = card_type;
         this.health = card_type.getHealth();
@@ -48,7 +48,7 @@ public class CardModel implements Serializable
     /**
      * @author Romel (s215212)
      */
-    public CommonCardTypes getCardType() {
+    public CardTypes getCardType() {
         return card_type;
     }
 

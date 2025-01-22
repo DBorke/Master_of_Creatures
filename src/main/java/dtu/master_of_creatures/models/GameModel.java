@@ -6,7 +6,7 @@ import dtu.master_of_creatures.models.network.ClientModel;
 import dtu.master_of_creatures.models.network.HostModel;
 import dtu.master_of_creatures.utilities.Constants;
 import dtu.master_of_creatures.utilities.enums.GameStates;
-import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
+import dtu.master_of_creatures.utilities.enums.CardTypes;
 
 // Java libraries
 import java.awt.event.ActionListener;
@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import javax.swing.Timer;
 
 public class GameModel implements ActionListener
@@ -70,7 +71,7 @@ public class GameModel implements ActionListener
     /**
      * @author Danny (s224774), Maria (s195685)
      */
-    public void initializePlayer(String player_name, List<CommonCardTypes> cards_chosen, boolean is_host)
+    public void initializePlayer(String player_name, List<CardTypes> cards_chosen, boolean is_host)
     {
         int player_number = is_host ? 0 : 1;
         opponent_player_number = is_host ? 1 : 0;
@@ -164,7 +165,7 @@ public class GameModel implements ActionListener
 
         if(current_player_number == -1) // first turn
         {
-            current_player_number = 0;
+            current_player_number = 1;
         }
         else // subsequent turns
         {
@@ -200,6 +201,39 @@ public class GameModel implements ActionListener
         game_controller.handlePlayerInfoUIs();
     }
 
+    public void sacrificeCardForBloodPoints(CardModel cardInHand)
+    {
+        // Update blood points for the current player
+        player.changeBloodPoints(cardInHand.getCost());
+        game_controller.handlePlayerInfoUIs();
+
+        // Remove the creature from the field for the current player
+        player.removeFromHand(cardInHand);
+
+        // Update the UI for player
+        game_controller.handlePlayerCardUIs(true);
+    }
+
+    public void gambleCardForMythicalCard(CardModel card_in_hand)
+    {
+        player.removeFromHand(card_in_hand);
+
+        if(card_in_hand.getCost() != 0)
+        {
+            Random randomizer = new Random();
+            int max_probability_range = 9 - card_in_hand.cost;
+
+            if(randomizer.nextInt(0, max_probability_range) == 0)
+            {
+                CardTypes[] card_types = CardTypes.values();
+
+                player.addToHand(card_types[randomizer.nextInt(0, card_types.length)]);
+            }
+        }
+
+        game_controller.handlePlayerCardUIs(true);
+    }
+
     /**
      * @author Danny (s224774), Maria (s195685), Carl Emil (s224168), Mathias (s224273), Romel (s215212)
      */
@@ -208,31 +242,37 @@ public class GameModel implements ActionListener
         if(current_player_number == player.getPlayerNumber())
         {
             CardModel card_played = player.getCardsInHand().get(hand_index);
+            int card_cost = card_played.cost;
 
-            if(board_model.summonCreature(card_played, field_index, false))
+            if(player.getBloodPoints() >= card_cost)
             {
-                player.removeFromHand(card_played);
-
-                game_controller.handlePlayerInfoUIs();
-                game_controller.handlePlayerCardUIs(true);
-
-                // Update own player fields on the network
-                Runnable runnable = () ->
+                if(board_model.summonCreature(card_played, field_index, false))
                 {
-                    if(current_player_number == 0)
-                    {
-                        host.updateCard(Constants.PLAYER1_FIELD, field_index, card_played);
-                    }
-                    else
-                    {
-                        client.updateCard(Constants.PLAYER2_FIELD, field_index, card_played);
-                    }
-                };
+                    player.removeFromHand(card_played);
 
-                Thread place_thread = new Thread(runnable);
-                place_thread.start();
+                    player.changeBloodPoints(-1 * card_cost);
 
-                return true;
+                    game_controller.handlePlayerInfoUIs();
+                    game_controller.handlePlayerCardUIs(true);
+
+                    // Update own player fields on the network
+                    Runnable runnable = () ->
+                    {
+                        if(current_player_number == 0)
+                        {
+                            host.updateCard(Constants.PLAYER1_FIELD, field_index, card_played);
+                        }
+                        else
+                        {
+                            client.updateCard(Constants.PLAYER2_FIELD, field_index, card_played);
+                        }
+                    };
+
+                    Thread place_thread = new Thread(runnable);
+                    place_thread.start();
+
+                    return true;
+                }
             }
         }
 
@@ -552,11 +592,6 @@ public class GameModel implements ActionListener
                 game_controller.handleTurnTimeUI(turn_time);
             }
         }
-    }
-
-    public void sacrificeChosenCards()
-    {
-        game_controller.handlePlayerInfoUIs();
     }
 
     /////////////////////////
