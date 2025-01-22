@@ -6,7 +6,8 @@ import dtu.master_of_creatures.models.network.ClientModel;
 import dtu.master_of_creatures.models.network.HostModel;
 import dtu.master_of_creatures.utilities.Constants;
 import dtu.master_of_creatures.utilities.enums.GameStates;
-import dtu.master_of_creatures.utilities.enums.CardTypes;
+import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
+import dtu.master_of_creatures.utilities.enums.MythicalCardTypes;
 
 // Java libraries
 import java.awt.event.ActionListener;
@@ -71,7 +72,7 @@ public class GameModel implements ActionListener
     /**
      * @author Danny (s224774), Maria (s195685)
      */
-    public void initializePlayer(String player_name, List<CardTypes> cards_chosen, boolean is_host)
+    public void initializePlayer(String player_name, List<CommonCardTypes> cards_chosen, boolean is_host)
     {
         int player_number = is_host ? 0 : 1;
         opponent_player_number = is_host ? 1 : 0;
@@ -206,9 +207,9 @@ public class GameModel implements ActionListener
 
             if(randomizer.nextInt(0, max_probability_range) == 0)
             {
-                CardTypes[] card_types = CardTypes.values();
+                MythicalCardTypes[] mythical_card_types = MythicalCardTypes.values();
 
-                player.addToHand(card_types[randomizer.nextInt(0, card_types.length)]);
+                player.addToHand(mythical_card_types[randomizer.nextInt(0, mythical_card_types.length)]);
             }
         }
 

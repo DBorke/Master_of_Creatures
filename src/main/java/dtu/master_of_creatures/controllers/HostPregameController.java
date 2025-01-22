@@ -5,7 +5,7 @@ import dtu.master_of_creatures.models.GameModel;
 import dtu.master_of_creatures.models.network.ThreadModel;
 import dtu.master_of_creatures.utilities.Constants;
 import dtu.master_of_creatures.utilities.enums.GameStates;
-import dtu.master_of_creatures.utilities.enums.CardTypes;
+import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 
 // Java libraries
 import java.awt.event.ActionEvent;
@@ -46,14 +46,14 @@ public class HostPregameController extends SceneController implements Initializa
     private int deck_grid_columns;
     private int deck_grid_cells;
     private double deck_grid_cell_size;
-    private final List<CardTypes> player_cards;
+    private final List<CommonCardTypes> player_cards;
     @FXML
     private Text cards_chosen;
     private final Timer network_timer;
 
     // Game data
     private final GameModel game_model;
-    private final CardTypes[] card_types_available;
+    private final CommonCardTypes[] card_types_available;
 
     /**
      * @author Danny (s224774), Mathias (s224273), Maria (s195685), Romel (s215212)
@@ -64,7 +64,7 @@ public class HostPregameController extends SceneController implements Initializa
         game_model.initializeHostModel();
 
         player_cards = new ArrayList<>();
-        card_types_available = CardTypes.values();
+        card_types_available = CommonCardTypes.values();
 
         network_timer = new Timer(1000, this); // delay is in milliseconds
     }
@@ -143,6 +143,13 @@ public class HostPregameController extends SceneController implements Initializa
         turn_time.getSelectionModel().select(2); // indices of the combo-boxes
         blood_points.getSelectionModel().select(0);
         hand_size.getSelectionModel().select(1);
+    }
+
+    public void clearChosenDeck()
+    {
+        player_cards.clear();
+
+        updateCardsChosenCount();
     }
 
     /**

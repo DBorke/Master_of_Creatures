@@ -1,7 +1,8 @@
 package dtu.master_of_creatures.models;
 
 // Project libraries
-import dtu.master_of_creatures.utilities.enums.CardTypes;
+import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
+import dtu.master_of_creatures.utilities.enums.MythicalCardTypes;
 
 // Java libraries
 import java.util.HashMap;
@@ -21,7 +22,7 @@ public class PlayerModel
     private int cards_remaining;
     private boolean in_sacrifice_mode;
     private boolean in_gamble_mode;
-    private HashMap<String, Integer> match_settings;
+    private final HashMap<String, Integer> match_settings;
 
     // Game data
     private final GameModel game_model;
@@ -29,7 +30,7 @@ public class PlayerModel
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
-    public PlayerModel(String player_name, int player_number, List<CardTypes> cards_chosen, GameModel game_model)
+    public PlayerModel(String player_name, int player_number, List<CommonCardTypes> cards_chosen, GameModel game_model)
     {
         // Set up game related variables
         this.game_model = game_model;
@@ -73,9 +74,9 @@ public class PlayerModel
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    private void createDecks(List<CardTypes> cards_chosen)
+    private void createDecks(List<CommonCardTypes> cards_chosen)
     {
-        for(CardTypes card_chosen : cards_chosen)
+        for(CommonCardTypes card_chosen : cards_chosen)
         {
             starting_deck.add(new CardModel(card_chosen));
             current_deck.add(new CardModel(card_chosen));
@@ -132,7 +133,7 @@ public class PlayerModel
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public void addToDeck(CardTypes card_to_add)
+    public void addToDeck(CommonCardTypes card_to_add)
     {
         starting_deck.add(new CardModel(card_to_add));
     }
@@ -155,7 +156,7 @@ public class PlayerModel
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public void addToHand(CardTypes card_to_add)
+    public void addToHand(MythicalCardTypes card_to_add)
     {
         cards_in_hand.add(new CardModel(card_to_add));
     }

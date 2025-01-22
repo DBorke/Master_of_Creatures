@@ -31,6 +31,8 @@ public class MenuController extends SceneController implements Initializable
     public void initialize(URL url, ResourceBundle resource_bundle)
     {
         game_model.setGameState(GameStates.GAME_PENDING);
+
+        playThemeMusic();
     }
 
     /**

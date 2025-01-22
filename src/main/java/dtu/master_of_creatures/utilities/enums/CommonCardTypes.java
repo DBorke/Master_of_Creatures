@@ -1,8 +1,8 @@
 package dtu.master_of_creatures.utilities.enums;
 
-public enum CardTypes
+public enum CommonCardTypes
 {
-    // Health, attack, cost
+    // Card health, attack, cost
     RABBIT(1, 0, 0),
     LAMB(2, 0, 0),
     RAT(1,1,1),
@@ -48,7 +48,7 @@ public enum CardTypes
      * Enum constructor
      * @author Romel (s215212)
      */
-    CardTypes(int health, int attack, int cost)
+    CommonCardTypes(int health, int attack, int cost)
     {
         this.health = health;
         this.attack = attack;

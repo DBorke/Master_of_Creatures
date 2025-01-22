@@ -35,6 +35,10 @@ public abstract class SceneController
     // Game data
     public static GameModel game_model;
 
+    // Sound data
+    private static boolean sound_unmuted = true;
+    private static MediaPlayer sound_player;
+
     /**
      * @author Danny (s224774)
      */
@@ -43,6 +47,11 @@ public abstract class SceneController
         if(game_model == null || game_model.getGameState() == GameStates.GAME_QUIT) // for initializing and resetting
         {
             game_model = new GameModel();
+        }
+
+        if(sound_player == null)
+        {
+            sound_player = new MediaPlayer(new Media(String.valueOf(MasterOfCreaturesApp.class.getResource("media/sounds/damp_cave.mp3"))));
         }
     }
 
@@ -104,6 +113,19 @@ public abstract class SceneController
         app_scene.getRoot().setTranslateY(scale_factor_y);
         app_scene.getRoot().getTransforms().setAll(transform_scale);
         app_scene.getRoot().setStyle("-fx-background-color: transparent;"); // make scene background invisible
+    }
+
+    public void playThemeMusic()
+    {
+        sound_player.setVolume(0.5);
+        sound_player.play();
+    }
+
+    public void muteUnmuteSound()
+    {
+        sound_unmuted = !sound_unmuted;
+
+        sound_player.setMute(sound_unmuted);
     }
 
     /**

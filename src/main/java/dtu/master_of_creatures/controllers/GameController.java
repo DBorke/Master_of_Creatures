@@ -7,7 +7,7 @@ import dtu.master_of_creatures.models.BoardModel;
 import dtu.master_of_creatures.models.PlayerModel;
 import dtu.master_of_creatures.models.CardModel;
 import dtu.master_of_creatures.utilities.enums.GameStates;
-import dtu.master_of_creatures.utilities.enums.CardTypes;
+import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 
 // Java libraries
 import java.net.URL;
@@ -15,6 +15,7 @@ import java.util.*;
 import java.io.IOException;
 
 // JavaFX libraries
+import dtu.master_of_creatures.utilities.enums.MythicalCardTypes;
 import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
@@ -87,6 +88,8 @@ public class GameController extends SceneController implements Initializable {
     @FXML
     private Button player_draw;
     @FXML
+    private Button player_concede;
+    @FXML
     private ToggleButton player_sacrifice;
     @FXML
     private ToggleButton player_gamble;
@@ -113,9 +116,6 @@ public class GameController extends SceneController implements Initializable {
     private final BoardModel board_model;
     private final PlayerModel player;
     private final String opponent_player_name;
-    private final int opponent_player_number;
-    private int opponent_player_health;
-    private int opponent_cards_remaining;
     private int current_player_number;
     private final HashMap<String, Integer> match_settings;
 
@@ -131,7 +131,6 @@ public class GameController extends SceneController implements Initializable {
         // Fetch player information
         player = game_model.getPlayer();
         opponent_player_name = game_model.getOpponentPlayerName();
-        opponent_player_number = game_model.getOpponentPlayerNumber();
 
         match_settings = game_model.getMatchSettings();
     }
@@ -184,8 +183,12 @@ public class GameController extends SceneController implements Initializable {
     /**
      * @author Danny (s224774), Maria (s195685), Carl Emil (s224168), Mathias (s224273), Romel (s215212)
      */
-    public void handlePlayerButtons() {
+    public void handlePlayerButtons()
+    {
         player_draw.setDisable(current_player_number != player.getPlayerNumber());
+        player_sacrifice.setDisable(current_player_number != player.getPlayerNumber());
+        player_gamble.setDisable(current_player_number != player.getPlayerNumber());
+        player_concede.setDisable(current_player_number != player.getPlayerNumber());
 
         selected_card = null; // reset selection
     }
@@ -294,6 +297,10 @@ public class GameController extends SceneController implements Initializable {
             player_sacrifice.setText("Sacrifice: On");
             player.setInSacrificeMode(true);
             player_sacrifice.setSelected(true);
+
+            player_gamble.setText("Gamble: off"); // reset
+            player.setInGambleMode(false);
+            player_gamble.setSelected(false);
         }
         else
         {
@@ -311,6 +318,10 @@ public class GameController extends SceneController implements Initializable {
             player_gamble.setText("Gamble: on");
             player.setInGambleMode(true);
             player_gamble.setSelected(true);
+
+            player_sacrifice.setText("Sacrifice: off"); // reset
+            player.setInSacrificeMode(false);
+            player_sacrifice.setSelected(false);
         }
         else
         {
@@ -332,11 +343,11 @@ public class GameController extends SceneController implements Initializable {
         {
             if(hand_index < player_card_count)
             {
-                updateCardImage(player_hand.get(hand_index).getCardType(), hand_index, true, true);
+                updateCardImage(player_hand.get(hand_index).getCommonCardType(), player_hand.get(hand_index).getMythicalCardType(), hand_index, true, true);
             }
             else // empty slot
             {
-                updateCardImage(null, hand_index, true, true);
+                updateCardImage(null, null, hand_index, true, true);
             }
         }
     }
@@ -355,7 +366,7 @@ public class GameController extends SceneController implements Initializable {
         {
             player_field_card = player_field_cards[field_index];
 
-            updateCardImage((player_field_card != null ? player_field_card.getCardType() : null), field_index, false, update_player);
+            updateCardImage((player_field_card != null ? player_field_card.getCommonCardType() : null), (player_field_card != null ? player_field_card.getMythicalCardType() : null), field_index, false, update_player);
         }
     }
 
@@ -373,20 +384,24 @@ public class GameController extends SceneController implements Initializable {
         {
             opponent_field_card = opponent_field_cards[field_index];
 
-            updateCardImage((opponent_field_card != null ? opponent_field_card.getCardType() : null), field_index, false, update_player);
+            updateCardImage((opponent_field_card != null ? opponent_field_card.getCommonCardType() : null), (opponent_field_card != null ? opponent_field_card.getMythicalCardType() : null), field_index, false, update_player);
         }
     }
 
     /**
      * @author Danny (s224774), Maria (s195685)
      */
-    public void updateCardImage(CardTypes card_type, int slot_index, boolean in_hand, boolean update_player)
+    public void updateCardImage(CommonCardTypes common_card_type, MythicalCardTypes mythical_card_type, int slot_index, boolean in_hand, boolean update_player)
     {
         ImageView slot_image = getSlotImage(slot_index, in_hand, update_player);
 
-        if(card_type != null)
+        if(common_card_type != null)
         {
-            slot_image.setImage(new Image(String.valueOf(MasterOfCreaturesApp.class.getResource("media/images/" + card_type.name().toLowerCase() + ".png"))));
+            slot_image.setImage(new Image(String.valueOf(MasterOfCreaturesApp.class.getResource("media/images/" + common_card_type.name().toLowerCase() + ".png"))));
+        }
+        else if(mythical_card_type != null)
+        {
+            slot_image.setImage(new Image(String.valueOf(MasterOfCreaturesApp.class.getResource("media/images/" + mythical_card_type.name().toLowerCase() + ".png"))));
         }
         else
         {

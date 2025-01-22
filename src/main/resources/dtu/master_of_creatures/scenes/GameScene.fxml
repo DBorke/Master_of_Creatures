@@ -22,7 +22,7 @@
             <Font size="23.0" />
          </font>
       </ToggleButton>
-      <Button fx:id="concede" focusTraversable="false" layoutX="1754.0" layoutY="988.0" mnemonicParsing="false" onAction="#playerHasConceded" text="Concede">
+      <Button fx:id="player_concede" focusTraversable="false" layoutX="1754.0" layoutY="988.0" mnemonicParsing="false" onAction="#playerHasConceded" text="Concede">
          <font>
             <Font size="18.0" />
          </font>
