@@ -130,6 +130,8 @@ public class GameModel implements ActionListener
 
         nextPlayer();
 
+        allowsCardsToAttack();
+
         game_controller.handlePlayerInfoUIs();
         game_controller.handlePlayerButtons();
 
@@ -170,6 +172,19 @@ public class GameModel implements ActionListener
         }
 
         game_controller.setCurrentPlayerNumber(current_player_number);
+    }
+
+    public void allowsCardsToAttack()
+    {
+        CardModel[] player_cards = player.getPlayerNumber() == 0 ? board_model.getPlayer1Lanes() : board_model.getPlayer2Lanes();
+
+        for(CardModel card : player_cards)
+        {
+            if(card != null)
+            {
+                card.setCanAttack(true);
+            }
+        }
     }
 
     /**
@@ -264,9 +279,9 @@ public class GameModel implements ActionListener
             attacking_card = current_player_number == 0 ? player_1_lanes[lane_index] : player_2_lanes[lane_index];
             attacked_card = current_player_number == 0 ? player_2_lanes[lane_index] : player_1_lanes[lane_index];
 
-            if(attacking_card != null || attacked_card != null)
+            if(attacking_card != null && attacking_card.can_attack && attacking_card.getAttack() > 0)
             {
-                if(attacking_card != null && attacked_card != null)
+                if(attacked_card != null)
                 {
                     post_attack_health = attacked_card.damageCard(attacking_card.getAttack());
 
@@ -328,7 +343,7 @@ public class GameModel implements ActionListener
                         }
                     }
                 }
-                else if(attacking_card != null && attacking_card.getAttack() > 0) // player damaged
+                else
                 {
                     Runnable runnable = () ->
                     {

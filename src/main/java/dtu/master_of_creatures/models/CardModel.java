@@ -13,6 +13,7 @@ public class CardModel implements Serializable
     public int health;
     public int attack;
     public final int cost;
+    public boolean can_attack;
 
     /**
      * @author Romel (s215212), Danny (s224774)
@@ -38,6 +39,11 @@ public class CardModel implements Serializable
     /////////////////////////
     // setters and getters //
     /////////////////////////
+
+    public void setCanAttack(boolean can_attack)
+    {
+        this.can_attack = can_attack;
+    }
 
     /**
      * @author Romel (s215212)
