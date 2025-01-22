@@ -113,7 +113,7 @@ public class GameModel implements ActionListener
      */
     public void startNewRound()
     {
-        current_player_number = -1; // no current player
+        current_player_number = 0; // no current player
         match_winning_player = -1; // no winner
 
         game_controller.handlePlayerInfoUIs();
@@ -145,16 +145,34 @@ public class GameModel implements ActionListener
      */
     public void nextPlayer()
     {
-        if(current_player_number == -1) // first turn
-        {
-            current_player_number = 0;
-        }
-        else // subsequent turns
-        {
-            current_player_number = current_player_number == 0 ? 1 : 0;
-        }
+        current_player_number = current_player_number == 0 ? 1 : 0;
+
+
 
         game_controller.setCurrentPlayerNumber(current_player_number);
+
+        Runnable runnable = () ->
+        {
+            if (player.getPlayerNumber() == 0)
+            {
+                try {
+                    host.updateCurrentPlayer(1);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            else if (player.getPlayerNumber() == 1)
+            {
+                try {
+                    client.updateCurrentPlayer(0);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+
+        new Thread(runnable).start();
+
     }
 
     public void allowsCardsToAttack()
@@ -446,7 +464,7 @@ public class GameModel implements ActionListener
                             opponent_field_flags[3] = true;
                         }
 
-                        if (getHost().getLock() != null)
+                        if (getHost().queryCurrentPlayer() != current_player_number)
                         {
                             System.out.println("Opposing playuer's turn is over");
                             endTurn();
@@ -521,7 +539,7 @@ public class GameModel implements ActionListener
                             }
 
 
-                            if (getClient().getLock() != null)
+                            if (getClient().queryCurrentPlayer() != current_player_number)
                             {
                                 System.out.println("Opposing playuer's turn is over");
                                 endTurn();
