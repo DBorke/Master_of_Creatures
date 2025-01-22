@@ -261,21 +261,23 @@ public class GameController extends SceneController implements Initializable
 
             if(game_state != GameStates.GAME_HALFTIME && game_state != GameStates.GAME_OVER)
             {
+                Button slot = (Button) event.getSource();
+                int slot_index;
+
+                slot_index = player_field_list.indexOf(slot);
+
                 if(selected_card != null) // make sure a card is selected from hand
                 {
-                    Button slot = (Button) event.getSource();
-                    int slot_index;
-
-                    slot_index = player_field_list.indexOf(slot);
-
-                    if(!player.isInSacrificeMode())
+                    if(game_model.playChosenCard(hand_slot_index, slot_index))
                     {
-                        if(game_model.playChosenCard(hand_slot_index, slot_index))
-                        {
-                            selected_card = null; // reset card selection
-                        }
+                        handlePlayerCardUIs(true);
+
+                        selected_card = null; // reset card selection
                     }
-                    else // if the player is in sacrifice mode, handle sacrifice
+                }
+                else // if the player is in sacrifice mode, handle sacrifice
+                {
+                    if(player.isInSacrificeMode())
                     {
                         // Get the card in the field at the slot index for the current player
                         CardModel card_in_field;
@@ -338,8 +340,12 @@ public class GameController extends SceneController implements Initializable
         } else {
             player.changeBloodPoints(1);
         }
+        board_model.removeCreatureFromField(player.getPlayerNumber(), slot_index, false);  // Pass the current player and the slot index
+        board_model.removeCreatureFromField(opponent_player_number, slot_index, true);
+
         handlePlayerInfoUIs();
-        board_model.removeCreatureFromField(current_player_number, slot_index, false);  // Pass the current player and the slot index
+        handlePlayerCardUIs(true);
+        handlePlayerCardUIs(false);
     }
 
     /**
