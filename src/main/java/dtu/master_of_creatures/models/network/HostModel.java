@@ -26,6 +26,7 @@ public class HostModel
     private final SequentialSpace lock;
     private final SequentialSpace gameSettings;
     private final SequentialSpace playerReady;
+    private final SequentialSpace winner;
     private static final Logger logger = Logger.getLogger(HostModel.class.getName());
 
     public HostModel(String uri)
@@ -41,6 +42,7 @@ public class HostModel
         game = new SequentialSpace();
         gameSettings = new SequentialSpace();
         playerReady = new SequentialSpace();
+        winner = new SequentialSpace();
 
         // Add spaces to the repository
         repository.add(PLAYER1_FIELD, player1Field);
@@ -52,6 +54,7 @@ public class HostModel
         repository.add(GAME, game);
         repository.add(GAME_SETTINGS, gameSettings);
         repository.add(PLAYER_READY, playerReady);
+        repository.add(WINNER, winner);
 
         // Add repository gate for network access
         repository.addGate(uri);
@@ -160,6 +163,34 @@ public class HostModel
             //lock.put(LOCK);
             logger.info("Lock space initialized with LOCK value.");
         }
+    }
+
+    private void initializeWinner() throws InterruptedException
+    {
+        if (winner.queryp(new ActualField(WINNER)) == null)
+        {
+            winner.put(WINNER, -1);
+        }
+    }
+
+    public void updateWinner(int winning_player) throws InterruptedException
+    {
+        logger.info("Updating winner space...");
+        Object[] existingWinner = winner.getp(new ActualField(WINNER), new FormalField(Integer.class));
+        winner.put(WINNER, winning_player);
+        logger.info("Winner updated to player " + winning_player);
+    }
+
+    public int queryWinner()
+    {
+        logger.info("Querying winneing player...");
+        Object[] result = winner.queryp(new ActualField(WINNER), new FormalField(Integer.class));
+        if (result == null)
+        {
+            logger.warning("No winner found in the space.");
+            return -1;
+        }
+        return (int) result[1];
     }
 
 

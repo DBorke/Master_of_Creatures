@@ -25,6 +25,7 @@ public class ClientModel
     private final RemoteSpace lock;
     private final RemoteSpace gameSettings;
     private final RemoteSpace playerReady;
+    private final RemoteSpace winner;
     private static final Logger logger = Logger.getLogger(ClientModel.class.getName());
 
     public ClientModel(String uri) throws IOException
@@ -39,6 +40,7 @@ public class ClientModel
         game = new RemoteSpace("tcp://localhost:8080/" + GAME + "?keep");
         gameSettings = new RemoteSpace("tcp://localhost:8080/" + GAME_SETTINGS + "?keep");
         playerReady = new RemoteSpace("tcp://localhost:8080/" + PLAYER_READY + "?keep");
+        winner = new RemoteSpace("tcp://localhost:8080/" + WINNER + "?keep");
 
         logger.info("Client connected to spaces at " + uri);
 
@@ -333,6 +335,25 @@ public class ClientModel
             Thread.currentThread().interrupt();
             logger.severe("Failed to update player: " + e.getMessage());
         }
+    }
+
+    public void updateWinner(int winning_player) throws InterruptedException
+    {
+        logger.info("Updating winner space...");
+        Object[] existingWinner = winner.getp(new ActualField(WINNER), new FormalField(Integer.class));
+        winner.put(WINNER, winning_player);
+    }
+
+    public int queryWinner() throws InterruptedException
+    {
+        logger.info("Querying winner space...");
+        Object[] result = winner.queryp(new ActualField(WINNER), new FormalField(Integer.class));
+        if (result == null)
+        {
+            logger.warning("No winner found in the space.");
+            return -1;
+        }
+        return (int) result[1];
     }
 
     public synchronized void updatePlayer(String playerName,  int health, int cardsRemaining)
