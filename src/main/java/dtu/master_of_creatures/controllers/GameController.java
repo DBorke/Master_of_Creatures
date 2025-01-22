@@ -19,7 +19,6 @@ import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
@@ -33,8 +32,6 @@ public class GameController extends SceneController implements Initializable
     private Text turn_time;
     @FXML
     private Text player_name;
-    @FXML
-    private Text player_blood;
     @FXML
     private Text player_remain_deck;
     private List<Button> player_hand_list;
@@ -99,8 +96,6 @@ public class GameController extends SceneController implements Initializable
     @FXML
     private ImageView opponent_field_image_4;
     @FXML
-    private ToggleButton player_sacrifice;
-    @FXML
     private Rectangle match_over_screen;
     @FXML
     private Text won_lost;
@@ -156,12 +151,6 @@ public class GameController extends SceneController implements Initializable
         game_model.setGameState(GameStates.GAME_ACTIVE);
     }
 
-    public void updateOpponentPlayerInfo(int opponent_player_health, int opponent_cards_remaining)
-    {
-        this.opponent_player_health = opponent_player_health;
-        this.opponent_cards_remaining = opponent_cards_remaining;
-    }
-
     /**
      * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
      */
@@ -169,7 +158,6 @@ public class GameController extends SceneController implements Initializable
     {
         // Update UI information for player
         player_name.setText(current_player_number == player.getPlayerNumber() ? player.getPlayerName() + " (current player)" : player.getPlayerName());
-        player_blood.setText("" + player.getBloodPoints());
         player_remain_deck.setText("" + player.getCurrentDeck().size());
 
         // Update UI information for opponent
@@ -233,7 +221,7 @@ public class GameController extends SceneController implements Initializable
         {
             GameStates game_state = game_model.getGameState();
 
-            if(game_state != GameStates.GAME_HALFTIME && game_state != GameStates.GAME_OVER)
+            if(game_state != GameStates.GAME_OVER)
             {
                 Button slot = (Button) event.getSource();
                 int slot_index;
@@ -259,7 +247,7 @@ public class GameController extends SceneController implements Initializable
         {
             GameStates game_state = game_model.getGameState();
 
-            if(game_state != GameStates.GAME_HALFTIME && game_state != GameStates.GAME_OVER)
+            if(game_state != GameStates.GAME_OVER)
             {
                 if(selected_card != null) // make sure a card is selected from hand
                 {
@@ -268,78 +256,13 @@ public class GameController extends SceneController implements Initializable
 
                     slot_index = player_field_list.indexOf(slot);
 
-                    if(!player.isInSacrificeMode())
+                    if(game_model.playChosenCard(hand_slot_index, slot_index))
                     {
-                        if(game_model.playChosenCard(hand_slot_index, slot_index))
-                        {
-                            selected_card = null; // reset card selection
-                        }
-                    }
-                    else // if the player is in sacrifice mode, handle sacrifice
-                    {
-                        // Get the card in the field at the slot index for the current player
-                        CardModel card_in_field;
-
-                        if (current_player_number == 0)
-                        {
-                            card_in_field = board_model.getPlayer1Lanes()[slot_index];
-                        }
-                        else
-                        { // player 2
-                            card_in_field = board_model.getPlayer2Lanes()[slot_index];
-                        }
-
-                        sacrificeCardForBloodPoints(hand_slot_index, slot_index, card_in_field);
+                        selected_card = null; // reset card selection
                     }
                 }
             }
         }
-    }
-
-    /**
-     * @author Carl Emil (s224168)
-     */
-    public void playerSacrificedChosenCard() {
-        // Perform the sacrifice operation
-        game_model.sacrificeChosenCards();
-        handlePlayerCardUIs(true);
-        if (current_player_number == player.getPlayerNumber()) {
-            if (player_sacrifice.isSelected()) {
-                player_sacrifice.setText("Sacrifice: On");
-                activateSacrificeMode(player);
-                player_sacrifice.setSelected(true);
-            } else {
-                player_sacrifice.setText("Sacrifice: off");
-                deactivateSacrificeMode(player);
-                player_sacrifice.setSelected(false);
-            }
-        }
-    }
-    /**
-     * @author Carl Emil (s224168)
-     */
-    private void activateSacrificeMode(PlayerModel player) {
-        player.setInSacrificeMode(true);
-        handlePlayerInfoUIs(); // Update the UI to reflect the mode change
-    }
-    /**
-     * @author Carl Emil (s224168)
-     */
-    private void deactivateSacrificeMode(PlayerModel player) {
-        player.setInSacrificeMode(false);
-        handlePlayerInfoUIs(); // Update the UI to reflect the mode change
-    }
-    /**
-     * @author Carl Emil (s224168)
-     */
-    private void sacrificeCardForBloodPoints(int hand_slot_index, int slot_index, CardModel cardInField) {
-        if (cardInField.toString().equals("cow") || cardInField.toString().equals("lamb")) {
-            player.changeBloodPoints(2);
-        } else {
-            player.changeBloodPoints(1);
-        }
-        handlePlayerInfoUIs();
-        board_model.removeCreatureFromField(current_player_number, slot_index, false);  // Pass the current player and the slot index
     }
 
     /**

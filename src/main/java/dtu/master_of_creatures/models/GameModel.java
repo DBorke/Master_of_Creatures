@@ -111,13 +111,6 @@ public class GameModel implements ActionListener
      */
     public void startNewRound()
     {
-        if(game_state == GameStates.GAME_HALFTIME)
-        {
-            resetGameForNextRound();
-
-            game_state = GameStates.GAME_ACTIVE;
-        }
-
         current_player_number = -1; // no current player
         match_winning_player = -1; // no winner
 
@@ -148,6 +141,25 @@ public class GameModel implements ActionListener
      */
     public void nextPlayer()
     {
+        if (current_player_number == 0)
+        {
+            Thread thread = new Thread() {
+                public void run() {
+                    getHost().releaseLock();
+                }
+            };
+            thread.start();
+        }
+        else if(current_player_number == 1)
+        {
+            Thread thread = new Thread() {
+                public void run() {
+                    getClient().releaseLock();
+                }
+            };
+            thread.start();
+        }
+
         if(current_player_number == -1) // first turn
         {
             current_player_number = 0;
@@ -182,40 +194,30 @@ public class GameModel implements ActionListener
         {
             CardModel card_played = player.getCardsInHand().get(hand_index);
 
-            int player_blood_points = player.getBloodPoints();
-            int card_cost = card_played.getCost();
-
-            if (player_blood_points >= card_cost)
+            if(board_model.summonCreature(card_played, field_index, false))
             {
-                // Proceed with summoning the creature if the player can afford it
-                if(board_model.summonCreature(card_played, field_index, false))
+                player.removeFromHand(card_played);
+
+                game_controller.handlePlayerInfoUIs();
+                game_controller.handlePlayerCardUIs(true);
+
+                // Update own player fields on the network
+                Runnable runnable = () ->
                 {
-                    // Deduct the blood points for the card cost
-                    player.changeBloodPoints(card_cost);
-
-                    player.removeFromHand(card_played);
-
-                    game_controller.handlePlayerInfoUIs();
-                    game_controller.handlePlayerCardUIs(true);
-
-                    // Update own player fields on the network
-                    Runnable runnable = () ->
+                    if(current_player_number == 0)
                     {
-                        if(current_player_number == 0)
-                        {
-                            host.updateCard(Constants.PLAYER1_FIELD, field_index, card_played);
-                        }
-                        else
-                        {
-                            client.updateCard(Constants.PLAYER2_FIELD, field_index, card_played);
-                        }
-                    };
+                        host.updateCard(Constants.PLAYER1_FIELD, field_index, card_played);
+                    }
+                    else
+                    {
+                        client.updateCard(Constants.PLAYER2_FIELD, field_index, card_played);
+                    }
+                };
 
-                    Thread place_thread = new Thread(runnable);
-                    place_thread.start();
+                Thread place_thread = new Thread(runnable);
+                place_thread.start();
 
-                    return true;
-                }
+                return true;
             }
         }
 
@@ -307,6 +309,11 @@ public class GameModel implements ActionListener
 
                         game_controller.handlePlayerCardUIs(true);
                         game_controller.handlePlayerCardUIs(false);
+
+                        if(post_attack_health < 0) // player damaged
+                        {
+                            match_winning_player = current_player_number;
+                        }
                     }
                 }
                 else if(attacking_card != null && attacking_card.getAttack() > 0) // player damaged
@@ -395,6 +402,12 @@ public class GameModel implements ActionListener
 
                             opponent_field_flags[3] = true;
                         }
+
+                        if (getHost().getLock() != null)
+                        {
+                            System.out.println("Opposing playuer's turn is over");
+                            endTurn();
+                        }
                     }
                     else if(player.getPlayerNumber() != current_player_number && player.getPlayerNumber() == 1)
                     {
@@ -439,6 +452,11 @@ public class GameModel implements ActionListener
                                 opponent_field_flags[3] = true;
                             }
 
+                            if (getClient().getLock() != null)
+                            {
+                                System.out.println("Opposing playuer's turn is over");
+                                endTurn();
+                            }
                         }
                         catch (InterruptedException e)
                         {
@@ -457,11 +475,11 @@ public class GameModel implements ActionListener
             {
                 game_controller.handleTurnTimeUI(turn_time);
             }
-            else if(turn_time == -2 && turn_active) // slight delay to attack, make sure turn has not already ended
+            else if(turn_time == -1 && turn_active) // slight delay to attack, make sure turn has not already ended
             {
                 endTurn();
             }
-            else if(turn_time == -5) // delay to give time between turns
+            else if(turn_time == -3) // delay to give time between turns
             {
                 startTurn();
 

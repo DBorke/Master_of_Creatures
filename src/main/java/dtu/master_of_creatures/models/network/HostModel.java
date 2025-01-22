@@ -157,7 +157,7 @@ public class HostModel
 
         if (lock.queryp(new ActualField(LOCK)) == null)
         {
-            lock.put(LOCK);
+            //lock.put(LOCK);
             logger.info("Lock space initialized with LOCK value.");
         }
     }
@@ -554,18 +554,25 @@ public class HostModel
         }
     }
 
-    public void getLock()
+    public Object getLock()
     {
         try
         {
             logger.info("Attempting to acquire lock");
-            lock.get(new ActualField(LOCK));
+            Object locked = lock.get(new ActualField(LOCK));
+            if (locked == null)
+            {
+                logger.warning("Failed to acquire lock");
+                return null;
+            }
             logger.info("Lock successfully acquired");
+            return locked;
         }
         catch (InterruptedException e)
         {
             Thread.currentThread().interrupt();
             logger.severe("Failed to acquire lock: " + e.getMessage());
+            return null;
         }
     }
 

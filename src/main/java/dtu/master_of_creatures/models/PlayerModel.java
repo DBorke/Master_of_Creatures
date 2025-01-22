@@ -191,23 +191,9 @@ public class PlayerModel
         }
     }
 
-    /**
-     * @author Carl Emil (s224168)
-     */
-    public boolean isInSacrificeMode() {
-        return isSacrificeModeActive;
-    }
-
     /////////////////////////
     // setters and getters //
     /////////////////////////
-
-    /**
-     * @author Carl Emil (s224168)
-     */
-    public void setInSacrificeMode(boolean inSacrificeMode) {
-        this.isSacrificeModeActive = inSacrificeMode;
-    }
 
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)

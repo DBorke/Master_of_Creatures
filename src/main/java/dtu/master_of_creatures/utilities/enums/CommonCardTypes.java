@@ -3,7 +3,7 @@ package dtu.master_of_creatures.utilities.enums;
 public enum CommonCardTypes
 {
     // Health, attack, cost
-    RABBIT(1, 0, 0), // sacrifice fodder
+    RABBIT(1, 0, 0),
     RAT(1,1,1),
     WOLF(2, 3, 2),
     WOLF_CUB(1,1,1),
