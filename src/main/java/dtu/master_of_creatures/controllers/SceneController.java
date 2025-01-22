@@ -105,6 +105,14 @@ public abstract class SceneController
         app_scene.getRoot().setStyle("-fx-background-color: transparent;"); // make scene background invisible
     }
 
+    /**
+     * @author Danny (s224774), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
+    public int convertRowColumnToGridIndex(int row_to_convert, int column_to_convert)
+    {
+        return (row_to_convert * 4) + column_to_convert;
+    }
+
     /////////////////////////
     // setters and getters //
     /////////////////////////

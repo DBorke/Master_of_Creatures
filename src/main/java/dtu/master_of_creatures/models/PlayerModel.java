@@ -19,6 +19,7 @@ public class PlayerModel
     private List<CardModel> current_deck;
     private final List<CardModel> cards_in_hand;
     private int cards_remaining;
+    private boolean isSacrificeModeActive;
     private HashMap<String, Integer> match_settings;
 
     // Game data
@@ -190,9 +191,23 @@ public class PlayerModel
         }
     }
 
+    /**
+     * @author Carl Emil (s224168)
+     */
+    public boolean isInSacrificeMode() {
+        return isSacrificeModeActive;
+    }
+
     /////////////////////////
     // setters and getters //
     /////////////////////////
+
+    /**
+     * @author Carl Emil (s224168)
+     */
+    public void setInSacrificeMode(boolean inSacrificeMode) {
+        this.isSacrificeModeActive = inSacrificeMode;
+    }
 
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)

@@ -84,7 +84,7 @@ public class HostPregameController extends SceneController implements Initializa
         deck_grid_nodes = new Button[deck_grid_cells];
 
         // Add and set up GUI option elements
-        turn_time.getItems().addAll("10 seconds", "60 seconds", "90 seconds", "120 seconds", "Unlimited"); // match setting options
+        turn_time.getItems().addAll("30 seconds", "60 seconds", "90 seconds", "120 seconds", "Unlimited"); // match setting options
         blood_points.getItems().addAll(0, 1, 2, 3);
         hand_size.getItems().addAll(3, 4, 5, 6, 7, 8, 9, 10);
         defaultMatchSettings();
@@ -227,14 +227,6 @@ public class HostPregameController extends SceneController implements Initializa
     public void quitSetup() throws IOException
     {
         goToMenuScene();
-    }
-
-    /**
-     * @author Danny (s224774), Mathias (s224273), Maria (s195685), Romel (s215212)
-     */
-    public int convertRowColumnToGridIndex(int row_to_convert, int column_to_convert)
-    {
-        return (row_to_convert * 4) + column_to_convert;
     }
 
     public void actionPerformed(ActionEvent actionEvent) // gets called every 0.1 seconds

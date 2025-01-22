@@ -2,7 +2,6 @@ package dtu.master_of_creatures.models;
 
 // Project libraries
 import dtu.master_of_creatures.controllers.GameController;
-import dtu.master_of_creatures.controllers.HostPregameController;
 import dtu.master_of_creatures.models.network.ClientModel;
 import dtu.master_of_creatures.models.network.HostModel;
 import dtu.master_of_creatures.utilities.Constants;
@@ -17,7 +16,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.Timer;
-import java.util.logging.Logger;
 
 public class GameModel implements ActionListener
 {
@@ -25,16 +23,12 @@ public class GameModel implements ActionListener
     private BoardModel board_model;
     private PlayerModel player;
     private boolean player_ready = true;
-    private boolean opponent_ready;
     private String opponent_player_name;
     private int opponent_player_number;
-    private int opponent_player_health;
-    private int opponent_cards_remaining;
-    private int current_player_number;
     private boolean[] opponent_field_flags;
+    private boolean opponent_ready;
+    private int current_player_number;
     private boolean turn_active;
-    private final int[] round_wins;
-    private int round_winning_player;
     private int match_winning_player;
     private final Timer game_timer;
     private int turn_time;
@@ -42,11 +36,9 @@ public class GameModel implements ActionListener
     private HostModel host;
     private ClientModel client;
     private final String uri = "tcp://localhost:8080/?keep";
-    private static final Logger logger = Logger.getLogger(GameModel.class.getName());
 
     // App
     private GameController game_controller;
-    private HostPregameController host_pregame_controller;
 
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
@@ -55,7 +47,6 @@ public class GameModel implements ActionListener
     public GameModel()
     {
         board_model = new BoardModel(this);
-        round_wins = new int[2];
 
         opponent_field_flags = new boolean[4];
 
@@ -82,12 +73,9 @@ public class GameModel implements ActionListener
     public void initializePlayer(String player_name, List<CommonCardTypes> cards_chosen, boolean is_host)
     {
         int player_number = is_host ? 0 : 1;
+        opponent_player_number = is_host ? 1 : 0;
 
         player = new PlayerModel(player_name, player_number, cards_chosen, this);
-
-        opponent_player_number = is_host ? 1 : 0;
-        opponent_player_health = match_settings.get("health points");
-        opponent_cards_remaining = match_settings.get("deck size") - match_settings.get("hand size");
     }
 
     public void initializeHostModel()
@@ -97,9 +85,12 @@ public class GameModel implements ActionListener
 
     public void initializeClientModel()
     {
-        try {
+        try
+        {
             client = new ClientModel(uri);
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             throw new RuntimeException(e);
         }
     }
@@ -128,7 +119,7 @@ public class GameModel implements ActionListener
         }
 
         current_player_number = -1; // no current player
-        round_winning_player = -1; // no round winner
+        match_winning_player = -1; // no winner
 
         game_controller.handlePlayerInfoUIs();
         game_controller.handlePlayerCardUIs(true);
@@ -191,30 +182,40 @@ public class GameModel implements ActionListener
         {
             CardModel card_played = player.getCardsInHand().get(hand_index);
 
-            if(board_model.summonCreature(card_played, field_index, false))
+            int player_blood_points = player.getBloodPoints();
+            int card_cost = card_played.getCost();
+
+            if (player_blood_points >= card_cost)
             {
-                player.removeFromHand(card_played);
-
-                game_controller.handlePlayerInfoUIs();
-                game_controller.handlePlayerCardUIs(true);
-
-                // Update own player fields on the network
-                Runnable runnable = () ->
+                // Proceed with summoning the creature if the player can afford it
+                if(board_model.summonCreature(card_played, field_index, false))
                 {
-                    if(current_player_number == 0)
-                    {
-                        host.updateCard(Constants.PLAYER1_FIELD, field_index, card_played);
-                    }
-                    else
-                    {
-                        client.updateCard(Constants.PLAYER2_FIELD, field_index, card_played);
-                    }
-                };
+                    // Deduct the blood points for the card cost
+                    player.changeBloodPoints(card_cost);
 
-                Thread place_thread = new Thread(runnable);
-                place_thread.start();
+                    player.removeFromHand(card_played);
 
-                return true;
+                    game_controller.handlePlayerInfoUIs();
+                    game_controller.handlePlayerCardUIs(true);
+
+                    // Update own player fields on the network
+                    Runnable runnable = () ->
+                    {
+                        if(current_player_number == 0)
+                        {
+                            host.updateCard(Constants.PLAYER1_FIELD, field_index, card_played);
+                        }
+                        else
+                        {
+                            client.updateCard(Constants.PLAYER2_FIELD, field_index, card_played);
+                        }
+                    };
+
+                    Thread place_thread = new Thread(runnable);
+                    place_thread.start();
+
+                    return true;
+                }
             }
         }
 
@@ -248,7 +249,7 @@ public class GameModel implements ActionListener
         System.out.println(player.getPlayerNumber() + " :" + Arrays.toString(board_model.getPlayer1Lanes()));
         System.out.println(player.getPlayerNumber() + " :" + Arrays.toString(board_model.getPlayer2Lanes()));
 
-        checkRoundMatchOver(false);
+        checkMatchOver(false);
     }
 
     /**
@@ -306,82 +307,11 @@ public class GameModel implements ActionListener
 
                         game_controller.handlePlayerCardUIs(true);
                         game_controller.handlePlayerCardUIs(false);
-
-                        if(post_attack_health < 0) // player damaged
-                        {
-                            final int post_attack_health_2 = post_attack_health;
-
-                            // Update own player fields on the network
-                            Runnable runnable2 = () ->
-                            {
-                                if(opponent_player_number == 0)
-                                {
-                                    host.updatePlayer(Constants.PLAYER1, opponent_player_health + post_attack_health_2, opponent_cards_remaining);
-
-                                    Object[] result = host.queryPlayer(Constants.PLAYER1);
-
-                                    opponent_player_health = (int) result[2];
-                                }
-                                else
-                                {
-                                    client.updatePlayer(Constants.PLAYER2, opponent_player_health + post_attack_health_2, opponent_cards_remaining);
-
-                                    try
-                                    {
-                                        client.updatePlayer(Constants.PLAYER2, opponent_player_health + post_attack_health_2, opponent_cards_remaining);
-
-                                        Object[] result = client.queryPlayer(Constants.PLAYER2);
-
-                                        opponent_player_health = (int) result[2];
-                                    }
-                                    catch (InterruptedException e)
-                                    {
-                                        throw new RuntimeException(e);
-                                    }
-                                }
-                            };
-
-                            Thread health_thread = new Thread(runnable2);
-                            health_thread.start();
-                        }
                     }
                 }
-                else if(attacking_card != null)
+                else if(attacking_card != null && attacking_card.getAttack() > 0) // player damaged
                 {
-                    final int post_attack_health_2 = attacking_card.getAttack();
-
-                    // Update own player fields on the network
-                    Runnable runnable2 = () ->
-                    {
-                        if(opponent_player_number == 0)
-                        {
-                            host.updatePlayer(Constants.PLAYER1, opponent_player_health + post_attack_health_2, opponent_cards_remaining);
-
-                            Object[] result = host.queryPlayer(Constants.PLAYER1);
-
-                            opponent_player_health = (int) result[2];
-                        }
-                        else
-                        {
-                            client.updatePlayer(Constants.PLAYER2, opponent_player_health + post_attack_health_2, opponent_cards_remaining);
-
-                            try
-                            {
-                                client.updatePlayer(Constants.PLAYER2, opponent_player_health + post_attack_health_2, opponent_cards_remaining);
-
-                                Object[] result = client.queryPlayer(Constants.PLAYER2);
-
-                                opponent_player_health = (int) result[2];
-                            }
-                            catch (InterruptedException e)
-                            {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    };
-
-                    Thread health_thread = new Thread(runnable2);
-                    health_thread.start();
+                    match_winning_player = current_player_number;
                 }
             }
         }
@@ -390,67 +320,25 @@ public class GameModel implements ActionListener
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
-    public void checkRoundMatchOver(boolean player_conceded_round)
+    public void checkMatchOver(boolean player_conceded_round)
     {
-        int round_wins_needed = match_settings.get("round wins");
-
         if(!player_conceded_round)
         {
-            if(opponent_player_health <= 0 || (player.getCardsRemaining() == 0 && opponent_cards_remaining == 0))
+            if(match_winning_player != -1)
             {
-                decideRoundWinner();
+                game_state = GameStates.GAME_OVER;
 
-                round_wins[round_winning_player == player.getPlayerNumber() ? 0 : 1]++;
-
-                if(round_wins[0] != round_wins_needed && round_wins[1] != round_wins_needed)
-                {
-                    game_state = GameStates.GAME_HALFTIME;
-                }
-                else // a player has gotten the required amount of wins
-                {
-                    decideMatchWinner();
-
-                    game_timer.stop();
-
-                    game_state = GameStates.GAME_OVER;
-                }
+                game_controller.playerHasWon(match_winning_player);
             }
         }
         else // current player has conceded the round
         {
-            round_winning_player = opponent_player_number;
+            match_winning_player = opponent_player_number;
 
-            round_wins[opponent_player_number]++;
+            game_state = GameStates.GAME_OVER;
 
-            game_state = GameStates.GAME_HALFTIME;
+            game_controller.playerHasWon(match_winning_player);
         }
-    }
-
-    /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
-     */
-    private void decideRoundWinner()
-    {
-        if(player.getHealthPoints() > opponent_player_health)
-        {
-            round_winning_player = player.getPlayerNumber();
-        }
-        else if(player.getHealthPoints() < opponent_player_health)
-        {
-            round_winning_player = opponent_player_number;
-        }
-        else // round is a draw
-        {
-            round_winning_player = -1;
-        }
-    }
-
-    /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
-     */
-    private void decideMatchWinner()
-    {
-        match_winning_player = round_wins[0] == match_settings.get("round wins") ? 0 : 1;
     }
 
     /**
@@ -594,11 +482,6 @@ public class GameModel implements ActionListener
         GameModel.game_state = game_state;
     }
 
-    public void setHostPregameController(HostPregameController host_pregame_controller)
-    {
-        this.host_pregame_controller = host_pregame_controller;
-    }
-
     /**
      * @author Danny (s224774)
      */
@@ -615,16 +498,6 @@ public class GameModel implements ActionListener
     public void setOpponentReady(boolean opponent_ready)
     {
         this.opponent_ready = opponent_ready;
-    }
-
-    public void setOpponentPlayerHealth(int opponent_player_health)
-    {
-        this.opponent_player_health = opponent_player_health;
-    }
-
-    public void setOpponentCardRemaining(int opponent_cards_remaining)
-    {
-        this.opponent_cards_remaining = opponent_cards_remaining;
     }
 
     public void setOpponentPlayerName(String opponent_player_name)
@@ -682,22 +555,6 @@ public class GameModel implements ActionListener
         return opponent_player_number;
     }
 
-    /**
-     * @author Danny (s224774)
-     */
-    public int getOpponentPlayerHealth()
-    {
-        return opponent_player_health;
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public int getOpponentCardsRemaining()
-    {
-        return opponent_cards_remaining;
-    }
-
     public int getCurrentPlayerNumber()
     {
         return current_player_number;
@@ -709,14 +566,6 @@ public class GameModel implements ActionListener
     public boolean getTurnActive()
     {
         return turn_active;
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public int getRoundWinningPlayer()
-    {
-        return round_winning_player;
     }
 
     /**

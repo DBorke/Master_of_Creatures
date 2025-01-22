@@ -19,8 +19,10 @@ import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.paint.Color;
 
@@ -96,6 +98,12 @@ public class GameController extends SceneController implements Initializable
     private ImageView opponent_field_image_3;
     @FXML
     private ImageView opponent_field_image_4;
+    @FXML
+    private ToggleButton player_sacrifice;
+    @FXML
+    private Rectangle match_over_screen;
+    @FXML
+    private Text won_lost;
     private CardModel selected_card;
     private int hand_slot_index;
 
@@ -124,8 +132,6 @@ public class GameController extends SceneController implements Initializable
         player = game_model.getPlayer();
         opponent_player_name = game_model.getOpponentPlayerName();
         opponent_player_number = game_model.getOpponentPlayerNumber();
-        opponent_player_health = game_model.getOpponentPlayerHealth();
-        opponent_cards_remaining = game_model.getOpponentCardsRemaining();
 
         match_settings = game_model.getMatchSettings();
     }
@@ -262,13 +268,78 @@ public class GameController extends SceneController implements Initializable
 
                     slot_index = player_field_list.indexOf(slot);
 
-                    if(game_model.playChosenCard(hand_slot_index, slot_index))
+                    if(!player.isInSacrificeMode())
                     {
-                        selected_card = null; // reset card selection
+                        if(game_model.playChosenCard(hand_slot_index, slot_index))
+                        {
+                            selected_card = null; // reset card selection
+                        }
+                    }
+                    else // if the player is in sacrifice mode, handle sacrifice
+                    {
+                        // Get the card in the field at the slot index for the current player
+                        CardModel card_in_field;
+
+                        if (current_player_number == 0)
+                        {
+                            card_in_field = board_model.getPlayer1Lanes()[slot_index];
+                        }
+                        else
+                        { // player 2
+                            card_in_field = board_model.getPlayer2Lanes()[slot_index];
+                        }
+
+                        sacrificeCardForBloodPoints(hand_slot_index, slot_index, card_in_field);
                     }
                 }
             }
         }
+    }
+
+    /**
+     * @author Carl Emil (s224168)
+     */
+    public void playerSacrificedChosenCard() {
+        // Perform the sacrifice operation
+        game_model.sacrificeChosenCards();
+        handlePlayerCardUIs(true);
+        if (current_player_number == player.getPlayerNumber()) {
+            if (player_sacrifice.isSelected()) {
+                player_sacrifice.setText("Sacrifice: On");
+                activateSacrificeMode(player);
+                player_sacrifice.setSelected(true);
+            } else {
+                player_sacrifice.setText("Sacrifice: off");
+                deactivateSacrificeMode(player);
+                player_sacrifice.setSelected(false);
+            }
+        }
+    }
+    /**
+     * @author Carl Emil (s224168)
+     */
+    private void activateSacrificeMode(PlayerModel player) {
+        player.setInSacrificeMode(true);
+        handlePlayerInfoUIs(); // Update the UI to reflect the mode change
+    }
+    /**
+     * @author Carl Emil (s224168)
+     */
+    private void deactivateSacrificeMode(PlayerModel player) {
+        player.setInSacrificeMode(false);
+        handlePlayerInfoUIs(); // Update the UI to reflect the mode change
+    }
+    /**
+     * @author Carl Emil (s224168)
+     */
+    private void sacrificeCardForBloodPoints(int hand_slot_index, int slot_index, CardModel cardInField) {
+        if (cardInField.toString().equals("cow") || cardInField.toString().equals("lamb")) {
+            player.changeBloodPoints(2);
+        } else {
+            player.changeBloodPoints(1);
+        }
+        handlePlayerInfoUIs();
+        board_model.removeCreatureFromField(current_player_number, slot_index, false);  // Pass the current player and the slot index
     }
 
     /**
@@ -407,12 +478,22 @@ public class GameController extends SceneController implements Initializable
         game_model.endTurn();
     }
 
+    public void playerHasWon(int match_winning_player)
+    {
+        match_over_screen.setVisible(true);
+        match_over_screen.setDisable(false);
+        won_lost.setVisible(true);
+        won_lost.setDisable(false);
+
+        won_lost.setText(player.getPlayerNumber() == match_winning_player ? "You won the match!" : "You lost the match...");
+    }
+
     /**
      * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
      */
     public void playerHasConceded()
     {
-        game_model.checkRoundMatchOver(true);
+        game_model.checkMatchOver(true);
     }
 
     /**

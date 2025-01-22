@@ -20,6 +20,8 @@ import javafx.fxml.FXML;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
 
 import javax.swing.Timer;
 
@@ -31,11 +33,22 @@ public class JoinPregameController extends SceneController implements Initializa
     @FXML
     private TextField player_name;
     @FXML
+    private GridPane deck_grid;
+    private Button[] deck_grid_nodes;
+    private int deck_grid_rows;
+    private int deck_grid_columns;
+    private int deck_grid_cells;
+    private double deck_grid_cell_size;
+    private final List<CommonCardTypes> player_cards;
+    @FXML
+    private Text cards_chosen;
+    @FXML
     private Button ready;
     private final Timer network_timer;
 
     // Game data
     private final GameModel game_model;
+    private final CommonCardTypes[] card_types_available;
 
 
     /**
@@ -45,6 +58,9 @@ public class JoinPregameController extends SceneController implements Initializa
     {
         game_model = getGameModel();
         game_model.initializeClientModel();
+
+        player_cards = new ArrayList<>();
+        card_types_available = CommonCardTypes.values();
 
         network_timer = new Timer(1000, this); // delay is in milliseconds
 
@@ -56,7 +72,58 @@ public class JoinPregameController extends SceneController implements Initializa
     {
         game_model.setGameState(GameStates.GAME_SETUP);
 
+        // Gather information about the deck grid
+        deck_grid_rows = deck_grid.getRowCount();
+        deck_grid_columns = deck_grid.getColumnCount();
+        deck_grid_cells = deck_grid_rows * deck_grid_columns;
+        deck_grid_cell_size =  deck_grid.getPrefWidth(); // assuming grid cell symmetry
+        deck_grid_nodes = new Button[deck_grid_cells];
+
+        // Add and set up GUI option elements
         defaultMatchSettings();
+
+        // Initialize deck grid and deck grid contents
+        initializeDeckGrid();
+        initializeCardsInDeckGrid();
+    }
+
+    /**
+     * @author Danny (s224774), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
+    public void initializeDeckGrid()
+    {
+        for(int row = 0; row < deck_grid_rows; row++)
+        {
+            for (int column = 0; column < deck_grid_columns; column++)
+            {
+                // Node setup
+                Button grid_node = new Button();
+                grid_node.setPrefSize(deck_grid_cell_size, deck_grid_cell_size);
+                grid_node.setFocusTraversable(false);
+
+                grid_node.setOnMouseClicked(event -> playerClickedOnDeckGrid(grid_node)); // needed to detect player deck choices
+
+                // Grid setup
+                deck_grid.add(grid_node, column, row);
+                deck_grid_nodes[convertRowColumnToGridIndex(row, column)] = grid_node;
+            }
+        }
+    }
+
+    /**
+     * @author Danny (s224774), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
+    public void initializeCardsInDeckGrid()
+    {
+        for(int deck_grid_index = 0; deck_grid_index < deck_grid_cells; deck_grid_index++)
+        {
+            if(deck_grid_index > (card_types_available.length - 1))
+            {
+                break;
+            }
+
+            deck_grid_nodes[deck_grid_index].setText(card_types_available[deck_grid_index].name());
+        }
     }
 
     /**
@@ -68,36 +135,42 @@ public class JoinPregameController extends SceneController implements Initializa
     }
 
     /**
+     * @author Danny (s224774), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
+    public void playerClickedOnDeckGrid(Button grid_node)
+    {
+        if(player_cards.size() < 15)
+        {
+            int grid_node_row = GridPane.getRowIndex(grid_node);
+            int grid_node_column = GridPane.getColumnIndex(grid_node);
+            int index = convertRowColumnToGridIndex(grid_node_row, grid_node_column);
+
+            player_cards.add(card_types_available[index]);
+
+            updateCardsChosenCount();
+        }
+    }
+
+    /**
+     * @author Danny (s224774), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
+    public void updateCardsChosenCount()
+    {
+        cards_chosen.setText("Cards chosen: " + player_cards.size() + "/" + 15);
+    }
+
+    /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
     public void ready()
     {
         Runnable runnable = () -> {
-            List<CommonCardTypes> temp_list = new ArrayList<>();
-            temp_list.add(CommonCardTypes.RABBIT);
-            temp_list.add(CommonCardTypes.RABBIT);
-            temp_list.add(CommonCardTypes.RABBIT);
-            temp_list.add(CommonCardTypes.RABBIT);
-            temp_list.add(CommonCardTypes.RABBIT);
-            temp_list.add(CommonCardTypes.RABBIT);
-            temp_list.add(CommonCardTypes.RABBIT);
-            temp_list.add(CommonCardTypes.WOLF);
-            temp_list.add(CommonCardTypes.WOLF);
-            temp_list.add(CommonCardTypes.WOLF);
-            temp_list.add(CommonCardTypes.WOLF);
-            temp_list.add(CommonCardTypes.WOLF);
-            temp_list.add(CommonCardTypes.WOLF);
-            temp_list.add(CommonCardTypes.WOLF);
-            temp_list.add(CommonCardTypes.WOLF);
-
             Object[] settings = game_model.getClient().queryGameSettings();
-
-
 
             game_model.initializeMatchSettings( (Integer) settings[1], (Integer) settings[2], (Integer)  settings[3],(Integer)  settings[4], (Integer) settings[5], (Integer) settings[6], false);
 
             System.out.println(game_model.getMatchSettings().toString());
-            game_model.initializePlayer(player_name.getText(), temp_list, false); // player 2 string
+            game_model.initializePlayer(player_name.getText(), player_cards, false); // player 2 string
 
             game_model.getClient().initialUpdatePlayer(Constants.PLAYER2, player_name.getText(), game_model.getPlayer().getHealthPoints(), game_model.getPlayer().getCardsRemaining());
         };

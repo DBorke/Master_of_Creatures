@@ -8,6 +8,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
+<?import javafx.scene.control.ToggleButton?>
 <AnchorPane prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dtu.master_of_creatures.controllers.GameController">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" height="1080.0" stroke="BLACK" strokeType="INSIDE" width="1920.0" />
@@ -16,11 +17,6 @@
             <Image url="@../media/images/dark_cave_background.png" />
          </image>
       </ImageView>
-      <Button focusTraversable="false" layoutX="50.0" layoutY="40.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#quitGame" text="Quit">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
-      </Button>
       <Button fx:id="end_turn" focusTraversable="false" layoutX="1591.0" layoutY="990.0" mnemonicParsing="false" onAction="#playerEndedTurn" text="End Turn">
          <font>
             <Font size="18.0" />
@@ -36,6 +32,11 @@
             <Font size="23.0" />
          </font>
       </Button>
+      <ToggleButton fx:id="player_sacrifice" focusTraversable="false" layoutX="1600.0" layoutY="949.0" mnemonicParsing="false" onAction="#playerSacrificedChosenCard" text="Sacrifice Cards">
+         <font>
+            <Font size="23.0" />
+         </font>
+      </ToggleButton>
       <Text fx:id="player_name" fill="WHITE" layoutX="708.0" layoutY="741.0" stroke="BLACK" strokeType="OUTSIDE" text="Winston Churchill (you)" textAlignment="CENTER" wrappingWidth="400.0">
          <font>
             <Font name="System Bold" size="28.0" />
@@ -157,5 +158,16 @@
             <Font name="System Bold" size="24.0" />
          </font>
       </Text>
+      <Rectangle fx:id="match_over_screen" arcHeight="5.0" arcWidth="5.0" disable="true" height="1080.0" opacity="0.75" stroke="BLACK" strokeType="INSIDE" visible="false" width="1920.0" />
+      <Text fx:id="won_lost" disable="true" fill="WHITE" layoutX="408.0" layoutY="554.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Player won/lost" textAlignment="CENTER" visible="false" wrappingWidth="1000.0">
+         <font>
+            <Font name="System Bold" size="64.0" />
+         </font>
+      </Text>
+      <Button focusTraversable="false" layoutX="50.0" layoutY="40.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#quitGame" text="Quit">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>
