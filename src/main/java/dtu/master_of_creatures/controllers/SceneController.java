@@ -7,7 +7,6 @@ import dtu.master_of_creatures.utilities.enums.GameStates;
 import dtu.master_of_creatures.utilities.Constants;
 
 // Java libraries
-import java.util.HashMap;
 import java.util.Objects;
 import java.awt.GraphicsDevice;
 import java.io.IOException;
@@ -18,8 +17,6 @@ import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.transform.Scale;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 
 public abstract class SceneController
 {

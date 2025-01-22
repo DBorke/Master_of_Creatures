@@ -225,14 +225,6 @@ public class GameModel implements ActionListener
     }
 
     /**
-     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
-     */
-    public void sacrificeChosenCards()
-    {
-        game_controller.handlePlayerInfoUIs();
-    }
-
-    /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
     public void endTurn()
