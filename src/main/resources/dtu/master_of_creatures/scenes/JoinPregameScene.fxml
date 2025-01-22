@@ -37,62 +37,32 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </TextField>
-      <Label layoutX="705.0" layoutY="367.0" text="Round wins" textFill="WHITE">
+      <Label layoutX="815.0" layoutY="361.0" text="Turn time" textFill="WHITE">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <Label layoutX="860.0" layoutY="367.0" text="Turn time" textFill="WHITE">
+      <Label layoutX="918.0" layoutY="363.0" text="Blood points" textFill="WHITE">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <Label layoutX="996.0" layoutY="367.0" text="Health points" textFill="WHITE">
+      <Label layoutX="1040.0" layoutY="360.0" text="Hand size" textFill="WHITE">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <Label layoutX="1144.0" layoutY="367.0" text="Blood points" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
-      </Label>
-      <Label layoutX="861.0" layoutY="455.0" text="Deck size" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
-      </Label>
-      <Label layoutX="1007.0" layoutY="455.0" text="Hand size" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
-      </Label>
-      <Label fx:id="round_wins_info" layoutX="734.0" layoutY="397.0" text="3" textFill="WHITE">
+      <Label fx:id="turn_time_info" layoutX="831.0" layoutY="391.0" text="60" textFill="WHITE">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <Label fx:id="turn_time_info" layoutX="876.0" layoutY="397.0" text="60" textFill="WHITE">
+      <Label fx:id="blood_points_info" layoutX="951.0" layoutY="393.0" text="0" textFill="WHITE">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <Label fx:id="health_points_info" layoutX="1031.0" layoutY="397.0" text="5" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="24.0" />
-         </font>
-      </Label>
-      <Label fx:id="blood_points_info" layoutX="1177.0" layoutY="397.0" text="0" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="24.0" />
-         </font>
-      </Label>
-      <Label fx:id="deck_size_info" layoutX="876.0" layoutY="487.0" text="15" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="24.0" />
-         </font>
-      </Label>
-      <Label fx:id="hand_size_info" layoutX="1033.0" layoutY="487.0" text="4" textFill="WHITE">
+      <Label fx:id="hand_size_info" layoutX="1066.0" layoutY="392.0" text="4" textFill="WHITE">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>

@@ -11,7 +11,6 @@ import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.List;
 import java.util.ArrayList;
@@ -35,16 +34,9 @@ public class HostPregameController extends SceneController implements Initializa
     @FXML
     private TextField player_name;
     @FXML
-    private ComboBox<Integer> round_wins;
-    @FXML
     private ComboBox<String> turn_time;
     @FXML
-    private ComboBox<Integer> health_points;
-    @FXML
     private ComboBox<Integer> blood_points;
-    @FXML
-    private ComboBox<Integer> deck_size;
-    private int deck_size_selected;
     @FXML
     private ComboBox<Integer> hand_size;
     @FXML
@@ -61,7 +53,6 @@ public class HostPregameController extends SceneController implements Initializa
 
     // Game data
     private final GameModel game_model;
-    //private final HostModel host;
     private final CommonCardTypes[] card_types_available;
 
     /**
@@ -93,11 +84,8 @@ public class HostPregameController extends SceneController implements Initializa
         deck_grid_nodes = new Button[deck_grid_cells];
 
         // Add and set up GUI option elements
-        round_wins.getItems().addAll(1, 2, 3, 4, 5); // match setting options
-        turn_time.getItems().addAll("10 seconds", "60 seconds", "90 seconds", "120 seconds", "Unlimited");
-        health_points.getItems().addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        turn_time.getItems().addAll("10 seconds", "60 seconds", "90 seconds", "120 seconds", "Unlimited"); // match setting options
         blood_points.getItems().addAll(0, 1, 2, 3);
-        deck_size.getItems().addAll(5, 10, 15, 20, 25);
         hand_size.getItems().addAll(3, 4, 5, 6, 7, 8, 9, 10);
         defaultMatchSettings();
 
@@ -152,12 +140,8 @@ public class HostPregameController extends SceneController implements Initializa
     {
         player_name.setText("Player 1");
 
-        round_wins.getSelectionModel().select(2); // indices of the combo-boxes
-        turn_time.getSelectionModel().select(1);
-        health_points.getSelectionModel().select(4);
+        turn_time.getSelectionModel().select(1); // indices of the combo-boxes
         blood_points.getSelectionModel().select(0);
-        deck_size.getSelectionModel().select(2);
-        deck_size_selected = deck_size.getSelectionModel().getSelectedItem(); // store for cards chosen feedback
         hand_size.getSelectionModel().select(1);
     }
 
@@ -166,7 +150,7 @@ public class HostPregameController extends SceneController implements Initializa
      */
     public void playerClickedOnDeckGrid(Button grid_node)
     {
-        if(player_cards.size() < deck_size_selected)
+        if(player_cards.size() < 15)
         {
             int grid_node_row = GridPane.getRowIndex(grid_node);
             int grid_node_column = GridPane.getColumnIndex(grid_node);
@@ -183,22 +167,7 @@ public class HostPregameController extends SceneController implements Initializa
      */
     public void updateCardsChosenCount()
     {
-        deck_size_selected = deck_size.getSelectionModel().getSelectedItem();
-
-        cards_chosen.setText("Cards chosen: " + player_cards.size() + "/" + deck_size_selected);
-    }
-
-    /**
-     * @author Danny (s224774), Mathias (s224273), Maria (s195685), Romel (s215212)
-     */
-    public void updateCardsChosenLimit()
-    {
-        deck_size_selected = deck_size.getSelectionModel().getSelectedItem();
-
-
-        player_cards.clear(); // remove all cards from chosen deck
-
-        cards_chosen.setText("Cards chosen: " + 0 + "/" + deck_size_selected);
+        cards_chosen.setText("Cards chosen: " + player_cards.size() + "/" + 15);
     }
 
     /**
@@ -206,7 +175,7 @@ public class HostPregameController extends SceneController implements Initializa
      */
     public void finishMatchSetup()
     {
-        if(player_cards.size() == deck_size_selected)
+        if(player_cards.size() == 15)
         {
             // Set up game model
             String turn_time_string = turn_time.getSelectionModel().getSelectedItem();
@@ -230,10 +199,10 @@ public class HostPregameController extends SceneController implements Initializa
             }
 
             final int final_turn_time = turn_time;
-            game_model.initializeMatchSettings(round_wins.getSelectionModel().getSelectedItem(), turn_time, health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), true);
+            game_model.initializeMatchSettings(1, turn_time, 1, blood_points.getSelectionModel().getSelectedItem(), 15, hand_size.getSelectionModel().getSelectedItem(), true);
             Runnable runnable = () ->{
-                game_model.getHost().initializeGameSpace(player_name.getText(), "Waiting for client.", round_wins.getSelectionModel().getSelectedItem(), final_turn_time, health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem()+hand_size.getSelectionModel().getSelectedItem(),deck_size.getSelectionModel().getSelectedItem()+hand_size.getSelectionModel().getSelectedItem(),false);
-                game_model.getHost().updateGameSettings(round_wins.getSelectionModel().getSelectedItem(), Integer.parseInt(String.valueOf(final_turn_time)), health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), "Player 1", "Player 2");
+                game_model.getHost().initializeGameSpace(player_name.getText(), "Waiting for client.", 1, final_turn_time, 1, blood_points.getSelectionModel().getSelectedItem(), 15, hand_size.getSelectionModel().getSelectedItem(), 11,11,false);
+                game_model.getHost().updateGameSettings(1, Integer.parseInt(String.valueOf(final_turn_time)), 1, blood_points.getSelectionModel().getSelectedItem(), 15, hand_size.getSelectionModel().getSelectedItem(), "Player 1", "Player 2");
             };
 
             System.out.println(game_model.getMatchSettings().toString());
@@ -287,8 +256,6 @@ public class HostPregameController extends SceneController implements Initializa
             }
         };
 
-
-
         Platform.runLater(() -> {
         System.out.println(game_model.getPlayerReady());
         System.out.println(game_model.getOpponentReady());
@@ -315,6 +282,5 @@ public class HostPregameController extends SceneController implements Initializa
 
         // Start host thread
         initialize_thread.start();
-
     }
 }

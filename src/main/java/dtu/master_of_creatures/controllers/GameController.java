@@ -32,8 +32,6 @@ public class GameController extends SceneController implements Initializable
     @FXML
     private Text player_name;
     @FXML
-    private Text player_health;
-    @FXML
     private Text player_blood;
     @FXML
     private Text player_remain_deck;
@@ -88,15 +86,7 @@ public class GameController extends SceneController implements Initializable
     @FXML
     private Button player_draw;
     @FXML
-    private Button player_scroll_left;
-    @FXML
-    private Button player_scroll_right;
-    @FXML
     private Text opponent_name;
-    @FXML
-    private Text opponent_health;
-    @FXML
-    private Text opponent_remain_deck;
     private List<ImageView> opponent_field_image_list;
     @FXML
     private ImageView opponent_field_image_1;
@@ -173,14 +163,11 @@ public class GameController extends SceneController implements Initializable
     {
         // Update UI information for player
         player_name.setText(current_player_number == player.getPlayerNumber() ? player.getPlayerName() + " (current player)" : player.getPlayerName());
-        player_health.setText("" + player.getHealthPoints());
         player_blood.setText("" + player.getBloodPoints());
         player_remain_deck.setText("" + player.getCurrentDeck().size());
 
         // Update UI information for opponent
         opponent_name.setText(current_player_number != player.getPlayerNumber() ? opponent_player_name + " (current player)" : opponent_player_name);
-        opponent_health.setText("" + opponent_player_health);
-        opponent_remain_deck.setText("" + opponent_cards_remaining);
     }
 
     /**
