@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dtu.master_of_creatures.controllers.MenuController">
    <children>
@@ -16,17 +17,52 @@
             <Image url="@../media/images/dark_cave_background.png" />
          </image>
       </ImageView>
-      <Label layoutX="626.0" layoutY="100.0" text="Master of Creatures" textFill="WHITE">
+      <Label layoutX="626.0" layoutY="80.0" text="Master of Creatures" textFill="WHITE">
          <font>
             <Font name="System Bold" size="72.0" />
          </font>
       </Label>
-      <Button layoutX="887.0" layoutY="326.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#newGame" prefHeight="60.0" prefWidth="125.0" text="New Game">
+      <Button layoutX="781.0" layoutY="280.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#newGame" prefHeight="75.0" prefWidth="150.0" text="New Game">
          <font>
-            <Font name="System Bold" size="14.0" />
+            <Font name="System Bold" size="18.0" />
          </font>
       </Button>
-      <Button layoutX="887.0" layoutY="427.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#joinGame" prefHeight="60.0" prefWidth="125.0" text="Join Game">
+      <Button layoutX="989.0" layoutY="280.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#joinGame" prefHeight="75.0" prefWidth="150.0" text="Join Game">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Button>
+      <Text fill="WHITE" layoutX="102.0" layoutY="853.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Credits:">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Text>
+      <Text fill="WHITE" layoutX="102.0" layoutY="887.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Danny Borke">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Text>
+      <Text fill="WHITE" layoutX="102.0" layoutY="920.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mathias Vestergaard">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Text>
+      <Text fill="WHITE" layoutX="102.0" layoutY="954.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Carl Emil Johansen">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Text>
+      <Text fill="WHITE" layoutX="102.0" layoutY="986.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Maria Stentoft-Christensen">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Text>
+      <Text fill="WHITE" layoutX="102.0" layoutY="1019.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Romel Martinez">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Text>
+      <Button layoutX="898.0" layoutY="905.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#quitApplication" prefHeight="60.0" prefWidth="125.0" text="Quit">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>

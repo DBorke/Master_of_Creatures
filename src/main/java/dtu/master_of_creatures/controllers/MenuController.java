@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 import java.io.IOException;
 
 // JavaFX libraries
+import javafx.application.Platform;
 import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -49,5 +50,10 @@ public class MenuController extends SceneController implements Initializable
     public void joinGame() throws IOException // for joining player
     {
         goToJoinPregameScene();
+    }
+
+    public void quitApplication()
+    {
+        Platform.exit();
     }
 }

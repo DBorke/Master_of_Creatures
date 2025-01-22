@@ -26,7 +26,7 @@
             <Font size="18.0" />
          </font>
       </Button>
-      <Button fx:id="player_draw" focusTraversable="false" layoutX="779.0" layoutY="969.0" mnemonicParsing="false" onAction="#playerDrewFromDeck" text="Draw card">
+      <Button fx:id="player_draw" focusTraversable="false" layoutX="779.0" layoutY="974.0" mnemonicParsing="false" onAction="#playerDrewFromDeck" text="Draw card">
          <font>
             <Font size="23.0" />
          </font>
@@ -148,7 +148,7 @@
             <Font name="System Bold" size="64.0" />
          </font>
       </Text>
-      <Button focusTraversable="false" layoutX="50.0" layoutY="40.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#quitGame" text="Quit">
+      <Button focusTraversable="false" layoutX="50.0" layoutY="40.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#quitGame" text="Menu">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>

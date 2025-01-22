@@ -22,46 +22,55 @@
             <Image url="@../media/images/dark_cave_background.png" />
          </image>
       </ImageView>
-      <Label layoutX="705.0" layoutY="100.0" text="Match Settings" textFill="WHITE">
+      <Label layoutX="692.0" layoutY="80.0" text="Match Settings" textFill="WHITE">
          <font>
             <Font name="System Bold" size="72.0" />
          </font>
       </Label>
-      <Button focusTraversable="false" layoutX="50.0" layoutY="40.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#quitSetup" prefHeight="40.0" prefWidth="60.0" text="Back">
+      <Button focusTraversable="false" layoutX="50.0" layoutY="40.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#quitSetup" text="Back">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
-      <Button layoutX="916.0" layoutY="452.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#finishMatchSetup" prefHeight="50.0" prefWidth="100.0" text="Start Game">
+      <Button layoutX="880.0" layoutY="903.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#finishMatchSetup" prefHeight="60.0" prefWidth="125.0" text="Start Game">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
-      <TextField fx:id="player_name" alignment="CENTER" layoutX="885.0" layoutY="281.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="160.0" promptText="player 1 name">
+      <TextField fx:id="player_name" alignment="CENTER" layoutX="865.0" layoutY="238.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="160.0" promptText="player 1 name">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </TextField>
-      <ComboBox fx:id="turn_time" focusTraversable="false" layoutX="750.0" layoutY="375.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="120.0" promptText="60" />
-      <ComboBox fx:id="blood_points" focusTraversable="false" layoutX="905.0" layoutY="375.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="120.0" promptText="0" />
-      <ComboBox fx:id="hand_size" focusTraversable="false" layoutX="1064.0" layoutY="375.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="120.0" promptText="4" />
-      <Label layoutX="780.0" layoutY="346.0" text="Turn time" textFill="WHITE">
+      <ComboBox fx:id="turn_time" focusTraversable="false" layoutX="728.0" layoutY="333.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="120.0" promptText="60" />
+      <ComboBox fx:id="blood_points" focusTraversable="false" layoutX="883.0" layoutY="333.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="120.0" promptText="0" />
+      <ComboBox fx:id="hand_size" focusTraversable="false" layoutX="1042.0" layoutY="333.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="120.0" promptText="4" />
+      <Label layoutX="758.0" layoutY="304.0" text="Turn time" textFill="WHITE">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <Label layoutX="926.0" layoutY="346.0" text="Blood points" textFill="WHITE">
+      <Label layoutX="904.0" layoutY="304.0" text="Blood points" textFill="WHITE">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <Label layoutX="1094.0" layoutY="346.0" text="Hand size" textFill="WHITE">
+      <Label layoutX="1072.0" layoutY="304.0" text="Hand size" textFill="WHITE">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <GridPane fx:id="deck_grid" gridLinesVisible="true" layoutX="566.0" layoutY="572.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="800.0">
+      <Text fx:id="cards_chosen" fill="WHITE" layoutX="845.0" layoutY="434.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cards chosen: 0/15">
+         <font>
+            <Font name="System Bold" size="22.0" />
+         </font>
+      </Text>
+      <GridPane fx:id="deck_grid" gridLinesVisible="true" layoutX="422.0" layoutY="462.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="1050.0">
          <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -75,13 +84,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
       </GridPane>
-      <Text fx:id="cards_chosen" fill="WHITE" layoutX="859.0" layoutY="1025.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cards chosen: 0/15">
-         <font>
-            <Font name="System Bold" size="24.0" />
-         </font>
-      </Text>
    </children>
 </AnchorPane>

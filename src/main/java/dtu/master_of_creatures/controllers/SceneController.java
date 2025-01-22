@@ -107,7 +107,7 @@ public abstract class SceneController
      */
     public int convertRowColumnToGridIndex(int row_to_convert, int column_to_convert)
     {
-        return (row_to_convert * 8) + column_to_convert;
+        return (row_to_convert * 12) + column_to_convert;
     }
 
     /////////////////////////
