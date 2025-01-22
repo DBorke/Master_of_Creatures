@@ -19,15 +19,17 @@ import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.paint.Color;
 
-public class GameController extends SceneController implements Initializable
-{
+public class GameController extends SceneController implements Initializable {
     // JavaFX
+    @FXML
+    private ToggleButton player_sacrifice;
     @FXML
     private Text turn_time;
     @FXML
@@ -116,8 +118,7 @@ public class GameController extends SceneController implements Initializable
     /**
      * @author Danny (s224774), Maria (s195685)
      */
-    public GameController()
-    {
+    public GameController() {
         game_model = getGameModel();
         game_model.setGameController(this);
 
@@ -134,8 +135,7 @@ public class GameController extends SceneController implements Initializable
     /**
      * @author Danny (s224774), Maria (s195685), Mathias (s224273), Romel (s215212)
      */
-    public void initialize(URL url, ResourceBundle resource_bundle)
-    {
+    public void initialize(URL url, ResourceBundle resource_bundle) {
         handleTurnTimeUI(match_settings.get("time limit"));
 
         // Initialize data structures for player
@@ -154,8 +154,7 @@ public class GameController extends SceneController implements Initializable
     /**
      * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
      */
-    public void handlePlayerInfoUIs()
-    {
+    public void handlePlayerInfoUIs() {
         // Update UI information for player
         player_name.setText(current_player_number == player.getPlayerNumber() ? player.getPlayerName() + " (current player)" : player.getPlayerName());
         player_remain_deck.setText("" + player.getCurrentDeck().size());
@@ -167,16 +166,12 @@ public class GameController extends SceneController implements Initializable
     /**
      * @author Maria (s195685), Danny (s224774)
      */
-    public void handlePlayerCardUIs(boolean update_player)
-    {
-        if(update_player)
-        {
+    public void handlePlayerCardUIs(boolean update_player) {
+        if (update_player) {
             updatePlayerHandImages();
 
             updatePlayerFieldImages(true);
-        }
-        else
-        {
+        } else {
             updateOpponentFieldImages(false);
         }
     }
@@ -184,8 +179,7 @@ public class GameController extends SceneController implements Initializable
     /**
      * @author Danny (s224774), Maria (s195685), Carl Emil (s224168), Mathias (s224273), Romel (s215212)
      */
-    public void handlePlayerButtons()
-    {
+    public void handlePlayerButtons() {
         player_draw.setDisable(current_player_number != player.getPlayerNumber());
 
         selected_card = null; // reset selection
@@ -194,19 +188,15 @@ public class GameController extends SceneController implements Initializable
     /**
      * @author Danny (s224774), Maria (s195685), Mathias (s224273), Romel (s215212)
      */
-    public void handleTurnTimeUI(int turn_time_remaining)
-    {
+    public void handleTurnTimeUI(int turn_time_remaining) {
         turn_time.setText("Turn time left: " + turn_time_remaining);
 
         // Change text color depending on time left
-        if(turn_time_remaining > 10)
-        {
-            if(turn_time.getFill().equals(Color.RED))
-            {
+        if (turn_time_remaining > 10) {
+            if (turn_time.getFill().equals(Color.RED)) {
                 turn_time.setFill(Color.WHITE); // default color
             }
-        }
-        else // time is running out
+        } else // time is running out
         {
             turn_time.setFill(Color.RED);
         }
@@ -215,21 +205,31 @@ public class GameController extends SceneController implements Initializable
     /**
      * @author Danny (s224774), Maria (s195685), Carl Emil (s224168), Mathias (s224273), Romel (s215212)
      */
-    public void playerClickedOnCard(ActionEvent event)
-    {
-        if(player.getPlayerNumber() == current_player_number && game_model.getTurnActive())
-        {
+    public void playerClickedOnCard(ActionEvent event) {
+        if (player.getPlayerNumber() == current_player_number && game_model.getTurnActive()) {
             GameStates game_state = game_model.getGameState();
 
-            if(game_state != GameStates.GAME_OVER)
-            {
+            if (game_state != GameStates.GAME_OVER) {
                 Button slot = (Button) event.getSource();
                 int slot_index;
 
                 slot_index = player_hand_list.indexOf(slot);
 
-                if(player.getCardsInHand().size() > slot_index)
-                {
+                if (player.isInSacrificeMode()) {
+                    slot_index = player_hand_list.indexOf(slot);
+
+                    // Get the card in the field at the clicked slot index
+                    selected_card = player.getCardsInHand().get(slot_index);
+
+                    // Check if a card exists in the clicked slot
+                    if (selected_card != null) {
+                        // Trigger the sacrifice
+                        sacrificeCardForBloodPoints(selected_card);
+                        handlePlayerCardUIs(true); // ??
+                    }
+                }
+
+                if (player.getCardsInHand().size() > slot_index) {
                     hand_slot_index = slot_index;
 
                     selected_card = player.getCardsInHand().get(slot_index);
@@ -241,23 +241,19 @@ public class GameController extends SceneController implements Initializable
     /**
      * @author Danny (s224774), Maria (s195685), Carl Emil (s224168), Mathias (s224273), Romel (s215212)
      */
-    public void playerClickedOnField(ActionEvent event)
-    {
-        if(player.getPlayerNumber() == current_player_number && game_model.getTurnActive())
-        {
+    public void playerClickedOnField(ActionEvent event) {
+        if (player.getPlayerNumber() == current_player_number && game_model.getTurnActive()) {
             GameStates game_state = game_model.getGameState();
 
-            if(game_state != GameStates.GAME_OVER)
-            {
-                if(selected_card != null) // make sure a card is selected from hand
+            if (game_state != GameStates.GAME_OVER) {
+                if (selected_card != null) // make sure a card is selected from hand
                 {
                     Button slot = (Button) event.getSource();
                     int slot_index;
 
                     slot_index = player_field_list.indexOf(slot);
 
-                    if(game_model.playChosenCard(hand_slot_index, slot_index))
-                    {
+                    if (game_model.playChosenCard(hand_slot_index, slot_index)) {
                         selected_card = null; // reset card selection
                     }
                 }
@@ -265,16 +261,47 @@ public class GameController extends SceneController implements Initializable
         }
     }
 
+    private void sacrificeCardForBloodPoints(CardModel cardInHand) {
+        // Update blood points for the current player
+        player.changeBloodPoints(cardInHand.getCost());
+        handlePlayerInfoUIs();
+
+        // Remove the creature from the field for the current player
+        player.removeFromHand(cardInHand);
+
+        // Update the UI for both players
+        handlePlayerCardUIs(true);
+        handlePlayerCardUIs(false);
+    }
+
     /**
      * @author Danny (s224774), Maria (s195685), Carl Emil (s224168), Mathias (s224273), Romel (s215212)
      */
-    public void playerDrewFromDeck()
-    {
+    public void playerDrewFromDeck() {
         game_model.drawFromDeck();
 
         updatePlayerHandImages();
 
         player_draw.setDisable(true);
+    }
+
+    public void playerSacrificedChosenCard()
+    {
+        // Perform the sacrifice operation
+        game_model.sacrificeChosenCards();
+        updatePlayerHandImages();
+
+        if (!player.isInSacrificeMode()) {
+            player_sacrifice.setText("Sacrifice: On");
+            player.setInSacrificeMode(true);
+            player_sacrifice.setSelected(true);
+        }
+        else
+        {
+            player_sacrifice.setText("Sacrifice: off");
+            player.setInSacrificeMode(false);
+            player_sacrifice.setSelected(false);
+        }
     }
 
     /**

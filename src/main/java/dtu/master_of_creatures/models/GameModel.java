@@ -554,6 +554,11 @@ public class GameModel implements ActionListener
         }
     }
 
+    public void sacrificeChosenCards()
+    {
+        game_controller.handlePlayerInfoUIs();
+    }
+
     /////////////////////////
     // setters and getters //
     /////////////////////////

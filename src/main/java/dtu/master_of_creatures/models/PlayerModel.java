@@ -125,6 +125,7 @@ public class PlayerModel
     public void changeBloodPoints(int blood_change)
     {
         blood_points += blood_change;
+        System.out.println("CHANGE IN BLOOD POINTS" + blood_points);
     }
 
     /**
@@ -191,10 +192,17 @@ public class PlayerModel
         }
     }
 
+    public boolean isInSacrificeMode() {
+        return isSacrificeModeActive;
+    }
+
     /////////////////////////
     // setters and getters //
     /////////////////////////
 
+    public void setInSacrificeMode(boolean inSacrificeMode) {
+        this.isSacrificeModeActive = inSacrificeMode;
+    }
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
