@@ -461,14 +461,6 @@ public class GameController extends SceneController implements Initializable
     }
 
     /**
-     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
-     */
-    public void playerHasConceded()
-    {
-        game_model.checkMatchOver(true);
-    }
-
-    /**
      * @author Danny (s224774)
      */
     public void quitGame() throws IOException

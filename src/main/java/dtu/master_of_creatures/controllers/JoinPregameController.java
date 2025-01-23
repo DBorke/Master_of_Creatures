@@ -1,6 +1,7 @@
 package dtu.master_of_creatures.controllers;
 
 // Project libraries
+import dtu.master_of_creatures.MasterOfCreaturesApp;
 import dtu.master_of_creatures.models.GameModel;
 import dtu.master_of_creatures.utilities.Constants;
 import dtu.master_of_creatures.utilities.enums.GameStates;
@@ -17,6 +18,9 @@ import java.io.IOException;
 import javafx.application.Platform;
 import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -98,18 +102,30 @@ public class JoinPregameController extends SceneController implements Initializa
      */
     public void initializeDeckGrid()
     {
+        CommonCardTypes[] common_card_types = CommonCardTypes.values();
+        int card_index = 0;
+
         for(int row = 0; row < deck_grid_rows; row++)
         {
             for (int column = 0; column < deck_grid_columns; column++)
             {
-                // Node setup
+                // Set up image node
+                ImageView image_node = new ImageView(new Image(String.valueOf(MasterOfCreaturesApp.class.getResource("media/images/" + common_card_types[card_index].name().toLowerCase() + ".png"))));
+                image_node.setDisable(true);
+                image_node.setFitWidth(84.0);
+                image_node.setFitHeight(112.0);
+                deck_grid.add(image_node, column, row);
+
+                card_index++;
+
+                // Set up button node
                 Button grid_node = new Button();
                 grid_node.setPrefSize(deck_grid_cell_size, deck_grid_cell_size);
                 grid_node.setFocusTraversable(false);
-
+                grid_node.setCursor(Cursor.HAND);
+                grid_node.setOpacity(0);
                 grid_node.setOnMouseClicked(event -> playerClickedOnDeckGrid(grid_node)); // needed to detect player deck choices
 
-                // Grid setup
                 deck_grid.add(grid_node, column, row);
                 deck_grid_nodes[convertRowColumnToGridIndex(row, column)] = grid_node;
             }

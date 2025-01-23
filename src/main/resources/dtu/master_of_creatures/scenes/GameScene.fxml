@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.Image?>
@@ -42,12 +43,12 @@
             <Image url="@../media/images/blood_icon.png" />
          </image>
       </ImageView>
-      <Text fx:id="player_blood" fill="WHITE" layoutX="595.0" layoutY="960.0" stroke="BLACK" strokeType="OUTSIDE" text="0" textAlignment="CENTER" wrappingWidth="100.0">
+      <Text fx:id="player_blood" fill="WHITE" layoutX="594.0" layoutY="959.0" stroke="BLACK" strokeType="OUTSIDE" text="0" textAlignment="CENTER" wrappingWidth="100.0">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>
       </Text>
-      <Text fx:id="turn_time" fill="WHITE" layoutX="61.0" layoutY="1026.0" stroke="BLACK" strokeType="OUTSIDE" text="Turn time: 60" wrappingWidth="300.0">
+      <Text fx:id="turn_time" fill="WHITE" layoutX="50.0" layoutY="1036.0" stroke="BLACK" strokeType="OUTSIDE" text="Turn time: 30" wrappingWidth="300.0">
          <font>
             <Font name="System Bold" size="36.0" />
          </font>
@@ -77,77 +78,115 @@
             <Image url="@../media/images/card_back_1.png" />
          </image>
       </ImageView>
-      <Button fx:id="player_field_1" focusTraversable="false" layoutX="603.0" layoutY="371.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="200.0" prefWidth="150.0" text="Button" />
+      <Button fx:id="player_field_1" focusTraversable="false" layoutX="603.0" layoutY="371.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="200.0" prefWidth="150.0" text="Button">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
       <ImageView fx:id="player_field_image_2" fitHeight="200.0" fitWidth="150.0" layoutX="794.0" layoutY="371.0" pickOnBounds="true">
          <image>
             <Image url="@../media/images/card_back_1.png" />
          </image>
       </ImageView>
-      <Button fx:id="player_field_2" focusTraversable="false" layoutX="794.0" layoutY="371.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="200.0" prefWidth="150.0" text="Button" />
+      <Button fx:id="player_field_2" focusTraversable="false" layoutX="794.0" layoutY="371.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="200.0" prefWidth="150.0" text="Button">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
       <ImageView fx:id="player_field_image_3" fitHeight="200.0" fitWidth="150.0" layoutX="983.0" layoutY="371.0" pickOnBounds="true">
          <image>
             <Image url="@../media/images/card_back_1.png" />
          </image>
       </ImageView>
-      <Button fx:id="player_field_3" focusTraversable="false" layoutX="983.0" layoutY="371.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="200.0" prefWidth="150.0" text="Button" />
+      <Button fx:id="player_field_3" focusTraversable="false" layoutX="983.0" layoutY="371.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="200.0" prefWidth="150.0" text="Button">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
       <ImageView fx:id="player_field_image_4" fitHeight="200.0" fitWidth="150.0" layoutX="1169.0" layoutY="371.0" pickOnBounds="true">
          <image>
             <Image url="@../media/images/card_back_1.png" />
          </image>
       </ImageView>
-      <Button fx:id="player_field_4" focusTraversable="false" layoutX="1169.0" layoutY="371.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="200.0" prefWidth="150.0" text="Button" />
+      <Button fx:id="player_field_4" focusTraversable="false" layoutX="1169.0" layoutY="371.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnField" opacity="0.0" prefHeight="200.0" prefWidth="150.0" text="Button">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
       <ImageView fx:id="player_hand_image_1" fitHeight="175.0" fitWidth="125.0" layoutX="436.0" layoutY="720.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../media/images/card_back_1.png" />
          </image>
       </ImageView>
-      <Button fx:id="player_hand_1" focusTraversable="false" layoutX="436.0" layoutY="720.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
+      <Button fx:id="player_hand_1" focusTraversable="false" layoutX="436.0" layoutY="720.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
       <ImageView fx:id="player_hand_image_2" fitHeight="175.0" fitWidth="125.0" layoutX="595.0" layoutY="720.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../media/images/card_back_1.png" />
          </image>
       </ImageView>
-      <Button fx:id="player_hand_2" focusTraversable="false" layoutX="595.0" layoutY="720.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
+      <Button fx:id="player_hand_2" focusTraversable="false" layoutX="595.0" layoutY="720.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
       <ImageView fx:id="player_hand_image_3" disable="true" fitHeight="175.0" fitWidth="125.0" layoutX="754.0" layoutY="721.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../media/images/card_back_1.png" />
          </image>
       </ImageView>
-      <Button fx:id="player_hand_3" focusTraversable="false" layoutX="754.0" layoutY="720.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
+      <Button fx:id="player_hand_3" focusTraversable="false" layoutX="754.0" layoutY="720.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
       <ImageView fx:id="player_hand_image_4" fitHeight="175.0" fitWidth="125.0" layoutX="901.0" layoutY="722.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../media/images/card_back_1.png" />
          </image>
       </ImageView>
-      <Button fx:id="player_hand_4" focusTraversable="false" layoutX="901.0" layoutY="721.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
+      <Button fx:id="player_hand_4" focusTraversable="false" layoutX="901.0" layoutY="721.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
       <ImageView fx:id="player_hand_image_5" fitHeight="175.0" fitWidth="125.0" layoutX="1052.0" layoutY="723.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../media/images/card_back_1.png" />
          </image>
       </ImageView>
-      <Button fx:id="player_hand_5" focusTraversable="false" layoutX="1052.0" layoutY="722.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
+      <Button fx:id="player_hand_5" focusTraversable="false" layoutX="1052.0" layoutY="722.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
       <ImageView fx:id="player_hand_image_6" fitHeight="175.0" fitWidth="125.0" layoutX="1206.0" layoutY="724.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../media/images/card_back_1.png" />
          </image>
       </ImageView>
-      <Button fx:id="player_hand_6" focusTraversable="false" layoutX="1206.0" layoutY="723.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
+      <Button fx:id="player_hand_6" focusTraversable="false" layoutX="1206.0" layoutY="723.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
       <ImageView fx:id="player_hand_image_7" fitHeight="175.0" fitWidth="125.0" layoutX="1360.0" layoutY="725.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../media/images/card_back_1.png" />
          </image>
       </ImageView>
-      <Button fx:id="player_hand_7" focusTraversable="false" layoutX="1360.0" layoutY="724.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button" />
+      <Button fx:id="player_hand_7" focusTraversable="false" layoutX="1360.0" layoutY="724.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#playerClickedOnCard" opacity="0.0" prefHeight="160.0" prefWidth="125.0" text="Button">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
       <ImageView fitHeight="70.0" fitWidth="60.0" layoutX="1256.0" layoutY="914.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../media/images/deck_icon.png" />
          </image>
       </ImageView>
-      <Text fx:id="player_remain_deck" fill="WHITE" layoutX="1250.0" layoutY="958.0" stroke="BLACK" strokeType="OUTSIDE" text="11" textAlignment="CENTER" wrappingWidth="75.0">
+      <Text fx:id="player_remain_deck" fill="WHITE" layoutX="1251.0" layoutY="957.0" stroke="BLACK" strokeType="OUTSIDE" text="11" textAlignment="CENTER" wrappingWidth="75.0">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>
       </Text>
+      <ToggleButton fx:id="player_gamble" focusTraversable="false" layoutX="1066.0" layoutY="923.0" mnemonicParsing="false" onAction="#playerGambledChosenCard" text="Gamble: off">
+         <font>
+            <Font size="23.0" />
+         </font>
+      </ToggleButton>
       <Rectangle fx:id="match_over_screen" arcHeight="5.0" arcWidth="5.0" disable="true" height="1080.0" opacity="0.75" stroke="BLACK" strokeType="INSIDE" visible="false" width="1920.0" />
       <Text fx:id="won_lost" disable="true" fill="WHITE" layoutX="408.0" layoutY="554.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Player won/lost" textAlignment="CENTER" visible="false" wrappingWidth="1000.0">
          <font>
@@ -159,12 +198,7 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
-      <ToggleButton fx:id="player_gamble" focusTraversable="false" layoutX="1066.0" layoutY="923.0" mnemonicParsing="false" onAction="#playerGambledChosenCard" text="Gamble: off">
-         <font>
-            <Font size="23.0" />
-         </font>
-      </ToggleButton>
-      <Button fx:id="sound" focusTraversable="false" layoutX="1785.0" layoutY="50.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#muteUnmuteSound" text="Sound On">
+      <Button fx:id="sound" focusTraversable="false" layoutX="1785.0" layoutY="40.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#muteUnmuteSound" text="Sound On">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>

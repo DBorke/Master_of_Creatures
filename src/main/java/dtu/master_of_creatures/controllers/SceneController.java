@@ -98,8 +98,8 @@ public abstract class SceneController
             scale_factor_y = current_resolution_y / (double) default_resolution_y;
 
             transform_scale = new Scale(scale_factor_x, scale_factor_y);
-            transform_scale.setPivotX(-1.0); // needed for proper scene positioning
-            transform_scale.setPivotY(-1.0);
+            transform_scale.setPivotX(3.0); // needed for proper scene positioning when scaling
+            transform_scale.setPivotY(3.0);
         }
     }
 

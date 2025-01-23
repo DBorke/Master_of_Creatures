@@ -290,7 +290,7 @@ public class GameModel implements ActionListener
 
         performPostTurnAttacks();
 
-        checkMatchOver(false);
+        checkMatchOver();
     }
 
     /**
@@ -375,20 +375,10 @@ public class GameModel implements ActionListener
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
-    public void checkMatchOver(boolean player_conceded_round)
+    public void checkMatchOver()
     {
-        if(!player_conceded_round)
+        if(match_winning_player != -1)
         {
-            if(match_winning_player != -1)
-            {
-                game_controller.playerHasWon(match_winning_player);
-                game_state = GameStates.GAME_OVER;
-            }
-        }
-        else // current player has conceded the round
-        {
-            match_winning_player = opponent_player_number;
-
             game_controller.playerHasWon(match_winning_player);
             game_state = GameStates.GAME_OVER;
         }

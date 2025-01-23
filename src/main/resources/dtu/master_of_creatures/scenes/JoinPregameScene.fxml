@@ -26,12 +26,12 @@
             <Font name="System Bold" size="72.0" />
          </font>
       </Label>
-      <Button focusTraversable="false" layoutX="50.0" layoutY="40.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#quitSetup" text="Back">
+      <Button focusTraversable="false" layoutX="50.0" layoutY="40.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#quitSetup" prefHeight="30.0" prefWidth="56.0" text="Back">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
-      <Button fx:id="ready" layoutX="894.0" layoutY="920.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#ready" prefHeight="60.0" prefWidth="125.0" text="Ready">
+      <Button fx:id="ready" layoutX="891.0" layoutY="906.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#ready" prefHeight="60.0" prefWidth="125.0" text="Ready">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
@@ -46,7 +46,7 @@
             <Font name="System Bold" size="22.0" />
          </font>
       </Text>
-      <GridPane fx:id="deck_grid" gridLinesVisible="true" layoutX="433.0" layoutY="453.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="1050.0">
+      <GridPane fx:id="deck_grid" layoutX="433.0" layoutY="453.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="1050.0">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
