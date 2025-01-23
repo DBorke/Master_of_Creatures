@@ -36,6 +36,8 @@ public class JoinPregameController extends SceneController implements Initializa
     @FXML
     private TextField player_name;
     @FXML
+    private Button clear_deck;
+    @FXML
     private GridPane deck_grid;
     private Button[] deck_grid_nodes;
     private int deck_grid_rows;
@@ -208,7 +210,11 @@ public class JoinPregameController extends SceneController implements Initializa
             test.start();
 
             join_pane.requestFocus(); // exit player name text field
+
+            // Disable match setting elements
             ready.setDisable(true);
+            player_name.setDisable(true);
+            clear_deck.setDisable(true);
 
             network_timer.start();
         }

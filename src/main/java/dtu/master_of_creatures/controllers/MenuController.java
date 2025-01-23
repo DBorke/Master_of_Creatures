@@ -50,7 +50,7 @@ public class MenuController extends SceneController implements Initializable
     /**
      * @author Danny (s224774)
      */
-    public void newGame() throws IOException // for host player
+    public void hostGame() throws IOException // for host player
     {
         goToHostPregameScene();
     }

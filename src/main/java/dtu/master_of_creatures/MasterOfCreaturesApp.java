@@ -12,6 +12,7 @@ import java.io.IOException;
 // JavaFX libraries
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class MasterOfCreaturesApp extends Application
@@ -43,6 +44,7 @@ public class MasterOfCreaturesApp extends Application
         app_stage.setWidth(screen.getDisplayMode().getWidth()); // window width
         app_stage.setHeight(screen.getDisplayMode().getHeight()); // window height
         app_stage.setFullScreenExitHint(""); // hint to display when exiting full screen
+        app_stage.getIcons().add(new Image(String.valueOf(MasterOfCreaturesApp.class.getResource("media/images/card_back_1.png")))); // app icon
 
         // Controller setup
         MenuController initial_controller = sceneLoader.getController(); // fetch initial controller

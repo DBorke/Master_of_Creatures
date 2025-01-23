@@ -22,7 +22,7 @@
             <Font name="System Bold" size="72.0" />
          </font>
       </Label>
-      <Button layoutX="775.0" layoutY="328.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#newGame" prefHeight="75.0" prefWidth="150.0" text="New Game">
+      <Button layoutX="775.0" layoutY="328.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#hostGame" prefHeight="75.0" prefWidth="150.0" text="Host Game">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>

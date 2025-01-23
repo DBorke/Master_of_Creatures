@@ -32,7 +32,7 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
-      <Button layoutX="891.0" layoutY="906.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#finishMatchSetup" prefHeight="60.0" prefWidth="125.0" text="Start Game">
+      <Button fx:id="start" layoutX="891.0" layoutY="906.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#finishMatchSetup" prefHeight="60.0" prefWidth="125.0" text="Start Game">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
@@ -86,7 +86,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
       </GridPane>
-      <Button layoutX="910.0" layoutY="827.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#clearChosenDeck" text="Clear deck">
+      <Button fx:id="clear_deck" layoutX="910.0" layoutY="827.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#clearChosenDeck" text="Clear Deck">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
