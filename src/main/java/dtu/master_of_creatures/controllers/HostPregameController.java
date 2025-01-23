@@ -44,6 +44,8 @@ public class HostPregameController extends SceneController implements Initializa
     @FXML
     private ComboBox<Integer> hand_size;
     @FXML
+    private Button clear_deck;
+    @FXML
     private GridPane deck_grid;
     private Button[] deck_grid_nodes;
     private int deck_grid_rows;
@@ -54,6 +56,8 @@ public class HostPregameController extends SceneController implements Initializa
     @FXML
     private Text cards_chosen;
     private final Timer network_timer;
+    @FXML
+    private Button start;
     @FXML
     private Button sound;
 
@@ -212,20 +216,20 @@ public class HostPregameController extends SceneController implements Initializa
         {
             // Set up game model
             String turn_time_string = turn_time.getSelectionModel().getSelectedItem();
-            int turn_time = 0;
+            int turn_time_parsed = 0;
 
             for(int char_index = 0; char_index < turn_time_string.length(); char_index++)
             {
                 if(!Character.isDigit(turn_time_string.charAt(char_index)))
                 {
-                    turn_time = Integer.parseInt(turn_time_string.substring(0, char_index));
+                    turn_time_parsed = Integer.parseInt(turn_time_string.substring(0, char_index));
 
                     break;
                 }
             }
 
-            final int final_turn_time = turn_time;
-            game_model.initializeMatchSettings(1, turn_time, 1, blood_points.getSelectionModel().getSelectedItem(), 15, hand_size.getSelectionModel().getSelectedItem(), true);
+            final int final_turn_time = turn_time_parsed;
+            game_model.initializeMatchSettings(1, turn_time_parsed, 1, blood_points.getSelectionModel().getSelectedItem(), 15, hand_size.getSelectionModel().getSelectedItem(), true);
             Runnable runnable = () ->{
                 game_model.getHost().initializeGameSpace(player_name.getText(), "Waiting for client.", 1, final_turn_time, 1, blood_points.getSelectionModel().getSelectedItem(), 15, hand_size.getSelectionModel().getSelectedItem(), 11,11,false);
                 game_model.getHost().updateGameSettings(1, Integer.parseInt(String.valueOf(final_turn_time)), 1, blood_points.getSelectionModel().getSelectedItem(), 15, hand_size.getSelectionModel().getSelectedItem(), "Player 1", "Player 2");
@@ -236,8 +240,15 @@ public class HostPregameController extends SceneController implements Initializa
             //game_model.getHost().initializeGameSpace(player_name.getText(), "Waiting for client.", round_wins.getSelectionModel().getSelectedItem(), turn_time, health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem()+hand_size.getSelectionModel().getSelectedItem(),deck_size.getSelectionModel().getSelectedItem()+hand_size.getSelectionModel().getSelectedItem(),false);
 
             game_model.initializePlayer(player_name.getText(), player_cards, true);
-
             game_model.setPlayerReady(true);
+
+            // Disable match setting elements
+            start.setDisable(true);
+            player_name.setDisable(true);
+            turn_time.setDisable(true);
+            hand_size.setDisable(true);
+            blood_points.setDisable(true);
+            clear_deck.setDisable(true);
 
             network_timer.start();
         }
