@@ -51,9 +51,6 @@ public class BoardModel
             throw new IllegalStateException("Lane is already occupied.");
         }
 
-        System.out.println("Summon creature: " + game_model.getPlayer().getPlayerNumber());
-        System.out.println("Summon creature: " + game_model.getCurrentPlayerNumber());
-
         player_lanes[lane] = creature;
 
         return true;
@@ -63,7 +60,7 @@ public class BoardModel
      * Remove a creature from a specific lane.
      * @author Danny (s224774)
      */
-    public void removeCreatureFromField(int player_number, int lane, boolean update_opponent) // can be called for both the local and remote player
+    public void removeCreatureFromField(int lane, boolean update_opponent) // can be called for both the local and remote player
     {
         if(lane >= 0 && lane <= 3)
         {

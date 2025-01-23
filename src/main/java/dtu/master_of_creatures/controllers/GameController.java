@@ -27,7 +27,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.paint.Color;
 
-public class GameController extends SceneController implements Initializable {
+public class GameController extends SceneController implements Initializable
+{
     // JavaFX
     @FXML
     private Text turn_time;
@@ -88,8 +89,6 @@ public class GameController extends SceneController implements Initializable {
     @FXML
     private Button player_draw;
     @FXML
-    private Button player_concede;
-    @FXML
     private ToggleButton player_sacrifice;
     @FXML
     private ToggleButton player_gamble;
@@ -110,6 +109,8 @@ public class GameController extends SceneController implements Initializable {
     private Text won_lost;
     private CardModel selected_card;
     private int hand_slot_index;
+    @FXML
+    private Button sound;
 
     // Game data
     private final GameModel game_model;
@@ -152,6 +153,11 @@ public class GameController extends SceneController implements Initializable {
 
         game_model.startNewRound();
         game_model.setGameState(GameStates.GAME_ACTIVE);
+
+        if(!getSoundUnmuted())
+        {
+            sound.setText("Sound Off");
+        }
     }
 
     /**
@@ -188,7 +194,6 @@ public class GameController extends SceneController implements Initializable {
         player_draw.setDisable(current_player_number != player.getPlayerNumber());
         player_sacrifice.setDisable(current_player_number != player.getPlayerNumber());
         player_gamble.setDisable(current_player_number != player.getPlayerNumber());
-        player_concede.setDisable(current_player_number != player.getPlayerNumber());
 
         selected_card = null; // reset selection
     }
@@ -360,8 +365,6 @@ public class GameController extends SceneController implements Initializable {
         CardModel[] player_field_cards = player.getPlayerNumber() == 0 ? board_model.getPlayer1Lanes() : board_model.getPlayer2Lanes();
         CardModel player_field_card;
 
-        System.out.println("UI player: " + Arrays.toString(player_field_cards));
-
         for(int field_index = 0; field_index < player_field_cards.length; field_index++)
         {
             player_field_card = player_field_cards[field_index];
@@ -377,8 +380,6 @@ public class GameController extends SceneController implements Initializable {
     {
         CardModel[] opponent_field_cards = player.getPlayerNumber() == 0 ? board_model.getPlayer2Lanes() : board_model.getPlayer1Lanes();
         CardModel opponent_field_card;
-
-        System.out.println("UI opponent: " + Arrays.toString(opponent_field_cards));
 
         for(int field_index = 0; field_index < opponent_field_cards.length; field_index++)
         {
@@ -444,8 +445,6 @@ public class GameController extends SceneController implements Initializable {
             {
                 slot_image = opponent_field_image_list.get(slot_index);
             }
-
-            System.out.println(player.getPlayerNumber() + ": " + update_player);
         }
 
         return slot_image;
@@ -477,6 +476,13 @@ public class GameController extends SceneController implements Initializable {
         game_model.setGameState(GameStates.GAME_QUIT);
 
         goToMenuScene();
+    }
+
+    public void muteUnmuteSound()
+    {
+        super.muteUnmuteSound();
+
+        sound.setText(getSoundUnmuted() ? "Sound On" : "Sound Off");
     }
 
     /////////////////////////

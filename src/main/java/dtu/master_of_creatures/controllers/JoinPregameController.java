@@ -44,6 +44,8 @@ public class JoinPregameController extends SceneController implements Initializa
     @FXML
     private Button ready;
     private final Timer network_timer;
+    @FXML
+    private Button sound;
 
     // Game data
     private final GameModel game_model;
@@ -84,6 +86,11 @@ public class JoinPregameController extends SceneController implements Initializa
         // Initialize deck grid and deck grid contents
         initializeDeckGrid();
         initializeCardsInDeckGrid();
+
+        if(!getSoundUnmuted())
+        {
+            sound.setText("Sound Off");
+        }
     }
 
     /**
@@ -176,8 +183,6 @@ public class JoinPregameController extends SceneController implements Initializa
                 Object[] settings = game_model.getClient().queryGameSettings();
 
                 game_model.initializeMatchSettings( (Integer) settings[1], (Integer) settings[2], (Integer)  settings[3],(Integer)  settings[4], (Integer) settings[5], (Integer) settings[6], false);
-
-                System.out.println(game_model.getMatchSettings().toString());
                 game_model.initializePlayer(player_name.getText(), player_cards, false); // player 2 string
 
                 game_model.getClient().initialUpdatePlayer(Constants.PLAYER2, player_name.getText(), game_model.getPlayer().getHealthPoints(), game_model.getPlayer().getCardsRemaining());
@@ -194,14 +199,6 @@ public class JoinPregameController extends SceneController implements Initializa
     }
 
     /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
-     */
-    public void unready()
-    {
-        ready.setDisable(false);
-    }
-
-    /**
      * @author Danny (s224774)
      */
     public void quitSetup() throws IOException
@@ -209,6 +206,9 @@ public class JoinPregameController extends SceneController implements Initializa
         goToMenuScene();
     }
 
+    /**
+     * @author Danny (s224774), Romel (s215212)
+     */
     public void actionPerformed(ActionEvent actionEvent) // gets called every 0.1 seconds
     {
 
@@ -231,13 +231,7 @@ public class JoinPregameController extends SceneController implements Initializa
             }
         };
 
-
-
-
         Platform.runLater(() -> {
-            System.out.println(game_model.getPlayerReady());
-            System.out.println(game_model.getOpponentReady());
-
         if(game_model.getPlayerReady() && game_model.getOpponentReady())
         {
 
@@ -259,5 +253,15 @@ public class JoinPregameController extends SceneController implements Initializa
 
         Thread thread = new Thread(runnable);
         thread.start();
+    }
+
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
+     */
+    public void muteUnmuteSound()
+    {
+        super.muteUnmuteSound();
+
+        sound.setText(getSoundUnmuted() ? "Sound On" : "Sound Off");
     }
 }

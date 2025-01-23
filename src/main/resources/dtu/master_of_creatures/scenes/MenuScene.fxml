@@ -17,17 +17,17 @@
             <Image url="@../media/images/dark_cave_background.png" />
          </image>
       </ImageView>
-      <Label layoutX="626.0" layoutY="80.0" text="Master of Creatures" textFill="WHITE">
+      <Label layoutX="618.0" layoutY="80.0" text="Master of Creatures" textFill="WHITE">
          <font>
             <Font name="System Bold" size="72.0" />
          </font>
       </Label>
-      <Button layoutX="781.0" layoutY="280.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#newGame" prefHeight="75.0" prefWidth="150.0" text="New Game">
+      <Button layoutX="774.0" layoutY="280.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#newGame" prefHeight="75.0" prefWidth="150.0" text="New Game">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
       </Button>
-      <Button layoutX="989.0" layoutY="280.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#joinGame" prefHeight="75.0" prefWidth="150.0" text="Join Game">
+      <Button layoutX="982.0" layoutY="280.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#joinGame" prefHeight="75.0" prefWidth="150.0" text="Join Game">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
@@ -47,7 +47,7 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Text>
-      <Text fill="WHITE" layoutX="102.0" layoutY="954.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Carl Emil Johansen">
+      <Text fill="WHITE" layoutX="102.0" layoutY="952.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Carl Emil Johansen">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
@@ -62,7 +62,12 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Text>
-      <Button layoutX="898.0" layoutY="905.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#quitApplication" prefHeight="60.0" prefWidth="125.0" text="Quit">
+      <Button layoutX="894.0" layoutY="920.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#quitApplication" prefHeight="60.0" prefWidth="125.0" text="Quit">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="sound" focusTraversable="false" layoutX="1785.0" layoutY="40.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#muteUnmuteSound" text="Sound On">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>

@@ -50,6 +50,8 @@ public class HostPregameController extends SceneController implements Initializa
     @FXML
     private Text cards_chosen;
     private final Timer network_timer;
+    @FXML
+    private Button sound;
 
     // Game data
     private final GameModel game_model;
@@ -92,6 +94,11 @@ public class HostPregameController extends SceneController implements Initializa
         // Initialize deck grid and deck grid contents
         initializeDeckGrid();
         initializeCardsInDeckGrid();
+
+        if(!getSoundUnmuted())
+        {
+            sound.setText("Sound Off");
+        }
     }
 
     /**
@@ -145,6 +152,9 @@ public class HostPregameController extends SceneController implements Initializa
         hand_size.getSelectionModel().select(1);
     }
 
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
+     */
     public void clearChosenDeck()
     {
         player_cards.clear();
@@ -205,8 +215,6 @@ public class HostPregameController extends SceneController implements Initializa
                 game_model.getHost().updateGameSettings(1, Integer.parseInt(String.valueOf(final_turn_time)), 1, blood_points.getSelectionModel().getSelectedItem(), 15, hand_size.getSelectionModel().getSelectedItem(), "Player 1", "Player 2");
             };
 
-            System.out.println(game_model.getMatchSettings().toString());
-
             Thread thread = new ThreadModel(runnable);
             thread.start();
             //game_model.getHost().initializeGameSpace(player_name.getText(), "Waiting for client.", round_wins.getSelectionModel().getSelectedItem(), turn_time, health_points.getSelectionModel().getSelectedItem(), blood_points.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem(), hand_size.getSelectionModel().getSelectedItem(), deck_size.getSelectionModel().getSelectedItem()+hand_size.getSelectionModel().getSelectedItem(),deck_size.getSelectionModel().getSelectedItem()+hand_size.getSelectionModel().getSelectedItem(),false);
@@ -217,8 +225,6 @@ public class HostPregameController extends SceneController implements Initializa
 
             network_timer.start();
         }
-
-        System.out.println("Waiting for client.");
     }
 
     /**
@@ -249,9 +255,6 @@ public class HostPregameController extends SceneController implements Initializa
         };
 
         Platform.runLater(() -> {
-        System.out.println(game_model.getPlayerReady());
-        System.out.println(game_model.getOpponentReady());
-
         if( game_model.getPlayerReady() && game_model.getOpponentReady())
         {
             try
@@ -274,5 +277,15 @@ public class HostPregameController extends SceneController implements Initializa
 
         // Start host thread
         initialize_thread.start();
+    }
+
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
+     */
+    public void muteUnmuteSound()
+    {
+        super.muteUnmuteSound();
+
+        sound.setText(getSoundUnmuted() ? "Sound On" : "Sound Off");
     }
 }

@@ -77,13 +77,6 @@ public class CardModel implements Serializable
     /**
      * @author Romel (s215212)
      */
-    public int getHealth() {
-        return health;
-    }
-
-    /**
-     * @author Romel (s215212)
-     */
     public int getAttack() {
         return attack;
     }
@@ -93,5 +86,13 @@ public class CardModel implements Serializable
      */
     public int getCost() {
         return cost;
+    }
+
+    /**
+     * @author Romel (s215212)
+     */
+    @Override
+    public String toString() {
+        return String.format("CardModel{card_type='%s', health=%d, attack=%d, cost=%d}", common_card_type, health, attack, cost);
     }
 }

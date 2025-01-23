@@ -21,7 +21,7 @@
             <Image url="@../media/images/dark_cave_background.png" />
          </image>
       </ImageView>
-      <Label layoutX="697.0" layoutY="80.0" text="Match Settings" textFill="WHITE">
+      <Label layoutX="706.0" layoutY="80.0" text="Match Settings" textFill="WHITE">
          <font>
             <Font name="System Bold" size="72.0" />
          </font>
@@ -31,22 +31,22 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
-      <Button fx:id="ready" layoutX="885.0" layoutY="903.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#ready" prefHeight="60.0" prefWidth="125.0" text="Ready">
+      <Button fx:id="ready" layoutX="894.0" layoutY="920.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#ready" prefHeight="60.0" prefWidth="125.0" text="Ready">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
-      <TextField fx:id="player_name" alignment="CENTER" layoutX="870.0" layoutY="238.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="160.0" promptText="player 1 name">
+      <TextField fx:id="player_name" alignment="CENTER" layoutX="880.0" layoutY="233.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="160.0" promptText="player 1 name">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </TextField>
-      <Text fx:id="cards_chosen" fill="WHITE" layoutX="850.0" layoutY="434.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cards chosen: 0/15">
+      <Text fx:id="cards_chosen" fill="WHITE" layoutX="856.0" layoutY="430.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cards chosen: 0/15">
          <font>
             <Font name="System Bold" size="22.0" />
          </font>
       </Text>
-      <GridPane fx:id="deck_grid" gridLinesVisible="true" layoutX="427.0" layoutY="462.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="1050.0">
+      <GridPane fx:id="deck_grid" gridLinesVisible="true" layoutX="433.0" layoutY="453.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="1050.0">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -67,7 +67,12 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
       </GridPane>
-      <Button layoutX="899.0" layoutY="830.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#clearChosenDeck" text="Clear deck">
+      <Button layoutX="910.0" layoutY="827.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#clearChosenDeck" text="Clear deck">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="sound" focusTraversable="false" layoutX="1785.0" layoutY="40.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#muteUnmuteSound" text="Sound On">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>

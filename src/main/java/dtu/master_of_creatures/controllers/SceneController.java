@@ -5,10 +5,8 @@ import dtu.master_of_creatures.MasterOfCreaturesApp;
 import dtu.master_of_creatures.models.GameModel;
 import dtu.master_of_creatures.utilities.enums.GameStates;
 import dtu.master_of_creatures.utilities.Constants;
-import dtu.master_of_creatures.utilities.enums.SoundLabels;
 
 // Java libraries
-import java.util.HashMap;
 import java.util.Objects;
 import java.awt.GraphicsDevice;
 import java.io.IOException;
@@ -48,11 +46,6 @@ public abstract class SceneController
         {
             game_model = new GameModel();
         }
-
-        if(sound_player == null)
-        {
-            sound_player = new MediaPlayer(new Media(String.valueOf(MasterOfCreaturesApp.class.getResource("media/sounds/damp_cave.mp3"))));
-        }
     }
 
     /**
@@ -63,11 +56,17 @@ public abstract class SceneController
         setAppScene("MenuScene");
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public void goToHostPregameScene() throws IOException
     {
         setAppScene("HostPregameScene");
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public void goToJoinPregameScene() throws IOException
     {
         setAppScene("JoinPregameScene");
@@ -115,17 +114,33 @@ public abstract class SceneController
         app_scene.getRoot().setStyle("-fx-background-color: transparent;"); // make scene background invisible
     }
 
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
+     */
     public void playThemeMusic()
     {
-        sound_player.setVolume(0.5);
-        sound_player.play();
+        if(sound_player == null)
+        {
+            sound_player = new MediaPlayer(new Media(String.valueOf(MasterOfCreaturesApp.class.getResource("media/sounds/damp_cave.mp3"))));
+
+            if(sound_player.getCycleCount() != 10000)
+            {
+                sound_player.setCycleCount(10000); // play "indefinitely"
+            }
+
+            sound_player.setVolume(0.2);
+            sound_player.play();
+        }
     }
 
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
+     */
     public void muteUnmuteSound()
     {
         sound_unmuted = !sound_unmuted;
 
-        sound_player.setMute(sound_unmuted);
+        sound_player.setMute(!sound_unmuted);
     }
 
     /**
@@ -179,5 +194,13 @@ public abstract class SceneController
     public GameModel getGameModel()
     {
         return game_model;
+    }
+
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
+     */
+    public boolean getSoundUnmuted()
+    {
+        return sound_unmuted;
     }
 }

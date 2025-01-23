@@ -13,7 +13,6 @@ import dtu.master_of_creatures.utilities.enums.MythicalCardTypes;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -27,7 +26,7 @@ public class GameModel implements ActionListener
     private boolean player_ready = true;
     private String opponent_player_name;
     private int opponent_player_number;
-    private boolean[] opponent_field_flags;
+    private final boolean[] opponent_field_flags;
     private boolean opponent_ready;
     private int current_player_number;
     private boolean turn_active;
@@ -97,17 +96,6 @@ public class GameModel implements ActionListener
         }
     }
 
-
-    /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
-     */
-    public void resetGameForNextRound()
-    {
-        board_model = new BoardModel(this);
-
-        player.resetPlayerForNextRound();
-    }
-
     /**
      * @author Danny (s224774), Maria (s195685), Carl Emil (s224168), Mathias (s224273), Romel (s215212)
      */
@@ -147,8 +135,6 @@ public class GameModel implements ActionListener
     {
         current_player_number = current_player_number == 0 ? 1 : 0;
 
-
-
         game_controller.setCurrentPlayerNumber(current_player_number);
 
         Runnable runnable = () ->
@@ -175,6 +161,9 @@ public class GameModel implements ActionListener
 
     }
 
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685)
+     */
     public void allowsCardsToAttack()
     {
         CardModel[] player_cards = player.getPlayerNumber() == 0 ? board_model.getPlayer1Lanes() : board_model.getPlayer2Lanes();
@@ -201,6 +190,9 @@ public class GameModel implements ActionListener
         game_controller.handlePlayerInfoUIs();
     }
 
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
+     */
     public void sacrificeCardForBloodPoints(CardModel cardInHand)
     {
         // Update blood points for the current player
@@ -214,6 +206,9 @@ public class GameModel implements ActionListener
         game_controller.handlePlayerCardUIs(true);
     }
 
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
+     */
     public void gambleCardForMythicalCard(CardModel card_in_hand)
     {
         player.removeFromHand(card_in_hand);
@@ -295,9 +290,6 @@ public class GameModel implements ActionListener
 
         performPostTurnAttacks();
 
-        System.out.println(player.getPlayerNumber() + " :" + Arrays.toString(board_model.getPlayer1Lanes()));
-        System.out.println(player.getPlayerNumber() + " :" + Arrays.toString(board_model.getPlayer2Lanes()));
-
         checkMatchOver(false);
     }
 
@@ -327,12 +319,9 @@ public class GameModel implements ActionListener
 
                     if(post_attack_health <= 0) // card dead
                     {
-                        board_model.removeCreatureFromField(opponent_player_number, lane_index, player.getPlayerNumber() != 0);
+                        board_model.removeCreatureFromField(lane_index, player.getPlayerNumber() != 0);
 
                         final int lane_index_2 = lane_index;
-
-                        System.out.println("Attacking card: " + attacking_card);
-                        System.out.println("Attacked card: " + attacked_card);
 
                         // Update own player fields on the network
                         Runnable runnable = () ->
@@ -351,8 +340,6 @@ public class GameModel implements ActionListener
 
                         Thread place_thread = new Thread(runnable);
                         place_thread.start();
-
-                        System.out.println("FUCK THIS PIECE OF SHIT!!!!!!!!!!!!!!!");
 
                         game_controller.handlePlayerCardUIs(true);
                         game_controller.handlePlayerCardUIs(false);
@@ -396,8 +383,6 @@ public class GameModel implements ActionListener
             {
                 game_controller.playerHasWon(match_winning_player);
                 game_state = GameStates.GAME_OVER;
-
-                System.out.println("DET HER ER DEN FUCKING VINDER AF LORTE SPILLET: " + match_winning_player);
             }
         }
         else // current player has conceded the round
@@ -423,132 +408,44 @@ public class GameModel implements ActionListener
             {
                 Runnable runnable = () ->
                 {
-                    if(player.getPlayerNumber() != current_player_number && player.getPlayerNumber() == 0)
+                    try
                     {
-                        System.out.println("for host: " + player.getPlayerNumber());
-                        System.out.println("for host: " + current_player_number);
-
-                        CardModel queried_card = host.queryCard(Constants.PLAYER2_FIELD, 0);
-
-                        if(queried_card != null && !opponent_field_flags[0])
+                        for(int field_index = 0; field_index < 4; field_index++)
                         {
-                            board_model.summonCreature(queried_card, 0, true);
+                            CardModel queried_card = player.getPlayerNumber() == 0 ? host.queryCard(Constants.PLAYER2_FIELD, field_index) : client.queryCard(Constants.PLAYER1_FIELD, field_index);
 
-                            opponent_field_flags[0] = true;
-                        }
-
-                        queried_card = host.queryCard(Constants.PLAYER2_FIELD, 1);
-
-                        if(queried_card != null && !opponent_field_flags[1])
-                        {
-                            board_model.summonCreature(queried_card, 1, true);
-
-                            opponent_field_flags[1] = true;
-                        }
-
-                        queried_card = host.queryCard(Constants.PLAYER2_FIELD, 2);
-
-                        if(queried_card != null && !opponent_field_flags[2])
-                        {
-                            board_model.summonCreature(queried_card, 2, true);
-
-                            opponent_field_flags[2] = true;
-                        }
-
-                        queried_card = host.queryCard(Constants.PLAYER2_FIELD, 3);
-
-                        if(queried_card != null && !opponent_field_flags[3])
-                        {
-                            board_model.summonCreature(queried_card, 3, true);
-
-                            opponent_field_flags[3] = true;
-                        }
-
-                        if (getHost().queryCurrentPlayer() != current_player_number)
-                        {
-                            System.out.println("Opposing playuer's turn is over");
-                            endTurn();
-                        }
-
-
-                        if (getHost().queryWinner() == 1)
-                        {
-                            System.out.println("Opposing playuer's won");
-
-                            match_winning_player = 1;
-
-                            game_controller.playerHasWon(match_winning_player);
-                            game_state = GameStates.GAME_OVER;
-                        }
-
-
-                    }
-                    else if(player.getPlayerNumber() != current_player_number && player.getPlayerNumber() == 1)
-                    {
-                        try
-                        {
-                            System.out.println("for client: " + player.getPlayerNumber());
-                            System.out.println("for client: " + current_player_number);
-
-                            CardModel queried_card = client.queryCard(Constants.PLAYER1_FIELD, 0);
-
-                            if(queried_card != null && !opponent_field_flags[0])
+                            if(queried_card != null && !opponent_field_flags[field_index])
                             {
-                                board_model.summonCreature(queried_card, 0, true);
+                                board_model.summonCreature(queried_card, field_index, true);
 
-                                opponent_field_flags[0] = true;
+                                opponent_field_flags[field_index] = true;
                             }
+                        }
 
-                            queried_card = client.queryCard(Constants.PLAYER1_FIELD, 1);
-
-                            if(queried_card != null && !opponent_field_flags[1])
+                        if(player.getPlayerNumber() == 0)
+                        {
+                            if (getHost().queryWinner() == 1)
                             {
-                                board_model.summonCreature(queried_card, 1, true);
+                                match_winning_player = 1;
 
-                                opponent_field_flags[1] = true;
+                                game_controller.playerHasWon(match_winning_player);
+                                game_state = GameStates.GAME_OVER;
                             }
-
-                            queried_card = client.queryCard(Constants.PLAYER1_FIELD, 2);
-
-                            if(queried_card != null && !opponent_field_flags[2])
-                            {
-                                board_model.summonCreature(queried_card, 2, true);
-
-                                opponent_field_flags[2] = true;
-                            }
-
-                            queried_card = client.queryCard(Constants.PLAYER1_FIELD, 3);
-
-                            if(queried_card != null && !opponent_field_flags[3])
-                            {
-                                board_model.summonCreature(queried_card, 3, true);
-
-                                opponent_field_flags[3] = true;
-                            }
-
-                            System.out.println("Winner:" + getClient().queryWinner());
-
+                        }
+                        else
+                        {
                             if (getClient().queryWinner() == 0)
                             {
-                                System.out.println("Opposing playuer's won");
-
                                 match_winning_player = 0;
 
                                 game_controller.playerHasWon(match_winning_player);
                                 game_state = GameStates.GAME_OVER;
                             }
-
-
-                            if (getClient().queryCurrentPlayer() != current_player_number)
-                            {
-                                System.out.println("Opposing playuer's turn is over");
-                                endTurn();
-                            }
                         }
-                        catch (InterruptedException e)
-                        {
-                            throw new RuntimeException(e);
-                        }
+                    }
+                    catch(Exception e)
+                    {
+                        throw new RuntimeException();
                     }
                 };
 
@@ -653,40 +550,11 @@ public class GameModel implements ActionListener
     }
 
     /**
-     * @author Danny (s224774)
-     */
-    public int getOpponentPlayerNumber()
-    {
-        return opponent_player_number;
-    }
-
-    public int getCurrentPlayerNumber()
-    {
-        return current_player_number;
-    }
-
-    /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
     public boolean getTurnActive()
     {
         return turn_active;
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public int getMatchWinningPlayer()
-    {
-        return match_winning_player;
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public int getTurnTime()
-    {
-        return turn_time;
     }
 
     /**
