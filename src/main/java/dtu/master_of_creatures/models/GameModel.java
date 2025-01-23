@@ -381,6 +381,8 @@ public class GameModel implements ActionListener
         {
             game_controller.playerHasWon(match_winning_player);
             game_state = GameStates.GAME_OVER;
+
+            game_timer.stop();
         }
     }
 
@@ -420,6 +422,8 @@ public class GameModel implements ActionListener
 
                                 game_controller.playerHasWon(match_winning_player);
                                 game_state = GameStates.GAME_OVER;
+
+                                game_timer.stop();
                             }
                         }
                         else
@@ -430,6 +434,8 @@ public class GameModel implements ActionListener
 
                                 game_controller.playerHasWon(match_winning_player);
                                 game_state = GameStates.GAME_OVER;
+
+                                game_timer.stop();
                             }
                         }
                     }

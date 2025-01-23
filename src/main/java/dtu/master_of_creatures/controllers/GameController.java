@@ -35,6 +35,10 @@ public class GameController extends SceneController implements Initializable
     @FXML
     private Text player_name;
     @FXML
+    private Text p1_current_player;
+    @FXML
+    private Text p2_current_player;
+    @FXML
     private Text player_blood;
     @FXML
     private Text player_remain_deck;
@@ -163,14 +167,17 @@ public class GameController extends SceneController implements Initializable
     /**
      * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
      */
-    public void handlePlayerInfoUIs() {
+    public void handlePlayerInfoUIs()
+    {
         // Update UI information for player
-        player_name.setText(current_player_number == player.getPlayerNumber() ? player.getPlayerName() + " (current player)" : player.getPlayerName());
+        p1_current_player.setText(current_player_number == player.getPlayerNumber() ? "(current player)" : "");
+        player_name.setText(player.getPlayerName());
         player_blood.setText("" + player.getBloodPoints());
         player_remain_deck.setText("" + player.getCurrentDeck().size());
 
         // Update UI information for opponent
-        opponent_name.setText(current_player_number != player.getPlayerNumber() ? opponent_player_name + " (current player)" : opponent_player_name);
+        p2_current_player.setText(current_player_number != player.getPlayerNumber() ? "(current player)" : "");
+        opponent_name.setText(opponent_player_name);
     }
 
     /**

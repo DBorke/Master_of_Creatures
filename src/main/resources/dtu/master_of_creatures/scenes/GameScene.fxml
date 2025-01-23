@@ -28,12 +28,12 @@
             <Font size="23.0" />
          </font>
       </Button>
-      <Text fx:id="player_name" fill="WHITE" layoutX="764.0" layoutY="692.0" stroke="BLACK" strokeType="OUTSIDE" text="Winston Churchill (you)" textAlignment="CENTER" wrappingWidth="400.0">
+      <Text fx:id="player_name" fill="WHITE" layoutX="664.0" layoutY="692.0" stroke="BLACK" strokeType="OUTSIDE" text="Winston Churchill" textAlignment="CENTER" wrappingWidth="600.0">
          <font>
             <Font name="System Bold" size="28.0" />
          </font>
       </Text>
-      <Text fx:id="opponent_name" fill="WHITE" layoutX="764.0" layoutY="120.0" stroke="BLACK" strokeType="OUTSIDE" text="Adolf Hitler (opponent)" textAlignment="CENTER" wrappingWidth="400.0">
+      <Text fx:id="opponent_name" fill="WHITE" layoutX="664.0" layoutY="120.0" stroke="BLACK" strokeType="OUTSIDE" text="Adolf Hitler" textAlignment="CENTER" wrappingWidth="600.0">
          <font>
             <Font name="System Bold" size="28.0" />
          </font>
@@ -203,5 +203,15 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
+      <Text fx:id="p1_current_player" fill="WHITE" layoutX="664.0" layoutY="650.0" stroke="BLACK" strokeType="OUTSIDE" text="(you)" textAlignment="CENTER" wrappingWidth="600.0">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Text>
+      <Text fx:id="p2_current_player" fill="WHITE" layoutX="664.0" layoutY="78.0" stroke="BLACK" strokeType="OUTSIDE" text="(opponent)" textAlignment="CENTER" wrappingWidth="600.0">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>
