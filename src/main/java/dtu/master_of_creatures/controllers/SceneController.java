@@ -4,23 +4,21 @@ package dtu.master_of_creatures.controllers;
 import dtu.master_of_creatures.MasterOfCreaturesApp;
 import dtu.master_of_creatures.models.GameModel;
 import dtu.master_of_creatures.utilities.enums.GameStates;
-import dtu.master_of_creatures.utilities.enums.SoundLabels;
 import dtu.master_of_creatures.utilities.Constants;
 
 // Java libraries
-import java.util.HashMap;
 import java.util.Objects;
 import java.awt.GraphicsDevice;
 import java.io.IOException;
 
 // JavaFX libraries
 import javafx.fxml.FXMLLoader;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.transform.Scale;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 
 public abstract class SceneController
 {
@@ -37,7 +35,7 @@ public abstract class SceneController
 
     // Sound data
     private static boolean sound_unmuted = true;
-    private static HashMap<SoundLabels, MediaPlayer> sound_players;
+    private static MediaPlayer sound_player;
 
     /**
      * @author Danny (s224774)
@@ -58,11 +56,17 @@ public abstract class SceneController
         setAppScene("MenuScene");
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public void goToHostPregameScene() throws IOException
     {
         setAppScene("HostPregameScene");
     }
 
+    /**
+     * @author Danny (s224774)
+     */
     public void goToJoinPregameScene() throws IOException
     {
         setAppScene("JoinPregameScene");
@@ -94,8 +98,8 @@ public abstract class SceneController
             scale_factor_y = current_resolution_y / (double) default_resolution_y;
 
             transform_scale = new Scale(scale_factor_x, scale_factor_y);
-            transform_scale.setPivotX(-1.0); // needed for proper scene positioning
-            transform_scale.setPivotY(-1.0);
+            transform_scale.setPivotX(3.0); // needed for proper scene positioning when scaling
+            transform_scale.setPivotY(3.0);
         }
     }
 
@@ -111,74 +115,40 @@ public abstract class SceneController
     }
 
     /**
-     * @author Danny (s224774)
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public void playSoundEffect(SoundLabels sound_label, double volume)
+    public void playThemeMusic()
     {
-        if(sound_players == null)
+        if(sound_player == null)
         {
-            sound_players = new HashMap<>();
+            sound_player = new MediaPlayer(new Media(String.valueOf(MasterOfCreaturesApp.class.getResource("media/sounds/damp_cave.mp3"))));
 
-            createSoundPlayers();
-        }
+            if(sound_player.getCycleCount() != 10000)
+            {
+                sound_player.setCycleCount(10000); // play "indefinitely"
+            }
 
-        if(sound_unmuted)
-        {
-            MediaPlayer sound_player = sound_players.get(sound_label);
-
-            sound_player.setVolume(volume);
+            sound_player.setVolume(0.2);
             sound_player.play();
         }
     }
 
     /**
-     * @author Danny (s224774)
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    private void createSoundPlayers()
-    {
-        SoundLabels[] sounds = SoundLabels.values();
-
-        for(SoundLabels sound_label : sounds)
-        {
-            sound_players.put(sound_label, new MediaPlayer(new Media(String.valueOf(MasterOfCreaturesApp.class.getResource("media/sounds/" + sound_label.name().toLowerCase() + ".mp3")))));
-        }
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public void stopSoundEffect(SoundLabels sound_label)
-    {
-        MediaPlayer sound_player = sound_players.get(sound_label);
-
-        if(!sound_player.isMute())
-        {
-            sound_player.stop();
-        }
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public void muteSound()
+    public void muteUnmuteSound()
     {
         sound_unmuted = !sound_unmuted;
 
-        if(sound_players != null) // make sure sounds are available
-        {
-            // Change mute status of all sound players
-            for(MediaPlayer sound_player : sound_players.values())
-            {
-                if(!sound_unmuted && !sound_player.isMute())
-                {
-                    sound_player.setMute(true);
-                }
-                else if(sound_unmuted && sound_player.isMute())
-                {
-                    sound_player.setMute(false);
-                }
-            }
-        }
+        sound_player.setMute(!sound_unmuted);
+    }
+
+    /**
+     * @author Danny (s224774), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
+    public int convertRowColumnToGridIndex(int row_to_convert, int column_to_convert)
+    {
+        return (row_to_convert * 12) + column_to_convert;
     }
 
     /////////////////////////
@@ -227,7 +197,7 @@ public abstract class SceneController
     }
 
     /**
-     * @author Danny (s224774)
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
     public boolean getSoundUnmuted()
     {

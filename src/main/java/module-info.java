@@ -1,5 +1,9 @@
 module dtu.master_of_creatures
 {
+    // Java libraries
+    requires java.logging;
+    requires java.sql;
+
     // JavaFX libraries
     requires javafx.base;
     requires javafx.controls;
@@ -25,6 +29,7 @@ module dtu.master_of_creatures
     exports dtu.master_of_creatures;
     exports dtu.master_of_creatures.controllers;
     exports dtu.master_of_creatures.models;
+    exports dtu.master_of_creatures.models.network;
     exports dtu.master_of_creatures.utilities;
     exports dtu.master_of_creatures.utilities.enums;
 }

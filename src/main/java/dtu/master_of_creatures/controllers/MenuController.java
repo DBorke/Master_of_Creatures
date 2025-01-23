@@ -10,15 +10,16 @@ import java.util.ResourceBundle;
 import java.io.IOException;
 
 // JavaFX libraries
-import javafx.fxml.Initializable;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 
 public class MenuController extends SceneController implements Initializable
 {
     // JavaFX
     @FXML
-    private Button sound_button;
+    private Button sound;
 
     // Game data
     private final GameModel game_model;
@@ -37,12 +38,19 @@ public class MenuController extends SceneController implements Initializable
     public void initialize(URL url, ResourceBundle resource_bundle)
     {
         game_model.setGameState(GameStates.GAME_PENDING);
+
+        playThemeMusic();
+
+        if(!getSoundUnmuted())
+        {
+            sound.setText("Sound Off");
+        }
     }
 
     /**
      * @author Danny (s224774)
      */
-    public void newGame() throws IOException
+    public void newGame() throws IOException // for host player
     {
         goToHostPregameScene();
     }
@@ -50,18 +58,26 @@ public class MenuController extends SceneController implements Initializable
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
-    public void joinGame() throws IOException
+    public void joinGame() throws IOException // for joining player
     {
         goToJoinPregameScene();
     }
 
     /**
-     * @author Danny (s224774)
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
-    public void muteSound()
+    public void quitApplication()
     {
-        super.muteSound();
+        Platform.exit();
+    }
 
-        sound_button.setText(getSoundUnmuted() ? "Sound On" : "Sound Off");
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
+     */
+    public void muteUnmuteSound()
+    {
+        super.muteUnmuteSound();
+
+        sound.setText(getSoundUnmuted() ? "Sound On" : "Sound Off");
     }
 }

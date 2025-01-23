@@ -2,34 +2,41 @@ package dtu.master_of_creatures.models;
 
 // Project libraries
 import dtu.master_of_creatures.controllers.GameController;
+import dtu.master_of_creatures.models.network.ClientModel;
+import dtu.master_of_creatures.models.network.HostModel;
+import dtu.master_of_creatures.utilities.Constants;
 import dtu.master_of_creatures.utilities.enums.GameStates;
-import dtu.master_of_creatures.utilities.enums.PhaseTypes;
 import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
+import dtu.master_of_creatures.utilities.enums.MythicalCardTypes;
 
 // Java libraries
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import javax.swing.Timer;
 import java.util.Random;
+import javax.swing.Timer;
 
 public class GameModel implements ActionListener
 {
     private static GameStates game_state;
-    private static PhaseTypes phase_type;
     private BoardModel board_model;
-    private final PlayerModel[] players;
-    private PlayerModel current_player;
+    private PlayerModel player;
+    private boolean player_ready = true;
+    private String opponent_player_name;
+    private int opponent_player_number;
+    private final boolean[] opponent_field_flags;
+    private boolean opponent_ready;
+    private int current_player_number;
     private boolean turn_active;
-    private final int[] round_wins;
-    private PlayerModel round_winning_player;
-    private PlayerModel match_winning_player;
+    private int match_winning_player;
     private final Timer game_timer;
-    private int turn_time; // reset each turn
-    private int round_time; // reset each round
-    private int match_time; // reset each match (auto)
+    private int turn_time;
     private final HashMap<String, Integer> match_settings;
+    private HostModel host;
+    private ClientModel client;
+    private final String uri = "tcp://localhost:8080/?keep";
 
     // App
     private GameController game_controller;
@@ -37,23 +44,22 @@ public class GameModel implements ActionListener
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
+
     public GameModel()
     {
         board_model = new BoardModel(this);
-        players = new PlayerModel[2];
-        round_wins = new int[2];
+
+        opponent_field_flags = new boolean[4];
 
         game_timer = new Timer(1000, this); // delay is in milliseconds
-
         match_settings = new HashMap<>();
     }
 
     /**
      * @author Danny (s224774), Maria (s195685)
      */
-    public void initializeGame(int round_wins_needed, int turn_time_limit, int health_points, int blood_points, int deck_size, int hand_size)
+    public void initializeMatchSettings(int round_wins_needed, int turn_time_limit, int health_points, int blood_points, int deck_size, int hand_size, boolean is_host)
     {
-        // Make backup of game related match settings
         match_settings.put("round wins", round_wins_needed);
         match_settings.put("time limit", turn_time_limit);
         match_settings.put("health points", health_points);
@@ -67,20 +73,27 @@ public class GameModel implements ActionListener
      */
     public void initializePlayer(String player_name, List<CommonCardTypes> cards_chosen, boolean is_host)
     {
-        players[is_host ? 0 : 1] = new PlayerModel(player_name, is_host ? 0 : 1, cards_chosen, this);
+        int player_number = is_host ? 0 : 1;
+        opponent_player_number = is_host ? 1 : 0;
+
+        player = new PlayerModel(player_name, player_number, cards_chosen, this);
     }
 
-    /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
-     */
-    public void resetGameForNextRound()
+    public void initializeHostModel()
     {
-        board_model = new BoardModel(this);
+        host = new HostModel(uri);
+    }
 
-        players[0].resetPlayerForNextRound();
-        players[1].resetPlayerForNextRound(); // temp
-
-        round_time = 0;
+    public void initializeClientModel()
+    {
+        try
+        {
+            client = new ClientModel(uri);
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -88,15 +101,11 @@ public class GameModel implements ActionListener
      */
     public void startNewRound()
     {
-        if(game_state == GameStates.GAME_HALFTIME)
-        {
-            resetGameForNextRound();
-
-            game_state = GameStates.GAME_ACTIVE;
-        }
+        current_player_number = 0; // no current player
+        match_winning_player = -1; // no winner
 
         game_controller.handlePlayerInfoUIs();
-        game_controller.handlePlayerCardUIs();
+        game_controller.handlePlayerCardUIs(true);
 
         startTurn();
         game_timer.start();
@@ -110,12 +119,11 @@ public class GameModel implements ActionListener
         turn_time = match_settings.get("time limit");
 
         nextPlayer();
-        current_player.resetTurnDamageDone();
+
+        allowsCardsToAttack();
 
         game_controller.handlePlayerInfoUIs();
         game_controller.handlePlayerButtons();
-
-        phase_type = PhaseTypes.PLAYING_PHASE;
 
         turn_active = true;
     }
@@ -125,18 +133,48 @@ public class GameModel implements ActionListener
      */
     public void nextPlayer()
     {
-        Random randomizer = new Random();
+        current_player_number = current_player_number == 0 ? 1 : 0;
 
-        if(current_player == null)
-        {
-            current_player = players[randomizer.nextInt(0,2)];
-        }
-        else
-        {
-            current_player = current_player == players[0] ? players[1] : players[0];
-        }
+        game_controller.setCurrentPlayerNumber(current_player_number);
 
-        game_controller.setCurrentPlayer(current_player);
+        Runnable runnable = () ->
+        {
+            if (player.getPlayerNumber() == 0)
+            {
+                try {
+                    host.updateCurrentPlayer(1);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            else if (player.getPlayerNumber() == 1)
+            {
+                try {
+                    client.updateCurrentPlayer(0);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+
+        new Thread(runnable).start();
+
+    }
+
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685)
+     */
+    public void allowsCardsToAttack()
+    {
+        CardModel[] player_cards = player.getPlayerNumber() == 0 ? board_model.getPlayer1Lanes() : board_model.getPlayer2Lanes();
+
+        for(CardModel card : player_cards)
+        {
+            if(card != null)
+            {
+                card.setCanAttack(true);
+            }
+        }
     }
 
     /**
@@ -144,9 +182,51 @@ public class GameModel implements ActionListener
      */
     public void drawFromDeck()
     {
-        current_player.drawFromDeck();
+        if(current_player_number == player.getPlayerNumber())
+        {
+            player.drawFromDeck();
+        }
 
         game_controller.handlePlayerInfoUIs();
+    }
+
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
+     */
+    public void sacrificeCardForBloodPoints(CardModel cardInHand)
+    {
+        // Update blood points for the current player
+        player.changeBloodPoints(cardInHand.getCost());
+        game_controller.handlePlayerInfoUIs();
+
+        // Remove the creature from the field for the current player
+        player.removeFromHand(cardInHand);
+
+        // Update the UI for player
+        game_controller.handlePlayerCardUIs(true);
+    }
+
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
+     */
+    public void gambleCardForMythicalCard(CardModel card_in_hand)
+    {
+        player.removeFromHand(card_in_hand);
+
+        if(card_in_hand.getCost() != 0)
+        {
+            Random randomizer = new Random();
+            int max_probability_range = 9 - card_in_hand.cost;
+
+            if(randomizer.nextInt(0, max_probability_range) == 0)
+            {
+                MythicalCardTypes[] mythical_card_types = MythicalCardTypes.values();
+
+                player.addToHand(mythical_card_types[randomizer.nextInt(0, mythical_card_types.length)]);
+            }
+        }
+
+        game_controller.handlePlayerCardUIs(true);
     }
 
     /**
@@ -154,34 +234,44 @@ public class GameModel implements ActionListener
      */
     public boolean playChosenCard(int hand_index, int field_index)
     {
-        CardModel card_played = current_player.getCardsInHand().get(hand_index);
-
-        if(board_model.summonCreature(current_player, card_played, field_index))
+        if(current_player_number == player.getPlayerNumber())
         {
-            current_player.removeFromHand(card_played);
+            CardModel card_played = player.getCardsInHand().get(hand_index);
+            int card_cost = card_played.cost;
 
-            game_controller.handlePlayerInfoUIs();
+            if(player.getBloodPoints() >= card_cost)
+            {
+                if(board_model.summonCreature(card_played, field_index, false))
+                {
+                    player.removeFromHand(card_played);
 
-            return true;
+                    player.changeBloodPoints(-1 * card_cost);
+
+                    game_controller.handlePlayerInfoUIs();
+                    game_controller.handlePlayerCardUIs(true);
+
+                    // Update own player fields on the network
+                    Runnable runnable = () ->
+                    {
+                        if(current_player_number == 0)
+                        {
+                            host.updateCard(Constants.PLAYER1_FIELD, field_index, card_played);
+                        }
+                        else
+                        {
+                            client.updateCard(Constants.PLAYER2_FIELD, field_index, card_played);
+                        }
+                    };
+
+                    Thread place_thread = new Thread(runnable);
+                    place_thread.start();
+
+                    return true;
+                }
+            }
         }
 
         return false;
-    }
-
-    /**
-     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
-     */
-    public void sacrificeChosenCards()
-    {
-        game_controller.handlePlayerInfoUIs();
-    }
-
-    /**
-     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
-     */
-    public void gambleWithChosenCards(List<CommonCardTypes> cards_gambled_with)
-    {
-        game_controller.handlePlayerInfoUIs();
     }
 
     /**
@@ -198,14 +288,9 @@ public class GameModel implements ActionListener
             game_controller.handleTurnTimeUI(turn_time);
         }
 
-        phase_type = PhaseTypes.ATTACK_PHASE;
-
         performPostTurnAttacks();
 
-        players[0].updateCardsRemaining();
-        players[1].updateCardsRemaining(); // temp
-
-        checkRoundMatchOver(false);
+        checkMatchOver();
     }
 
     /**
@@ -216,124 +301,87 @@ public class GameModel implements ActionListener
         CardModel[] player_1_lanes = board_model.getPlayer1Lanes();
         CardModel[] player_2_lanes = board_model.getPlayer2Lanes();
 
-        PlayerModel attacking_player = current_player == players[0] ? players[0] : players[1];
-        PlayerModel attacked_player = current_player == players[0] ? players[1] : players[0];
         CardModel attacking_card;
         CardModel attacked_card;
 
         int post_attack_health;
 
-        for(int lane_index = 0; lane_index < 3; lane_index++)
+        for(int lane_index = 0; lane_index < 4; lane_index++)
         {
-            attacking_card = attacking_player == players[0] ? player_1_lanes[lane_index] : player_2_lanes[lane_index];
-            attacked_card = attacking_player == players[0] ? player_2_lanes[lane_index] : player_1_lanes[lane_index];
+            attacking_card = current_player_number == 0 ? player_1_lanes[lane_index] : player_2_lanes[lane_index];
+            attacked_card = current_player_number == 0 ? player_2_lanes[lane_index] : player_1_lanes[lane_index];
 
-            if(attacking_card != null || attacked_card != null)
+            if(attacking_card != null && attacking_card.can_attack && attacking_card.getAttack() > 0)
             {
-                if(attacking_card != null && attacked_card != null)
+                if(attacked_card != null)
                 {
                     post_attack_health = attacked_card.damageCard(attacking_card.getAttack());
 
                     if(post_attack_health <= 0) // card dead
                     {
-                        board_model.removeCreatureFromField(attacked_player, lane_index);
+                        board_model.removeCreatureFromField(lane_index, player.getPlayerNumber() != 0);
 
-                        if(post_attack_health < 0) // player damaged
+                        final int lane_index_2 = lane_index;
+
+                        // Update own player fields on the network
+                        Runnable runnable = () ->
                         {
-                            attacked_player.changeHealthPoints(post_attack_health);
-                        }
+                            if(opponent_player_number == 0)
+                            {
+                                host.updateCard(Constants.PLAYER1_FIELD, lane_index_2, null);
+                            }
+                            else
+                            {
+                                client.updateCard(Constants.PLAYER2_FIELD, lane_index_2, null);
+                            }
+
+                            opponent_field_flags[lane_index_2] = false;
+                        };
+
+                        Thread place_thread = new Thread(runnable);
+                        place_thread.start();
+
+                        game_controller.handlePlayerCardUIs(true);
+                        game_controller.handlePlayerCardUIs(false);
                     }
-
-                    attacking_player.increaseDamageDone(attacking_card.getAttack()); // damage done to both cards and opponent player
                 }
-                else if(attacking_card != null)
+                else
                 {
-                    attacked_player.changeHealthPoints(-1 * attacking_card.getAttack());
+                    match_winning_player = current_player_number;
 
-                    attacking_player.increaseDamageDone(attacking_card.getAttack()); // damage done to player
+                    Runnable runnable = () ->
+                    {
+                        if (current_player_number == 0){
+                            try {
+                                getHost().updateWinner(0);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+
+                        } else if (current_player_number == 1){
+                            try {
+                                getClient().updateWinner(1);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }};
+                    Thread thread = new Thread(runnable);
+                    thread.start();
                 }
             }
         }
-
-        game_controller.handlePlayerInfoUIs();
-        game_controller.handlePlayerCardUIs();
-    }
-
-    /**
-     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
-     */
-    public void addRewardCards(PlayerModel player, List<CommonCardTypes> cards_chosen)
-    {
-        for(CommonCardTypes card_chosen : cards_chosen)
-        {
-            player.addToDeck(card_chosen, false); // to starting deck?
-        }
-
-        game_controller.handlePlayerInfoUIs();
     }
 
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
      */
-    public void checkRoundMatchOver(boolean player_conceded_round)
+    public void checkMatchOver()
     {
-        PlayerModel opposing_player = current_player == players[0] ? players[1] : players[0];
-
-        if(!player_conceded_round)
+        if(match_winning_player != -1)
         {
-            if(opposing_player.getHealthPoints() <= 0 || (current_player.getCardsRemaining() == 0 && opposing_player.getCardsRemaining() == 0))
-            {
-                decideRoundWinner(opposing_player);
-
-                round_wins[round_winning_player == players[0] ? 0 : 1]++;
-
-                if(round_wins[0] != 3 && round_wins[1] != 3)
-                {
-                    game_state = GameStates.GAME_HALFTIME;
-                }
-                else // a player has gotten the required amount of wins
-                {
-                    decideMatchWinner();
-
-                    game_state = GameStates.GAME_OVER;
-
-                    game_timer.stop();
-                }
-            }
+            game_controller.playerHasWon(match_winning_player);
+            game_state = GameStates.GAME_OVER;
         }
-        else // current player has conceded the round
-        {
-            round_winning_player = opposing_player;
-
-            game_state = GameStates.GAME_HALFTIME;
-        }
-    }
-
-    /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
-     */
-    private void decideRoundWinner(PlayerModel opposing_player)
-    {
-        if(current_player.getHealthPoints() > opposing_player.getHealthPoints())
-        {
-            round_winning_player = current_player;
-        }
-        else if(current_player.getHealthPoints() < opposing_player.getHealthPoints())
-        {
-            round_winning_player = opposing_player;
-        }
-        else // round is a draw
-        {
-            round_winning_player = null;
-        }
-    }
-
-    /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
-     */
-    private void decideMatchWinner()
-    {
-        match_winning_player = round_wins[0] == 3 ? players[0] : players[1];
     }
 
     /**
@@ -341,21 +389,71 @@ public class GameModel implements ActionListener
      */
     public void actionPerformed(ActionEvent actionEvent) // gets called every second
     {
-        if(game_state != GameStates.GAME_HALFTIME && game_state != GameStates.GAME_OVER)
+        if(game_state == GameStates.GAME_ACTIVE)
         {
             turn_time--; // time remaining, therefore subtraction
-            round_time++;
-            match_time++;
+
+            // Update opposing player fields on the network
+            if(player.getPlayerNumber() != current_player_number)
+            {
+                Runnable runnable = () ->
+                {
+                    try
+                    {
+                        for(int field_index = 0; field_index < 4; field_index++)
+                        {
+                            CardModel queried_card = player.getPlayerNumber() == 0 ? host.queryCard(Constants.PLAYER2_FIELD, field_index) : client.queryCard(Constants.PLAYER1_FIELD, field_index);
+
+                            if(queried_card != null && !opponent_field_flags[field_index])
+                            {
+                                board_model.summonCreature(queried_card, field_index, true);
+
+                                opponent_field_flags[field_index] = true;
+                            }
+                        }
+
+                        if(player.getPlayerNumber() == 0)
+                        {
+                            if (getHost().queryWinner() == 1)
+                            {
+                                match_winning_player = 1;
+
+                                game_controller.playerHasWon(match_winning_player);
+                                game_state = GameStates.GAME_OVER;
+                            }
+                        }
+                        else
+                        {
+                            if (getClient().queryWinner() == 0)
+                            {
+                                match_winning_player = 0;
+
+                                game_controller.playerHasWon(match_winning_player);
+                                game_state = GameStates.GAME_OVER;
+                            }
+                        }
+                    }
+                    catch(Exception e)
+                    {
+                        throw new RuntimeException();
+                    }
+                };
+
+                Thread place_thread = new Thread(runnable);
+                place_thread.start();
+
+                game_controller.handlePlayerCardUIs(false);
+            }
 
             if(turn_time >= 0)
             {
                 game_controller.handleTurnTimeUI(turn_time);
             }
-            else if(turn_time == -2 && turn_active) // slight delay to attack, make sure turn has not already ended
+            else if(turn_time == -1 && turn_active) // slight delay to attack, make sure turn has not already ended
             {
                 endTurn();
             }
-            else if(turn_time == -5) // delay to give time between turns
+            else if(turn_time == -3) // delay to give time between turns
             {
                 startTurn();
 
@@ -384,20 +482,27 @@ public class GameModel implements ActionListener
         this.game_controller = game_controller;
     }
 
+    public void setPlayerReady(boolean player_ready)
+    {
+        this.player_ready = player_ready;
+    }
+
+    public void setOpponentReady(boolean opponent_ready)
+    {
+        this.opponent_ready = opponent_ready;
+    }
+
+    public void setOpponentPlayerName(String opponent_player_name)
+    {
+        this.opponent_player_name = opponent_player_name;
+    }
+
     /**
      * @author Danny (s224774)
      */
     public GameStates getGameState()
     {
         return game_state;
-    }
-
-    /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
-     */
-    public PhaseTypes getPhaseType()
-    {
-        return phase_type;
     }
 
     /**
@@ -411,63 +516,35 @@ public class GameModel implements ActionListener
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-
-    public PlayerModel[] getPlayers()
+    public PlayerModel getPlayer()
     {
-        return players;
+        return player;
+    }
+
+    public boolean getPlayerReady()
+    {
+        return player_ready;
+    }
+
+    public boolean getOpponentReady()
+    {
+        return opponent_ready;
     }
 
     /**
-     * @author Maria (s195685), Danny (s224774), Mathias (s224273), Romel (s215212)
+     * @author Danny (s224774)
      */
-    public PlayerModel getCurrentPlayer()
+    public String getOpponentPlayerName()
     {
-        return current_player;
+        return opponent_player_name;
     }
 
+    /**
+     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
+     */
     public boolean getTurnActive()
     {
         return turn_active;
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public PlayerModel getRoundWinningPlayer()
-    {
-        return round_winning_player;
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public PlayerModel getMatchWinningPlayer()
-    {
-        return match_winning_player;
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public int getTurnTime()
-    {
-        return turn_time;
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public int getRoundTime()
-    {
-        return round_time;
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public int getMatchTime()
-    {
-        return match_time;
     }
 
     /**
@@ -476,5 +553,15 @@ public class GameModel implements ActionListener
     public HashMap<String, Integer> getMatchSettings()
     {
         return match_settings;
+    }
+
+    public HostModel getHost()
+    {
+        return host;
+    }
+
+    public ClientModel getClient()
+    {
+        return client;
     }
 }

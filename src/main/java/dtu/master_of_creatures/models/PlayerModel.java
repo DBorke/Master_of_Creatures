@@ -2,6 +2,7 @@ package dtu.master_of_creatures.models;
 
 // Project libraries
 import dtu.master_of_creatures.utilities.enums.CommonCardTypes;
+import dtu.master_of_creatures.utilities.enums.MythicalCardTypes;
 
 // Java libraries
 import java.util.HashMap;
@@ -13,19 +14,14 @@ public class PlayerModel
 {
     private final String player_name;
     private final int player_number;
-    private int health_points;
+    private final int health_points;
     private int blood_points;
-    private final List<CardModel> starting_deck;
-    private List<CardModel> current_deck;
+    private final List<CardModel> current_deck;
     private final List<CardModel> cards_in_hand;
     private int cards_remaining;
-    private int turn_damage_done;
-    private int round_damage_done;
-    private int match_damage_done;
+    private boolean in_sacrifice_mode;
+    private boolean in_gamble_mode;
     private final HashMap<String, Integer> match_settings;
-
-    // Game data
-    private final GameModel game_model;
 
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
@@ -33,7 +29,6 @@ public class PlayerModel
     public PlayerModel(String player_name, int player_number, List<CommonCardTypes> cards_chosen, GameModel game_model)
     {
         // Set up game related variables
-        this.game_model = game_model;
         this.match_settings = game_model.getMatchSettings();
 
         // Set up player stats
@@ -41,12 +36,8 @@ public class PlayerModel
         this.player_number = player_number;
         health_points = match_settings.get("health points");
         blood_points = match_settings.get("blood points");
-        turn_damage_done = 0;
-        round_damage_done = 0;
-        match_damage_done = 0;
 
         // Set up card related variables
-        starting_deck = new ArrayList<>();
         current_deck = new ArrayList<>();
         cards_in_hand = new ArrayList<>();
 
@@ -57,32 +48,12 @@ public class PlayerModel
     }
 
     /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
-     */
-    public void resetPlayerForNextRound()
-    {
-        // Reset player stats
-        health_points = match_settings.get("health points");
-        blood_points = match_settings.get("blood points");
-        round_damage_done = 0;
-
-        // Reset card related variables
-        current_deck = new ArrayList<>(starting_deck);
-        cards_in_hand.clear();
-
-        createHand();
-
-        cards_remaining = starting_deck.size() + match_settings.get("hand size");
-    }
-
-    /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
     private void createDecks(List<CommonCardTypes> cards_chosen)
     {
         for(CommonCardTypes card_chosen : cards_chosen)
         {
-            starting_deck.add(new CardModel(card_chosen));
             current_deck.add(new CardModel(card_chosen));
         }
     }
@@ -120,14 +91,6 @@ public class PlayerModel
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public void changeHealthPoints(int health_change)
-    {
-        health_points += health_change;
-    }
-
-    /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
-     */
     public void changeBloodPoints(int blood_change)
     {
         blood_points += blood_change;
@@ -136,37 +99,7 @@ public class PlayerModel
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
      */
-    public void addToDeck(CommonCardTypes card_to_add, boolean to_starting_deck)
-    {
-        if(to_starting_deck)
-        {
-            starting_deck.add(new CardModel(card_to_add));
-        }
-        else
-        {
-           current_deck.add(new CardModel(card_to_add));
-        }
-    }
-
-    /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
-     */
-    public void removeFromDeck(CardModel card_to_remove, boolean from_starting_deck)
-    {
-        if(from_starting_deck)
-        {
-            starting_deck.remove(card_to_remove);
-        }
-        else
-        {
-            current_deck.remove(card_to_remove);
-        }
-    }
-
-    /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
-     */
-    public void addToHand(CommonCardTypes card_to_add, boolean from_deck)
+    public void addToHand(MythicalCardTypes card_to_add)
     {
         cards_in_hand.add(new CardModel(card_to_add));
     }
@@ -179,45 +112,23 @@ public class PlayerModel
         cards_in_hand.remove(card_to_remove);
     }
 
-    /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273), Maria (s195685), Romel (s215212)
-     */
-    public void updateCardsRemaining()
-    {
-        cards_remaining = current_deck.size() + cards_in_hand.size();
-
-        CardModel[] player_fields = player_number == 0 ? game_model.getBoardModel().getPlayer1Lanes() : game_model.getBoardModel().getPlayer2Lanes();
-
-        for(int card_index = 0; card_index < player_fields.length; card_index++)
-        {
-            if(player_fields[0] != null)
-            {
-                cards_remaining++;
-            }
-        }
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public void increaseDamageDone(int damage_done)
-    {
-        turn_damage_done += damage_done;
-        round_damage_done += damage_done;
-        match_damage_done += damage_done;
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public void resetTurnDamageDone()
-    {
-        turn_damage_done = 0;
-    }
-
     /////////////////////////
     // setters and getters //
     /////////////////////////
+
+    /**
+     * @author Carl Emil (s224168), Mathias (s224273)
+     */
+    public void setInSacrificeMode(boolean inSacrificeMode) {
+        this.in_sacrifice_mode = inSacrificeMode;
+    }
+
+    /**
+     * @author Carl Emil (s224168), Mathias (s224273), Danny (s224774)
+     */
+    public void setInGambleMode(boolean in_gamble_mode) {
+        this.in_gamble_mode = in_gamble_mode;
+    }
 
     /**
      * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
@@ -225,6 +136,14 @@ public class PlayerModel
     public String getPlayerName()
     {
         return player_name;
+    }
+
+    /**
+     * @author Danny (s224774)
+     */
+    public int getPlayerNumber()
+    {
+        return player_number;
     }
 
     /**
@@ -241,14 +160,6 @@ public class PlayerModel
     public int getBloodPoints()
     {
         return blood_points;
-    }
-
-    /**
-     * @author Danny (s224774), Carl Emil (s224168), Mathias (s224273)
-     */
-    public List<CardModel> getStartingDeck()
-    {
-        return starting_deck;
     }
 
     /**
@@ -276,26 +187,13 @@ public class PlayerModel
     }
 
     /**
-     * @author Danny (s224774)
+     * @author Carl Emil (s224168), Mathias (s224273)
      */
-    public int getTurnDamageDone()
-    {
-        return turn_damage_done;
+    public boolean getInSacrificeMode() {
+        return in_sacrifice_mode;
     }
 
-    /**
-     * @author Danny (s224774)
-     */
-    public int getRoundDamageDone()
-    {
-        return round_damage_done;
-    }
-
-    /**
-     * @author Danny (s224774)
-     */
-    public int getMatchDamageDone()
-    {
-        return match_damage_done;
+    public boolean getInGambleMode() {
+        return in_gamble_mode;
     }
 }

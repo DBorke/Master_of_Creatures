@@ -2,13 +2,14 @@ package dtu.master_of_creatures.utilities.enums;
 
 public enum MythicalCardTypes
 {
-    // Health, attack, cost
-    DRAGON(5, 7, 3),
-    HYDRA(4,5,3),
-    BISHOPFISH(7,2,2),
-    PHEONIX(3,4,2),
-    SHESHESHEN(8,1,2),
-    MOTHMAN(3,6,2);
+    // Card health, attack, cost
+    HYDRA(6, 7, 7),
+    DRAGON(5, 6, 6),
+    FENRIR(5,5,5),
+    OOZE(8, 2, 5),
+    PHEONIX(5,5,4),
+    BISHOPFISH(6,2,4),
+    MOTHMAN(4,6,5);
 
     private final int health;
     private final int attack;
@@ -16,7 +17,7 @@ public enum MythicalCardTypes
 
     /**
      * Enum constructor
-     * @author Maria (s195685)
+     * @author Romel (s215212)
      */
     MythicalCardTypes(int health, int attack, int cost)
     {
@@ -30,7 +31,7 @@ public enum MythicalCardTypes
     /////////////////////////
 
     /**
-     * @author Maria (s195685)
+     * @author Romel (s215212)
      */
     public int getHealth()
     {
@@ -38,7 +39,7 @@ public enum MythicalCardTypes
     }
 
     /**
-     * @author Maria (s195685)
+     * @author Romel (s215212)
      */
     public int getAttack()
     {
@@ -46,7 +47,7 @@ public enum MythicalCardTypes
     }
 
     /**
-     * @author Maria (s195685)
+     * @author Romel (s215212)
      */
     public int getCost()
     {
